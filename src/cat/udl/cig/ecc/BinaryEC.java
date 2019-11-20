@@ -4,10 +4,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.BinaryField;
-import cat.udl.cig.fields.BinaryFieldElement;
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.fields.groups.BinaryField;
+import cat.udl.cig.fields.elements.BinaryFieldElement;
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.RingElement;
+import cat.udl.cig.fields.groups.Group;
 import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
 
 /**
@@ -15,7 +16,7 @@ import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
  * + b\) if it's non-supersingular, or \(y^{2} + cy = x^{3} + ax + b\) if it's
  * supersingular over a Binary Field.
  *
- * @see cat.udl.cig.fields.BinaryField
+ * @see BinaryField
  * @author Ricard Garra
  */
 public class BinaryEC extends GeneralEC {
@@ -331,7 +332,7 @@ public class BinaryEC extends GeneralEC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getSize()
+     * @see Group#getSize()
      */
     @Override
     public BigInteger getSize() {
@@ -343,7 +344,7 @@ public class BinaryEC extends GeneralEC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#toElement(java.lang.Object)
+     * @see Group#toElement(java.lang.Object)
      */
     @Override
     public BinaryECPoint toElement(final Object input) {
@@ -353,8 +354,8 @@ public class BinaryEC extends GeneralEC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#multiply(cat.udl.cig.fields.GroupElement,
-     *      cat.udl.cig.fields.GroupElement)
+     * @see Group#multiply(GroupElement,
+     *      GroupElement)
      */
     @Override
     public BinaryECPoint multiply(final GroupElement x,
@@ -363,7 +364,7 @@ public class BinaryEC extends GeneralEC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#pow(cat.udl.cig.fields.GroupElement,
+     * @see Group#pow(GroupElement,
      *      java.math.BigInteger)
      */
     @Override

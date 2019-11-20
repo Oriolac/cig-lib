@@ -1,10 +1,13 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.fields.groups;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
+import cat.udl.cig.fields.elements.ExtensionFieldElement;
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.PrimeFieldElement;
 import cat.udl.cig.utils.Polynomial;
 
 /**
@@ -217,8 +220,8 @@ public class ExtensionField implements Ring {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#multiply(cat.udl.cig.fields.GroupElement,
-     *      cat.udl.cig.fields.GroupElement)
+     * @see Group#multiply(GroupElement,
+     *      GroupElement)
      */
     @Override
     public ExtensionFieldElement multiply(final GroupElement x,
@@ -227,7 +230,7 @@ public class ExtensionField implements Ring {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#pow(cat.udl.cig.fields.GroupElement,
+     * @see Group#pow(GroupElement,
      *      java.math.BigInteger)
      */
     @Override
@@ -237,7 +240,7 @@ public class ExtensionField implements Ring {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getRandomExponent()
+     * @see Group#getRandomExponent()
      */
     @Override
     public BigInteger getRandomExponent() {

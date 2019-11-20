@@ -6,15 +6,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.BinaryField;
-import cat.udl.cig.fields.BinaryFieldElement;
-import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.groups.BinaryField;
+import cat.udl.cig.fields.elements.BinaryFieldElement;
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.RingElement;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>Binary Elliptic Curve</i>
  * \(E\).
  *
- * @see cat.udl.cig.fields.BinaryField
+ * @see BinaryField
  * @see cat.udl.cig.fields.BinaryFielElement
  * @see BinaryEC
  * @author Ricard Garra
@@ -31,7 +32,7 @@ public class BinaryECPoint extends GeneralECPoint {
      * The coordinates \((X:Y)\) of the point. \(X\) and \(Y\) belongs to the
      * Ring {@code this.ec.getRing()}.
      *
-     * @see cat.udl.cig.fields.RingElement
+     * @see RingElement
      */
     // protected final BinaryFieldElement x, y;
 
@@ -536,7 +537,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#belongsToSameGroup(cat.udl.cig.fields.GroupElement)
+     * @see GroupElement#belongsToSameGroup(GroupElement)
      */
     @Override
     public boolean belongsToSameGroup(final GroupElement iq) {
@@ -545,7 +546,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getGroup()
+     * @see GroupElement#getGroup()
      */
     @Override
     public BinaryField getGroup() {
@@ -553,7 +554,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getValue()
+     * @see GroupElement#getValue()
      */
     @Override
     public Object getValue() {
@@ -561,7 +562,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getIntValue()
+     * @see GroupElement#getIntValue()
      */
     @Override
     public BigInteger getIntValue() {
@@ -601,7 +602,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.ecc.ECPoint#divide(cat.udl.cig.fields.GroupElement)
+     * @see cat.udl.cig.ecc.ECPoint#divide(GroupElement)
      */
     @Override
     public BinaryECPoint divide(final GroupElement Q)

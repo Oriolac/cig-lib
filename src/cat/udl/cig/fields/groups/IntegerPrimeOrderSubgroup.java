@@ -1,15 +1,20 @@
+
+
+package cat.udl.cig.fields.groups;
+
+import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.PrimeFieldElement;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 /**
  * Models any kind of <i>Multiplicative subgroup</i> with a prime order generator.
  *
  * @author Víctor Mateu
  */
 
-package cat.udl.cig.fields;
-
-import cat.udl.cig.exceptions.NotImplementedException;
-
-import java.math.BigInteger;
-import java.security.SecureRandom;
 
 public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
@@ -24,13 +29,9 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
         if (g.modPow(exponentFieldSize, m).equals(BigInteger.ONE)) {
             field = new PrimeField(m);
             cardinality = exponentFieldSize;
-
             generator = new PrimeFieldElement(field, g);
         } else {
-            field = null;
-            cardinality = null;
-            generator = null;
-            throw new NotImplementedException(); //TODO: It is not a good implementation though
+            throw new ConstructionException("g^(exponentFieldSize) % m is not 1."); //TODO: It is not a good implementation though
         }
     }
 
@@ -97,7 +98,7 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Ring#getSize()
+     * @see Ring#getSize()
      */
     @Override
     public BigInteger getSize() {
@@ -105,7 +106,7 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Ring#toRing(java.lang.Object)
+     * @see Ring#toElement(java.lang.Object)
      */
     @Override
     public PrimeFieldElement toElement(final Object k) {
@@ -120,7 +121,7 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getNeuterElement()
+     * @see Group#getNeuterElement()
      */
     @Override
     public PrimeFieldElement getNeuterElement() {
@@ -128,8 +129,8 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#multiply(cat.udl.cig.fields.GroupElement,
-     *      cat.udl.cig.fields.GroupElement)
+     * @see Group#multiply(GroupElement,
+     *      GroupElement)
      */
     @Override
     public PrimeFieldElement multiply(final GroupElement x,
@@ -138,7 +139,7 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#pow(cat.udl.cig.fields.GroupElement,
+     * @see Group#pow(GroupElement,
      *      java.math.BigInteger)
      */
     @Override

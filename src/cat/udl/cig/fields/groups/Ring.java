@@ -1,4 +1,7 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.fields.groups;
+
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.RingElement;
 
 import java.math.BigInteger;
 

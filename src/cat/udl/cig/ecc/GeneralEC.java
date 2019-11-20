@@ -9,11 +9,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.ExtensionField;
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.PrimeFieldElement;
-import cat.udl.cig.fields.Ring;
-import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.fields.groups.ExtensionField;
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.PrimeFieldElement;
+import cat.udl.cig.fields.groups.Ring;
+import cat.udl.cig.fields.elements.RingElement;
+import cat.udl.cig.fields.groups.Group;
+import cat.udl.cig.fields.groups.PrimeField;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} = x^{3} + ax + b\)
@@ -30,7 +32,7 @@ public class GeneralEC implements EC {
      * The <i>Ring</i> or <i>Field</i> over which the <i>Elliptic Curve</i>
      * \(E\) is described.
      *
-     * @see cat.udl.cig.fields.Ring
+     * @see Ring
      */
     protected final Ring k;
 
@@ -72,8 +74,8 @@ public class GeneralEC implements EC {
      *            belong to the <i>GeneralField</i> \(K\).
      * @param cardFactors
      *            prime factors composing the cardinality of the group law \(E\).
-     * @see cat.udl.cig.fields.PrimeField
-     * @see cat.udl.cig.fields.PrimeFieldElement
+     * @see PrimeField
+     * @see PrimeFieldElement
      */
     public GeneralEC(final Ring iK, final RingElement[] coefficients,
             final ArrayList<BigInteger> cardFactors) {
@@ -126,8 +128,8 @@ public class GeneralEC implements EC {
      * @param cardFactors
      *            prime factors composing the cadinality of the group law \(E\).
      *
-     * @see cat.udl.cig.fields.Ring
-     * @see cat.udl.cig.fields.RingElement
+     * @see Ring
+     * @see RingElement
      */
     protected GeneralEC(final Ring K, final RingElement[] coefficients,
             final ArrayList<BigInteger> cardFactors,
@@ -314,7 +316,7 @@ public class GeneralEC implements EC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#toElement(java.lang.Object)
+     * @see Group#toElement(java.lang.Object)
      */
     @Override
     public GeneralECPoint toElement(final Object k) {
@@ -323,7 +325,7 @@ public class GeneralEC implements EC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getRandomExponent()
+     * @see Group#getRandomExponent()
      */
     @Override
     public BigInteger getRandomExponent() {
@@ -337,8 +339,8 @@ public class GeneralEC implements EC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#multiply(cat.udl.cig.fields.GroupElement,
-     *      cat.udl.cig.fields.GroupElement)
+     * @see Group#multiply(GroupElement,
+     *      GroupElement)
      */
     @Override
     public GeneralECPoint multiply(final GroupElement x,
@@ -347,7 +349,7 @@ public class GeneralEC implements EC {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#pow(cat.udl.cig.fields.GroupElement,
+     * @see Group#pow(GroupElement,
      *      java.math.BigInteger)
      */
     @Override

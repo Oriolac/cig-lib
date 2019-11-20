@@ -15,7 +15,7 @@ import java.math.BigInteger;
 import cat.udl.cig.cryptography.cryptosystems.ElGamalCypher;
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
 import cat.udl.cig.cryptography.hashes.SHA1;
-import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.elements.GroupElement;
 
 /**
  *

@@ -1,10 +1,11 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.fields.elements;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
+import cat.udl.cig.fields.groups.ExtensionField;
 import cat.udl.cig.utils.Polynomial;
 
 /**

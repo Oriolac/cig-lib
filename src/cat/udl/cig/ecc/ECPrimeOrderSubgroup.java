@@ -9,8 +9,9 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.MultiplicativeSubgroup;
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.groups.MultiplicativeSubgroup;
+import cat.udl.cig.fields.groups.Group;
 
 
 public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
@@ -36,7 +37,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getSize()
+     * @see Group#getSize()
      */
     @Override
     public BigInteger getSize() {
@@ -44,7 +45,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#toElement(java.lang.Object)
+     * @see Group#toElement(java.lang.Object)
      */
     @Override
     public GeneralECPoint toElement(final Object k) {
@@ -58,7 +59,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getRandomElement()
+     * @see Group#getRandomElement()
      */
     @Override
     public GeneralECPoint getRandomElement() {
@@ -66,7 +67,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getRandomExponent()
+     * @see Group#getRandomExponent()
      */
     @Override
     public BigInteger getRandomExponent() {
@@ -79,7 +80,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getNeuterElement()
+     * @see Group#getNeuterElement()
      */
     @Override
     public GeneralECPoint getNeuterElement() {
@@ -87,8 +88,8 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#multiply(cat.udl.cig.fields.GroupElement,
-     *      cat.udl.cig.fields.GroupElement)
+     * @see Group#multiply(GroupElement,
+     *      GroupElement)
      */
     @Override
     public GeneralECPoint multiply(final GroupElement x,
@@ -97,7 +98,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#pow(cat.udl.cig.fields.GroupElement,
+     * @see Group#pow(GroupElement,
      *      java.math.BigInteger)
      */
     @Override
@@ -106,7 +107,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see cat.udl.cig.fields.MultiplicativeSubgroup#getGenerator()
+     * @see MultiplicativeSubgroup#getGenerator()
      */
     @Override
     public GeneralECPoint getGenerator() {

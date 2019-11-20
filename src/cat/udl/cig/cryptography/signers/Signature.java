@@ -6,6 +6,8 @@
 
 package cat.udl.cig.cryptography.signers;
 
+import cat.udl.cig.fields.elements.RingElement;
+
 /**
  * Models a digital <i>Signtarue</i> and stores its information data.
  * 
@@ -19,7 +21,7 @@ public class Signature {
      * <i>RingElement</i> or as an <i>ECPoint</i> depending on the used
      * <i>Signer</i>.
      * 
-     * @see cat.udl.cig.fields.RingElement
+     * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
     private final Object A;
@@ -31,7 +33,7 @@ public class Signature {
      * <i>RingElement</i> or as an <i>ECPoint</i> depending on the used
      * <i>Signer</i>.
      * 
-     * @see cat.udl.cig.fields.RingElement
+     * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
     private final Object B;
@@ -46,7 +48,7 @@ public class Signature {
      *          {@code this} <i>Signature</i>. It can be a <i>RingElement</i>
      *          or an <i>ECPoint</i>.
      * 
-     * @see cat.udl.cig.fields.RingElement
+     * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
     public Signature(Object A, Object B) {
@@ -63,7 +65,7 @@ public class Signature {
      *          A can be an instance of <i>RingElement</i> or <i>ECPoint</i>.
      * 
      * @see Signer
-     * @see cat.udl.cig.fields.RingElement
+     * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
     public Object getA() {
@@ -79,7 +81,7 @@ public class Signature {
      *          B can be an instance of <i>RingElement</i> or <i>ECPoint</i>.
      * 
      * @see Signer
-     * @see cat.udl.cig.fields.RingElement
+     * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
     public Object getB() {

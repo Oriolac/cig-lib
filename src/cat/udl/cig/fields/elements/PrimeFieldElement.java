@@ -1,4 +1,4 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.fields.elements;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.Random;
 
 import cat.udl.cig.exceptions.IncorrectModuleException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
+import cat.udl.cig.fields.groups.PrimeField;
 
 /**
  * Models a <i>Prime Field Element</i>. This <i>Prime Field Element</i> has a
@@ -315,7 +316,7 @@ public class PrimeFieldElement implements RingElement {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#belongsToSameGroup(cat.udl.cig.fields.GroupElement)
+     * @see GroupElement#belongsToSameGroup(GroupElement)
      */
     @Override
     public boolean belongsToSameGroup(final GroupElement q) {
@@ -323,7 +324,7 @@ public class PrimeFieldElement implements RingElement {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getGroup()
+     * @see GroupElement#getGroup()
      */
     @Override
     public PrimeField getGroup() {
@@ -331,7 +332,7 @@ public class PrimeFieldElement implements RingElement {
     }
 
     /**
-     * @see cat.udl.cig.fields.RingElement#getIntValue()
+     * @see RingElement#getIntValue()
      */
     @Override
     public BigInteger getIntValue() {

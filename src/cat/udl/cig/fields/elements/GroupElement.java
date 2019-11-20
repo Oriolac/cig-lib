@@ -8,11 +8,12 @@
  * All rights reserved.
  *
  */
-package cat.udl.cig.fields;
+package cat.udl.cig.fields.elements;
 
 import java.math.BigInteger;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
+import cat.udl.cig.fields.groups.Group;
 
 /**
  *

@@ -3,10 +3,9 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import cat.udl.cig.fields.Group;
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.PrimeFieldElement;
-import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.fields.groups.Group;
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.RingElement;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
@@ -29,7 +28,7 @@ public class GeneralECPoint implements ECPoint {
      * The coordinates \((X:Y)\) of the point. \(X\) and \(Y\) belongs to the
      * Ring {@code this.ec.getRing()}.
      *
-     * @see cat.udl.cig.fields.RingElement
+     * @see RingElement
      */
     final protected RingElement x, y;
 
@@ -226,7 +225,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#divide(cat.udl.cig.fields.GroupElement)
+     * @see GroupElement#divide(GroupElement)
      */
     @Override
     public GeneralECPoint divide(final GroupElement iQ)
@@ -744,7 +743,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getGroup()
+     * @see GroupElement#getGroup()
      */
     @Override
     public Group getGroup() {
@@ -752,7 +751,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getValue()
+     * @see GroupElement#getValue()
      */
     @Override
     public Object getValue() {
@@ -760,7 +759,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getIntValue()
+     * @see GroupElement#getIntValue()
      */
     @Override
     public BigInteger getIntValue() {

@@ -12,20 +12,20 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.ExtensionField;
-import cat.udl.cig.fields.PrimeFieldElement;
+import cat.udl.cig.fields.groups.ExtensionField;
+import cat.udl.cig.fields.elements.PrimeFieldElement;
 
 /**
  * Models a polynomial which coefficients are <i>PrimeFieldElement</i>.
  *
- * @see cat.udl.cig.fields.PrimeFieldElement
+ * @see PrimeFieldElement
  * @author M.Àngels Cerveró
  */
 public class Polynomial {
     /**
      * The coefficients of {@code this} <i>Polynomial</i>.
      *
-     * @see cat.udl.cig.fields.PrimeFieldElement
+     * @see PrimeFieldElement
      */
     private ArrayList<PrimeFieldElement> coefficients;
 
@@ -53,7 +53,7 @@ public class Polynomial {
      * @param coefficients
      *            an ArrayList that contains the coefficients for {@code this}
      *            new <i>Polynomial</i>.
-     * @see cat.udl.cig.fields.PrimeFieldElement
+     * @see PrimeFieldElement
      */
     public Polynomial(final ArrayList<PrimeFieldElement> coefficients) {
         if (coefficients.isEmpty()) {
@@ -99,7 +99,7 @@ public class Polynomial {
      *            the index of the coefficient.
      * @return a <i>PrimeFieldElement</i>, the i-th coefficient of {@code this}
      *         <i>Polynomial</i>, {@code this.coefficients.get(i)}.
-     * @see cat.udl.cig.fields.PrimeFieldElement
+     * @see PrimeFieldElement
      */
     public PrimeFieldElement getCoefficient(final int i) {
         if (i < 0 || i > degree) {

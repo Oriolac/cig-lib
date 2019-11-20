@@ -9,8 +9,8 @@ import java.math.BigInteger;
 import java.util.BitSet;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.BinaryField;
-import cat.udl.cig.fields.BinaryFieldElement;
+import cat.udl.cig.fields.groups.BinaryField;
+import cat.udl.cig.fields.elements.BinaryFieldElement;
 
 /**
  * Auxiliar class to compute quadratic equations over GF(2).

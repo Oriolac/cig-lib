@@ -1,7 +1,11 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.fields.groups;
+
+import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.elements.PrimeFieldElement;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.security.spec.ECField;
 
 /**
  * Models a <i>Prime Field</i> \(\mathbb{F}_{p}\), where \(p\) is positive and a
@@ -11,7 +15,7 @@ import java.security.SecureRandom;
  * @author M.Àngels Cerveró
  * @author Ricard Garra
  */
-public class PrimeField implements Ring {
+public class PrimeField implements Ring, ECField {
 
     /**
      * A BigInteger that encapsulates the characteristic of this <i>Field</i>.
@@ -116,7 +120,7 @@ public class PrimeField implements Ring {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#toElement(java.lang.Object)
+     * @see Group#toElement(java.lang.Object)
      */
     @Override
     public PrimeFieldElement toElement(final Object k) {
@@ -125,7 +129,7 @@ public class PrimeField implements Ring {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#getNeuterElement()
+     * @see Group#getNeuterElement()
      */
     @Override
     public PrimeFieldElement getNeuterElement() {
@@ -133,8 +137,8 @@ public class PrimeField implements Ring {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#multiply(cat.udl.cig.fields.GroupElement,
-     *      cat.udl.cig.fields.GroupElement)
+     * @see Group#multiply(GroupElement,
+     *      GroupElement)
      */
     @Override
     public PrimeFieldElement multiply(final GroupElement x,
@@ -143,7 +147,7 @@ public class PrimeField implements Ring {
     }
 
     /**
-     * @see cat.udl.cig.fields.Group#pow(cat.udl.cig.fields.GroupElement,
+     * @see Group#pow(GroupElement,
      *      java.math.BigInteger)
      */
     @Override
@@ -151,4 +155,9 @@ public class PrimeField implements Ring {
         return (PrimeFieldElement) x.pow(pow);
     }
 
+
+    @Override
+    public int getFieldSize() {
+        return getSize().intValue();
+    }
 }

@@ -3,14 +3,14 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import cat.udl.cig.fields.Group;
-import cat.udl.cig.fields.Ring;
-import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.fields.groups.Group;
+import cat.udl.cig.fields.groups.Ring;
+import cat.udl.cig.fields.elements.RingElement;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} = x^{3} + ax + b\).
  *
- * @see cat.udl.cig.fields.Group
+ * @see Group
  * @author Víctor Mateu
  */
 

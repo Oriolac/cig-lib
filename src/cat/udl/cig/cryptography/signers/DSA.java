@@ -10,8 +10,8 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import cat.udl.cig.cryptography.hashes.SHA1;
-import cat.udl.cig.fields.PrimeField;
-import cat.udl.cig.fields.PrimeFieldElement;
+import cat.udl.cig.fields.groups.PrimeField;
+import cat.udl.cig.fields.elements.PrimeFieldElement;
 
 /**
  * Models the Digital Signature Algorithm (DSA) to digitally sign messages.

@@ -10,7 +10,7 @@
  */
 package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
 
-import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.elements.GroupElement;
 
 /**
  *

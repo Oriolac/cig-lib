@@ -1,9 +1,10 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.fields.elements;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
+import cat.udl.cig.fields.groups.Ring;
 
 /**
  * Models any kind of <i>Ring Element</i>.
