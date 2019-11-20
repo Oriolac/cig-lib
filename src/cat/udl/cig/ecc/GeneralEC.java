@@ -9,13 +9,13 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.groups.ExtensionField;
-import cat.udl.cig.fields.elements.GroupElement;
-import cat.udl.cig.fields.elements.PrimeFieldElement;
-import cat.udl.cig.fields.groups.Ring;
-import cat.udl.cig.fields.elements.RingElement;
-import cat.udl.cig.fields.groups.Group;
-import cat.udl.cig.fields.groups.PrimeField;
+import cat.udl.cig.fields.ExtensionField;
+import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.PrimeFieldElement;
+import cat.udl.cig.fields.Ring;
+import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.fields.Group;
+import cat.udl.cig.fields.PrimeField;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} = x^{3} + ax + b\)

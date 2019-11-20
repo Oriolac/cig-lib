@@ -1,10 +1,8 @@
 
 
-package cat.udl.cig.fields.groups;
+package cat.udl.cig.fields;
 
 import cat.udl.cig.exceptions.ConstructionException;
-import cat.udl.cig.fields.elements.GroupElement;
-import cat.udl.cig.fields.elements.PrimeFieldElement;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

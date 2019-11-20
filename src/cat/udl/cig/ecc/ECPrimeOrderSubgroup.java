@@ -9,9 +9,9 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import cat.udl.cig.fields.elements.GroupElement;
-import cat.udl.cig.fields.groups.MultiplicativeSubgroup;
-import cat.udl.cig.fields.groups.Group;
+import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.MultiplicativeSubgroup;
+import cat.udl.cig.fields.Group;
 
 
 public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {

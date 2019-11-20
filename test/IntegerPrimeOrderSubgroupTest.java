@@ -1,5 +1,6 @@
 import cat.udl.cig.exceptions.ConstructionException;
-import cat.udl.cig.fields.groups.IntegerPrimeOrderSubgroup;
+import cat.udl.cig.fields.IntegerPrimeOrderSubgroup;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -12,7 +13,7 @@ public class IntegerPrimeOrderSubgroupTest {
     private static final BigInteger MODULE = BigInteger.valueOf(11);
 
     @Test(expected = ConstructionException.class)
-    public void ConstructionExceptionTest() {
+    public void constructionExceptionTest() {
         final BigInteger EXPONENT = BigInteger.valueOf(1);
         final BigInteger GENERATOR = BigInteger.valueOf(6);
         final BigInteger MODULE = BigInteger.valueOf(11);
@@ -21,7 +22,7 @@ public class IntegerPrimeOrderSubgroupTest {
     }
 
     @Test(expected = ArithmeticException.class)
-    public void ConstructionArithmeticExceptionTest(){
+    public void constructionArithmeticExceptionTest(){
         final BigInteger EXPONENT = BigInteger.valueOf(10);
         final BigInteger GENERATOR = BigInteger.valueOf(6);
         final BigInteger MODULE = BigInteger.valueOf(-11);
@@ -30,7 +31,7 @@ public class IntegerPrimeOrderSubgroupTest {
     }
 
     @Test
-    public void ConstructionTest() {
+    public void constructionTest() {
         final BigInteger EXPONENT = BigInteger.valueOf(10);
         final BigInteger GENERATOR = BigInteger.valueOf(6);
         final BigInteger MODULE = BigInteger.valueOf(11);
@@ -39,5 +40,21 @@ public class IntegerPrimeOrderSubgroupTest {
         assertEquals(EXPONENT, group.getSize());
         assertEquals(GENERATOR, group.getGenerator().getValue());
         assertEquals(BigInteger.ONE, group.getNeuterElement().getValue());
+    }
+
+    @Test
+    public void testingExponentialOrCardinailty() {
+        for (int i = 1; i < 10; ++i) {
+            BigInteger exponent = BigInteger.valueOf(i);
+
+        }
+    }
+
+    @Test(expected = ConstructionException.class)
+    public void testingCardinality(int e) {
+        final BigInteger GENERATOR = BigInteger.valueOf(6);
+        final BigInteger MODULE = BigInteger.valueOf(11);
+        BigInteger exponent = BigInteger.valueOf(e);
+        IntegerPrimeOrderSubgroup group = new IntegerPrimeOrderSubgroup(MODULE, exponent, GENERATOR);
     }
 }

@@ -8,9 +8,7 @@
  * All rights reserved.
  *
  */
-package cat.udl.cig.fields.groups;
-
-import cat.udl.cig.fields.elements.GroupElement;
+package cat.udl.cig.fields;
 
 /**
  *

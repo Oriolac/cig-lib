@@ -1,12 +1,10 @@
-package cat.udl.cig.fields.groups;
+package cat.udl.cig.fields;
 
 import java.math.BigInteger;
 import java.util.BitSet;
 import java.util.Objects;
 import java.util.Random;
 
-import cat.udl.cig.fields.elements.BinaryFieldElement;
-import cat.udl.cig.fields.elements.GroupElement;
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
 import cat.udl.cig.utils.bfarithmetic.Irreducibility;
 

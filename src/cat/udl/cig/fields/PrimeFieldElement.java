@@ -1,4 +1,4 @@
-package cat.udl.cig.fields.elements;
+package cat.udl.cig.fields;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -7,7 +7,6 @@ import java.util.Random;
 
 import cat.udl.cig.exceptions.IncorrectModuleException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.groups.PrimeField;
 
 /**
  * Models a <i>Prime Field Element</i>. This <i>Prime Field Element</i> has a

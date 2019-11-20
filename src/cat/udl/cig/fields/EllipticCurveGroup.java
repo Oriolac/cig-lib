@@ -1,15 +1,15 @@
-package cat.udl.cig.fields.groups;
-
-import cat.udl.cig.fields.elements.GroupElement;
+package cat.udl.cig.fields;
 
 import java.math.BigInteger;
-import java.security.spec.ECFieldFp;
 import java.security.spec.EllipticCurve;
 
 public class EllipticCurveGroup extends EllipticCurve implements MultiplicativeSubgroup {
 
-    public EllipticCurveGroup(PrimeField field, BigInteger a, BigInteger b) {
+    private final PrimeFieldElement generator;
+
+    public EllipticCurveGroup(PrimeField field, BigInteger a, BigInteger b, BigInteger g) {
         super(field, a, b);
+        generator = new PrimeFieldElement(field, g);
     }
 
     @Override

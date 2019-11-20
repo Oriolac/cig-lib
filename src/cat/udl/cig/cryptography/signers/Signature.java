@@ -6,7 +6,7 @@
 
 package cat.udl.cig.cryptography.signers;
 
-import cat.udl.cig.fields.elements.RingElement;
+import cat.udl.cig.fields.RingElement;
 
 /**
  * Models a digital <i>Signtarue</i> and stores its information data.

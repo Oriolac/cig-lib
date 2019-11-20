@@ -7,8 +7,8 @@
 package cat.udl.cig.cryptography.cryptosystems;
 
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
-import cat.udl.cig.fields.groups.Group;
-import cat.udl.cig.fields.groups.Ring;
+import cat.udl.cig.fields.Group;
+import cat.udl.cig.fields.Ring;
 
 /**
  * Models the general skeleton of a <i>Cryptosystem</i>. The <i>Cryptosystem</i>

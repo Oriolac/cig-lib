@@ -4,11 +4,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.groups.BinaryField;
-import cat.udl.cig.fields.elements.BinaryFieldElement;
-import cat.udl.cig.fields.elements.GroupElement;
-import cat.udl.cig.fields.elements.RingElement;
-import cat.udl.cig.fields.groups.Group;
+import cat.udl.cig.fields.BinaryField;
+import cat.udl.cig.fields.BinaryFieldElement;
+import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.fields.Group;
 import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
 
 /**

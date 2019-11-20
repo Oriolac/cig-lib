@@ -1,7 +1,4 @@
-package cat.udl.cig.fields.groups;
-
-import cat.udl.cig.fields.elements.GroupElement;
-import cat.udl.cig.fields.elements.PrimeFieldElement;
+package cat.udl.cig.fields;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

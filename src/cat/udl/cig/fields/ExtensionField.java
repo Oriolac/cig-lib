@@ -1,13 +1,10 @@
-package cat.udl.cig.fields.groups;
+package cat.udl.cig.fields;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
-import cat.udl.cig.fields.elements.ExtensionFieldElement;
-import cat.udl.cig.fields.elements.GroupElement;
-import cat.udl.cig.fields.elements.PrimeFieldElement;
 import cat.udl.cig.utils.Polynomial;
 
 /**

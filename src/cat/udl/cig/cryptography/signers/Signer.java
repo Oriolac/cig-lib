@@ -6,8 +6,8 @@
 
 package cat.udl.cig.cryptography.signers;
 
-import cat.udl.cig.fields.groups.Group;
-import cat.udl.cig.fields.groups.Ring;
+import cat.udl.cig.fields.Group;
+import cat.udl.cig.fields.Ring;
 
 /**
  * Abstract class to model the basic skeleton of any signer algorithm.

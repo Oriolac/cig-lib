@@ -11,8 +11,8 @@ import java.math.BigInteger;
 import cat.udl.cig.cryptography.hashes.SHA1;
 import cat.udl.cig.ecc.ECPoint;
 import cat.udl.cig.ecc.ECPrimeOrderSubgroup;
-import cat.udl.cig.fields.groups.PrimeField;
-import cat.udl.cig.fields.elements.PrimeFieldElement;
+import cat.udl.cig.fields.PrimeField;
+import cat.udl.cig.fields.PrimeFieldElement;
 
 /**
  * Models the Digital Signature Algorithm over Elliptic Curves (ECDSA) to

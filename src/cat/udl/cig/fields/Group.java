@@ -8,9 +8,9 @@
  * All rights reserved.
  *
  */
-package cat.udl.cig.fields.groups;
+package cat.udl.cig.fields;
 
-import cat.udl.cig.fields.elements.GroupElement;
+import cat.udl.cig.fields.GroupElement;
 
 import java.math.BigInteger;
 

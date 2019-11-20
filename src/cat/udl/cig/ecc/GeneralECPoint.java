@@ -3,9 +3,9 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import cat.udl.cig.fields.groups.Group;
-import cat.udl.cig.fields.elements.GroupElement;
-import cat.udl.cig.fields.elements.RingElement;
+import cat.udl.cig.fields.Group;
+import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.RingElement;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
