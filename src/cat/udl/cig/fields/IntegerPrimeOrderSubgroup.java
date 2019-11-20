@@ -6,6 +6,8 @@
 
 package cat.udl.cig.fields;
 
+import cat.udl.cig.exceptions.NotImplementedException;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
@@ -28,6 +30,7 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
             field = null;
             cardinality = null;
             generator = null;
+            throw new NotImplementedException(); //TODO: It is not a good implementation though
         }
     }
 
