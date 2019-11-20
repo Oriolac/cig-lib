@@ -18,11 +18,11 @@ public class CardinalityTest {
            intStream = IntStream.concat(intStream, tmp);
         }
         int[] ints = intStream.toArray();
-        Collection<Integer> alist = new ArrayList<>(ints.length);
+        Collection<Integer> data = new ArrayList<>(ints.length);
         for (int i : ints) {
-            alist.add(i);
+            data.add(i);
         }
-        return alist;
+        return data;
     }
 
     @Parameterized.Parameter
@@ -33,6 +33,6 @@ public class CardinalityTest {
         final BigInteger GENERATOR = BigInteger.valueOf(6);
         final BigInteger MODULE = BigInteger.valueOf(11);
         BigInteger exponent = BigInteger.valueOf(i);
-        IntegerPrimeOrderSubgroup group = new IntegerPrimeOrderSubgroup(MODULE, exponent, GENERATOR);
+        new IntegerPrimeOrderSubgroup(MODULE, exponent, GENERATOR);
     }
 }

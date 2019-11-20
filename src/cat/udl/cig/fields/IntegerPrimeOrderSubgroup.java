@@ -3,6 +3,7 @@
 package cat.udl.cig.fields;
 
 import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.exceptions.ParametersException;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -114,6 +115,8 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
                     .equals(BigInteger.ONE)) {
                 return new PrimeFieldElement(field, input);
             }
+        } else {
+            throw new ParametersException();
         }
         return null;
     }
