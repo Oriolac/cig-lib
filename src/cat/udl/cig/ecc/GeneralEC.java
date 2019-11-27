@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.fields.ExtensionField;
 import cat.udl.cig.fields.GroupElement;
@@ -21,10 +22,10 @@ import cat.udl.cig.fields.PrimeField;
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} = x^{3} + ax + b\)
  * over a <i>GeneralField</i>.
  *
- * @see cat.udl.cig.ecc.EC
  * @author M.Àngels Cerveró
  * @author Ricard Garra
  * @author Víctor Mateu
+ * @see cat.udl.cig.ecc.EC
  */
 public class GeneralEC implements EC {
 
@@ -66,52 +67,41 @@ public class GeneralEC implements EC {
      * Creates a <i>GeneralEC</i> over the <i>GeneralField</i> \(K\) or empty if
      * \(a\) and \(b\) are not elements of \(K\).
      *
-     * @param iK
-     *            the <i>GeneralField</i> over which the <i>GeneralEC</i> is
-     *            described.
-     * @param coefficients
-     *            an ArrayList with the coefficients of the curve. They must
-     *            belong to the <i>GeneralField</i> \(K\).
-     * @param cardFactors
-     *            prime factors composing the cardinality of the group law \(E\).
+     * @param iK           the <i>GeneralField</i> over which the <i>GeneralEC</i> is
+     *                     described.
+     * @param coefficients an ArrayList with the coefficients of the curve. They must
+     *                     belong to the <i>GeneralField</i> \(K\).
+     * @param cardFactors  prime factors composing the cardinality of the group law \(E\).
      * @see PrimeField
      * @see PrimeFieldElement
      */
     public GeneralEC(final Ring iK, final RingElement[] coefficients,
-            final ArrayList<BigInteger> cardFactors) {
-        boolean correctInput =
-            !(coefficients.length != 2
+                     final ArrayList<BigInteger> cardFactors) {
+        if (!(coefficients.length != 2
                 || iK.getSize().equals(BigInteger.valueOf(2)) || iK
-                .getSize().equals(BigInteger.valueOf(3)));
+                .getSize().equals(BigInteger.valueOf(3)))) {
+            throw new ConstructionException("Coefficient is not 2 or 3.");
+            //TODO: @miret Que significa això.
+        }
         GroupElement elem = null;
-        if (iK != null) {
-            elem = iK.getNeuterElement();
-        } else {
-            correctInput = false;
+        if (iK == null) {
+            throw new ConstructionException("Ring must not be null.");
         }
-        for (int i = 0; i < coefficients.length && correctInput; i++) {
-            if (!coefficients[i].belongsToSameGroup(elem)) {
-                correctInput = false;
+        elem = iK.getNeuterElement();
+        for (RingElement coefficient : coefficients) {
+            if (!coefficient.belongsToSameGroup(elem)) {
+                throw new ConstructionException("The coefficients does not belong to the same group.");
             }
-        }
-        if (correctInput) {
-            k = iK;
-            this.coefficients = coefficients;
-            if (cardFactors == null) {
-                this.cardFactors = null;
-            } else {
-                this.cardFactors = new ArrayList<>(cardFactors);
-                Collections.sort(this.cardFactors);
-                orders = possiblePointOrder();
-            }
-        } else {
-            System.out.println("THIS CURVE PARAMETERS ARE NOT CORRECT!!");
-            k = null;
-            this.coefficients = null;
-            this.cardFactors = null;
-            orders = null;
         }
 
+        k = iK;
+        this.coefficients = coefficients;
+        if (cardFactors == null) {
+            throw new ConstructionException("cardFactors must not be null.");
+        }
+        this.cardFactors = new ArrayList<>(cardFactors);
+        Collections.sort(this.cardFactors);
+        orders = possiblePointOrder();
         infintiyPoint = new GeneralECPoint(this);
     }
 
@@ -119,25 +109,21 @@ public class GeneralEC implements EC {
      * Creates a <i>GeneralEC</i> over the <i>GeneralField</i> \(K\) or empty if
      * \(a\) and \(b\) are not elements of \(K\).
      *
-     * @param K
-     *            the <i>GeneralField</i> over which the <i>GeneralEC</i> is
-     *            described.
-     * @param coefficients
-     *            an ArrayList with the coefficients of the curve. They must
-     *            belong to the <i>GeneralField</i> \(K\).
-     * @param cardFactors
-     *            prime factors composing the cadinality of the group law \(E\).
-     *
+     * @param K            the <i>GeneralField</i> over which the <i>GeneralEC</i> is
+     *                     described.
+     * @param coefficients an ArrayList with the coefficients of the curve. They must
+     *                     belong to the <i>GeneralField</i> \(K\).
+     * @param cardFactors  prime factors composing the cadinality of the group law \(E\).
      * @see Ring
      * @see RingElement
      */
     protected GeneralEC(final Ring K, final RingElement[] coefficients,
-            final ArrayList<BigInteger> cardFactors,
-            final boolean conditions) {
+                        final ArrayList<BigInteger> cardFactors,
+                        final boolean conditions) {
         boolean correctInput =
-            !(coefficients.length != 2
-                || K.getSize().equals(BigInteger.valueOf(2)) || K
-                .getSize().equals(BigInteger.valueOf(3)));
+                !(coefficients.length != 2
+                        || K.getSize().equals(BigInteger.valueOf(2)) || K
+                        .getSize().equals(BigInteger.valueOf(3)));
         correctInput = correctInput && conditions;
         GroupElement elem = null;
         if (K != null) {
@@ -174,8 +160,7 @@ public class GeneralEC implements EC {
      * Creates a copy of the <i>GeneralEC</i> \(E\). This constructor makes a
      * deep copy of \(E\).
      *
-     * @param E
-     *            the <i>GeneralEC</i> to be copied.
+     * @param E the <i>GeneralEC</i> to be copied.
      */
     public GeneralEC(final GeneralEC E) {
         k = E.k;
@@ -193,7 +178,7 @@ public class GeneralEC implements EC {
 
     @Override
     public boolean isOnCurve(final ECPoint P) {
-        return P.getCurve().equals(this) && isOnCurveAux( P.getX(), P.getY());
+        return P.getCurve().equals(this) && isOnCurveAux(P.getX(), P.getY());
     }
 
     @Override
@@ -206,17 +191,15 @@ public class GeneralEC implements EC {
      * Auxiliar method to check if point \(P = (x, y)\) belongs to {@code this}
      * <i>GeneralEC</i> \(E\).
      *
-     * @param x
-     *            a GeneralFieldElement representing the first coordinate of the
-     *            point \(P\).
-     * @param y
-     *            a GeneralFieldElement representing the second coordinate of
-     *            the point \(P\).
+     * @param x a GeneralFieldElement representing the first coordinate of the
+     *          point \(P\).
+     * @param y a GeneralFieldElement representing the second coordinate of
+     *          the point \(P\).
      * @return {@code true} if \(P = (x, y) \in E(K)\); {@code false} otherwise.
      */
     // y^2 = x^3 + ax + b
     private boolean isOnCurveAux(final RingElement x,
-            final RingElement y) {
+                                 final RingElement y) {
         RingElement leftPart;
         RingElement rightPart;
         try {
@@ -232,7 +215,7 @@ public class GeneralEC implements EC {
 
     private ArrayList<SortedSet<BigInteger>> possiblePointOrder() {
         ArrayList<SortedSet<BigInteger>> ordersAux =
-            new ArrayList<>(); // order = prime factor
+                new ArrayList<>(); // order = prime factor
         ordersAux.add(new TreeSet<>());
         for (BigInteger cardFactor : cardFactors) {
             ordersAux.get(0).add(cardFactor);
@@ -250,7 +233,7 @@ public class GeneralEC implements EC {
                 ord = (BigInteger) it.next();
                 for (int j = iniFactorIndx; j < cardFactors.size(); j++) {
                     ordersAux.get(lastIndx + 1).add(
-                        ord.multiply(cardFactors.get(j)));
+                            ord.multiply(cardFactors.get(j)));
                 }
                 iniFactorIndx++;
             }
@@ -289,13 +272,13 @@ public class GeneralEC implements EC {
         String content;
         if (k instanceof ExtensionField) {
             content =
-                "Elliptic Curve: y\u00B2 = x\u00B3 + ("
-                    + getA().toString() + ")x + (" + getB().toString()
-                    + ")";
+                    "Elliptic Curve: y\u00B2 = x\u00B3 + ("
+                            + getA().toString() + ")x + (" + getB().toString()
+                            + ")";
         } else {
             content =
-                "Elliptic Curve: y\u00B2 = x\u00B3 + " + getA().toString()
-                    + "x + " + getB().toString();
+                    "Elliptic Curve: y\u00B2 = x\u00B3 + " + getA().toString()
+                            + "x + " + getB().toString();
         }
         return content;
     }
@@ -304,7 +287,7 @@ public class GeneralEC implements EC {
      * Returns the cardinality of \(E(k)\), if initialized.
      *
      * @return a BigInteger with the value {@code this.cardinality} or
-     *         {@code null} if {@code this} is not initialized.
+     * {@code null} if {@code this} is not initialized.
      */
     @Override
     public BigInteger getSize() {
@@ -330,8 +313,8 @@ public class GeneralEC implements EC {
     @Override
     public BigInteger getRandomExponent() {
         BigInteger result =
-            new BigInteger(cardFactors.get(cardFactors.size() - 1)
-                .bitLength(), new SecureRandom());
+                new BigInteger(cardFactors.get(cardFactors.size() - 1)
+                        .bitLength(), new SecureRandom());
         if (result.compareTo(cardFactors.get(cardFactors.size() - 1)) >= 0) {
             return result.mod(cardFactors.get(cardFactors.size() - 1));
         }
@@ -340,17 +323,17 @@ public class GeneralEC implements EC {
 
     /**
      * @see Group#multiply(GroupElement,
-     *      GroupElement)
+     * GroupElement)
      */
     @Override
     public GeneralECPoint multiply(final GroupElement x,
-            final GroupElement y) {
+                                   final GroupElement y) {
         return (GeneralECPoint) x.multiply(y);
     }
 
     /**
      * @see Group#pow(GroupElement,
-     *      java.math.BigInteger)
+     * java.math.BigInteger)
      */
     @Override
     public GeneralECPoint pow(final GroupElement x, final BigInteger pow) {
