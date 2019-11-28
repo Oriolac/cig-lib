@@ -1,22 +1,12 @@
 package cat.udl.cig.ecc;
 
-import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.ExtensionField;
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.PrimeFieldElement;
-import cat.udl.cig.fields.Ring;
-import cat.udl.cig.fields.RingElement;
-import cat.udl.cig.fields.Group;
-import cat.udl.cig.fields.PrimeField;
+import cat.udl.cig.fields.*;
+
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.*;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} = x^{3} + ax + b\)
@@ -120,6 +110,7 @@ public class GeneralEC implements EC {
     protected GeneralEC(final Ring K, final RingElement[] coefficients,
                         final ArrayList<BigInteger> cardFactors,
                         final boolean conditions) {
+        // TODO: @sergi -> Clean code with throws of ConstructorExceptions.
         boolean correctInput =
                 !(coefficients.length != 2
                         || K.getSize().equals(BigInteger.valueOf(2)) || K

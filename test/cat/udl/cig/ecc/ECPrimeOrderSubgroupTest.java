@@ -1,15 +1,11 @@
 package cat.udl.cig.ecc;
 
-import cat.udl.cig.fields.IntegerPrimeOrderSubgroup;
 import cat.udl.cig.fields.PrimeField;
 import cat.udl.cig.fields.Ring;
 import cat.udl.cig.fields.RingElement;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ECPrimeOrderSubgroupTest {
 
@@ -33,8 +29,8 @@ class ECPrimeOrderSubgroupTest {
         BigInteger MODULE = BigInteger.valueOf(11);
         BigInteger order = BigInteger.valueOf(11);
         Ring ring = (Ring) new PrimeField(MODULE);
-        //GeneralEC curve = new GeneralEC(ring, createRingElements(ring), );
-        //ECPrimeOrderSubgroup grup = new ECPrimeOrderSubgroup(curve, order );
+        // GeneralEC curve = new GeneralEC(ring, createRingElements(ring), );
+        // ECPrimeOrderSubgroup grup = new ECPrimeOrderSubgroup(curve, order );
     }
 
 
