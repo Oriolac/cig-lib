@@ -67,16 +67,15 @@ public class GeneralEC implements EC {
      */
     public GeneralEC(final Ring iK, final RingElement[] coefficients,
                      final ArrayList<BigInteger> cardFactors) {
-        if (!(coefficients.length != 2
-                || iK.getSize().equals(BigInteger.valueOf(2)) || iK
-                .getSize().equals(BigInteger.valueOf(3)))) {
-            throw new ConstructionException("Coefficient is not 2 or 3.");
-            //TODO: @miret Que significa això.
-        }
-        GroupElement elem = null;
-        if (iK == null) {
+        if (iK == null || cardFactors == null) {
             throw new ConstructionException("Ring must not be null.");
         }
+        if (coefficients.length != 2
+                || iK.getSize().equals(BigInteger.valueOf(2)) ||
+                iK.getSize().equals(BigInteger.valueOf(3))) {
+            throw new ConstructionException("Coefficients must be 2 and the ring must not be 2 or 3");
+        }
+        GroupElement elem;
         elem = iK.getNeuterElement();
         for (RingElement coefficient : coefficients) {
             if (!coefficient.belongsToSameGroup(elem)) {
@@ -86,9 +85,6 @@ public class GeneralEC implements EC {
 
         k = iK;
         this.coefficients = coefficients;
-        if (cardFactors == null) {
-            throw new ConstructionException("cardFactors must not be null.");
-        }
         this.cardFactors = new ArrayList<>(cardFactors);
         Collections.sort(this.cardFactors);
         orders = possiblePointOrder();
