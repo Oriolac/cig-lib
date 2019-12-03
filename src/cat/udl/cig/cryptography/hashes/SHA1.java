@@ -34,8 +34,13 @@ public class SHA1 {
         } catch (NoSuchAlgorithmException ex) {
             throw new RuntimeException(ex);
         }   
-    }    
-    
+    }
+
+    /**
+     * Computes and returns a BigInteger given a BigInteger. It
+     * @author Sergi
+     */
+
     /**
      * Helper function to translate a given hash (SHA1) in String format into a
      * hash in BigInteger format.

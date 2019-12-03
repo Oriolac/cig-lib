@@ -5,6 +5,7 @@ import java.util.BitSet;
 import java.util.Objects;
 import java.util.Random;
 
+import cat.udl.cig.exceptions.ParametersException;
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
 import cat.udl.cig.utils.bfarithmetic.Irreducibility;
 
@@ -136,7 +137,7 @@ public class BinaryField implements Ring {
     @Override
     public boolean equals(final Object obj) {
         if (obj == null || getClass() != obj.getClass()) {
-            return false;
+            throw new ParametersException();
         }
         final BinaryField other = (BinaryField) obj;
         return reducingPolynomial.equals(other.reducingPolynomial)

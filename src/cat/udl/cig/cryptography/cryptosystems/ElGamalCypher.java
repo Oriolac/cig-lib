@@ -64,12 +64,8 @@ public class ElGamalCypher implements HomomorphicCypher {
      */
     @Override
     public ElGamalCiphertext encrypt(final Object message) {
-        GroupElement mess = (GroupElement) message;
-        GroupElement[] result = new GroupElement[2];
         BigInteger rand = group.getRandomExponent();
-        result[0] = generator.pow(rand);
-        result[1] = publicKey.pow(rand).multiply(mess);
-        return new ElGamalCiphertext(result);
+        return encrypt(message, rand);
     }
 
     /**

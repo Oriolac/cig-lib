@@ -34,6 +34,8 @@ public class ElGamal implements HomomorphicCryptosystem {
         cypher = new ElGamalCypher(gr, g, g.pow(secretKey));
     }
 
+
+
     /**
      * @see cat.udl.cig.cryptography.cryptosystems.Cryptosystem#decrypt(cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext)
      */

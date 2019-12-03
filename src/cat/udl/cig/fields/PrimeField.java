@@ -1,5 +1,7 @@
 package cat.udl.cig.fields;
 
+import cat.udl.cig.exceptions.ConstructionException;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.security.spec.ECField;
@@ -30,7 +32,7 @@ public class PrimeField implements Ring, ECField {
      */
     public PrimeField(final BigInteger m) {
         if ((!m.isProbablePrime(80) || m.signum() == -1)) {
-            p = null;
+            throw new ConstructionException("m must be prime");
         } else {
             p = m;
         }

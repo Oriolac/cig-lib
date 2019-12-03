@@ -9,6 +9,8 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.exceptions.ParametersException;
 import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.MultiplicativeSubgroup;
 import cat.udl.cig.fields.Group;
@@ -30,9 +32,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
             generator = g;
         } else {
-            EC = null;
-            cardinality = null;
-            generator = null;
+            throw new ConstructionException("G^orderOfSubgroup must be Infinity");
         }
     }
 
@@ -55,7 +55,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
                 return aux;
             }
         }
-        return null;
+        throw new ParametersException();
     }
 
     /**

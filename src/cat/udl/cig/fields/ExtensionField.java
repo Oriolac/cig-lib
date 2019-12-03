@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
+import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.utils.Polynomial;
 
 /**
@@ -64,9 +65,7 @@ public class ExtensionField implements Ring {
             n = e;
             reducingPolynomial = reducingPoly;
         } else {
-            p = null;
-            n = 0;
-            reducingPolynomial = null;
+            throw new ConstructionException();
         }
     }
 
