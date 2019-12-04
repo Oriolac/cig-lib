@@ -9,37 +9,34 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import static org.junit.Assert.assertEquals;
+
 public class PollardsLambda {
 
 
-    private final static int N = 100;
-    private final static ArrayList<GroupElement> groupElements = new ArrayList<>();
+    private final static int N = 11;
 
     public static BigInteger algorithm(GroupElement alpha, GroupElement beta) throws NotSolutionException {
         if (!alpha.belongsToSameGroup(beta)) {
             throw new ParametersException();
         }
         Group group = alpha.getGroup();
-        GroupElement prev;
         BigInteger b = group.getSize().subtract(BigInteger.ONE);
-        groupElements.add(alpha.pow(b));
-        for (int i = 1; i < N; i++) {
-            prev = groupElements.get(i - 1);
-            groupElements.add(prev.multiply(alpha.pow(randomMap(prev))));
-        }
+        GroupElement xn = alpha.pow(b);
         BigInteger d = BigInteger.ZERO;
-        for (GroupElement groupElement : groupElements) {
-            d = randomMap(groupElement).add(d);
+        for (int i = 0; i < N; i++) {
+            d = d.add(randomMap(xn));
+            xn = xn.multiply(alpha.pow(randomMap(xn)));
         }
-        GroupElement xn = alpha.pow(b.add(d));
-
+        assertEquals(xn, alpha.pow(b.add(d)));
         GroupElement yn = beta;
-        BigInteger acc = randomMap(yn);
+        BigInteger acc = BigInteger.ZERO;
         while (!stopComputing(yn, xn, acc, b.add(d))) {
-            yn = yn.multiply(alpha.pow(randomMap(yn)));
             acc = acc.add(randomMap(yn));
+            yn = yn.multiply(alpha.pow(randomMap(yn)));
+            assertEquals(beta.multiply(alpha.pow(acc)), yn);
         }
-        return b.add(d).subtract(acc);
+        return b.add(d).subtract(acc).remainder(group.getSize().subtract(BigInteger.ONE));
     }
 
     private static boolean stopComputing(GroupElement yn, GroupElement xn, BigInteger di, BigInteger bad) throws NotSolutionException {
@@ -49,8 +46,8 @@ public class PollardsLambda {
     }
 
     private static BigInteger randomMap(GroupElement elem) {
-        BigInteger module = elem.getGroup().getSize();
-        return elem.getIntValue().remainder(module);
+        //BigInteger module = elem.getGroup().getSize();
+        return elem.getIntValue().add(BigInteger.TWO);
         //TODO: @vmateu change so it is random.
     }
 }
