@@ -17,6 +17,7 @@ public class PollardsLambda {
     private final static int N = 11;
 
     public static BigInteger algorithm(GroupElement alpha, GroupElement beta) throws NotSolutionException {
+        //TODO: Preguntar a @miret o @fsebe per a tot Zn o per  a tot Zp 
         if (!alpha.belongsToSameGroup(beta)) {
             throw new ParametersException();
         }
