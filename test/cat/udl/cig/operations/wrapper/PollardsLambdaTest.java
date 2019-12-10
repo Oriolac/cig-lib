@@ -8,16 +8,17 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class PollardsLambdaTest {
-/*
-    static BigInteger MODULE = new BigInteger("7");
-    static BigInteger n = new BigInteger("5");
+
+    static BigInteger MODULE = new BigInteger("11");
+    static BigInteger n = new BigInteger("14");
     static BigInteger b = new BigInteger("1", 16);
-    static BigInteger gx = new BigInteger("0", 16);
-    static BigInteger gy = new BigInteger("6"
+    static BigInteger gx = new BigInteger("1", 16);
+    static BigInteger gy = new BigInteger("5"
             .replaceAll("\\s", ""), 16);
     static RingElement[] COEF = new RingElement[2];
     static ArrayList<BigInteger> card = new ArrayList<>();
@@ -25,12 +26,14 @@ class PollardsLambdaTest {
 
     @Test
     void algorithm() {
-        Group g = new IntegerPrimeOrderSubgroup(BigInteger.valueOf(11), BigInteger.valueOf(10), BigInteger.valueOf(7));
-        GroupElement alpha = g.toElement(BigInteger.valueOf(7));
-        BigInteger x = BigInteger.valueOf(4);
+        IntegerPrimeOrderSubgroup g = new IntegerPrimeOrderSubgroup(MODULE, MODULE.subtract(BigInteger.ONE), BigInteger.valueOf(7));
+        GroupElement alpha = g.getGenerator();
+        BigInteger x = g.getRandomExponent();
         GroupElement beta = alpha.pow(x);
         System.out.println("Alpha: " + alpha.getIntValue().toString() + "   x: " + x.toString() + "    beta: " + beta.getIntValue().toString());
-        assertEquals(x, PollardsLambda.algorithm(alpha, beta));
+        PollardsLambda lambda = new PollardsLambda(alpha, beta);
+        Optional<BigInteger> res = lambda.algorithm();
+        assertEquals(Optional.of(x), res);//.map(y -> y.subtract(BigInteger.ONE)));
     }
 
     @Test
@@ -44,9 +47,14 @@ class PollardsLambdaTest {
         gen = new GeneralECPoint(curve, new PrimeFieldElement(ring, gx), new PrimeFieldElement(ring, gy));
         ECPrimeOrderSubgroup g = new ECPrimeOrderSubgroup(curve, n, gen);
         GeneralECPoint alpha = g.getGenerator();
-        BigInteger x = g.getRandomExponent();
-        GeneralECPoint beta = alpha.pow(x);
-        System.out.println("Alpha: " + alpha.toString() + "   x: " + x.toString() + "    beta: " + beta.toString());
-        assertEquals(x, PollardsLambda.algorithm(alpha, beta));
-    }*/
+        assertTrue(curve.isOnCurve(alpha));
+        for(int xi = 1; xi < g.getSize().intValue(); xi++) {
+            BigInteger x = BigInteger.valueOf(xi);
+            GeneralECPoint beta = alpha.pow(x);
+            System.out.println("Alpha: " + alpha.toString() + "   x: " + x.toString() + "    beta: " + beta.toString());
+            PollardsLambda lambda = new PollardsLambda(alpha, beta);
+            Optional<BigInteger> res = lambda.algorithm();
+            assertEquals(Optional.of(x), res);
+        }
+    }
 }

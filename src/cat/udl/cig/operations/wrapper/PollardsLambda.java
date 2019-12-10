@@ -12,6 +12,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Optional;
 
+import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;
 
 public class PollardsLambda {
@@ -51,7 +52,7 @@ public class PollardsLambda {
     private void getHashMap() {
         this.hashMap = new HashMap<>();
         for (int k = 0; k < N.sqrt().intValue(); k++) {
-            BigInteger r = new BigInteger(group.getSize().bitLength(), new SecureRandom());
+            BigInteger r = new BigInteger(group.getSize().bitLength(), new SecureRandom()).remainder(N).add(BigInteger.ONE);
             hashMap.put(BigInteger.valueOf(k), new Pair<>(r, alpha.pow(r)));
         }
     }
@@ -62,12 +63,12 @@ public class PollardsLambda {
         GroupElement xn = pair.getKey();
         GroupElement yn = beta;
         BigInteger acc = BigInteger.ZERO;
-        while (acc.compareTo(b.add(d)) > 0) {
-            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(yn.hashCode() % hashMap.size()));
+        while (acc.compareTo(b.add(d)) <= 0) {
+            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(yn.hashCode()) % hashMap.size()));
             acc = acc.add(tmp.getKey());
             yn = yn.multiply(tmp.getValue());
             if (xn.equals(yn)) {
-                return Optional.of(b.add(d).subtract(acc).remainder(group.getSize().subtract(BigInteger.ONE)));
+                return Optional.of(b.add(d).subtract(acc).remainder(group.getSize()));
             }
             //assertEquals(beta.multiply(alpha.pow(acc)), yn);
         }
@@ -78,7 +79,7 @@ public class PollardsLambda {
         GroupElement xn = alpha.pow(b);
         BigInteger d = BigInteger.ZERO;
         for (long i = 0; i < N.intValue(); i++) {
-            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(xn.hashCode() % hashMap.size()));
+            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(xn.hashCode()) % hashMap.size()));
             d = d.add(tmp.getKey());
             xn = xn.multiply(tmp.getValue());
         }
