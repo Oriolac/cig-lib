@@ -68,7 +68,8 @@ public class PollardsLambda {
             acc = acc.add(tmp.getKey());
             yn = yn.multiply(tmp.getValue());
             if (xn.equals(yn)) {
-                return Optional.of(b.add(d).subtract(acc).remainder(group.getSize()));
+                return Optional.of(b.add(d).subtract(acc).remainder(group.getSize()).add(group.getSize())
+                        .remainder(group.getSize()));
             }
             //assertEquals(beta.multiply(alpha.pow(acc)), yn);
         }

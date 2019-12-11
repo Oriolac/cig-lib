@@ -3,18 +3,19 @@ package cat.udl.cig.operations.wrapper;
 import cat.udl.cig.ecc.ECPrimeOrderSubgroup;
 import cat.udl.cig.ecc.GeneralEC;
 import cat.udl.cig.ecc.GeneralECPoint;
-import cat.udl.cig.fields.*;
+import cat.udl.cig.fields.PrimeField;
+import cat.udl.cig.fields.PrimeFieldElement;
+import cat.udl.cig.fields.RingElement;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class PollardsLambdaTest {
+public class PollardsLambdaECCTest {
 
     static BigInteger MODULE = new BigInteger("1259");
     static BigInteger MODULE_ECC = new BigInteger("11");
@@ -26,32 +27,6 @@ class PollardsLambdaTest {
     static RingElement[] COEF = new RingElement[2];
     static ArrayList<BigInteger> card = new ArrayList<>();
     static GeneralECPoint gen;
-
-    @Test
-    void algorithm() {
-        IntegerPrimeOrderSubgroup g = new IntegerPrimeOrderSubgroup(MODULE, MODULE.subtract(BigInteger.ONE), BigInteger.valueOf(717));
-        GroupElement alpha = g.getGenerator();
-        LinkedList<Integer> vertader = new LinkedList<>();
-        LinkedList<Integer> falser = new LinkedList<>();
-        for(int xi = 1; xi < g.getSize().intValue(); xi++) {
-            BigInteger x = BigInteger.valueOf(xi);
-            GroupElement beta = alpha.pow(x);
-            PollardsLambda lambda = new PollardsLambda(alpha, beta);
-            Optional<BigInteger> res = lambda.algorithm();
-            if(res.get().equals(x)) {
-                vertader.add(xi);
-            } else {
-                falser.add(xi);
-            }
-        }
-        System.out.println("False: " + falser.size());
-    }
-
-    @Test
-    void hashCodes() {
-        IntegerPrimeOrderSubgroup g = new IntegerPrimeOrderSubgroup(MODULE, MODULE.subtract(BigInteger.ONE), BigInteger.valueOf(7));
-        System.out.println(BigInteger.valueOf(-2).remainder(BigInteger.valueOf(14)));
-    }
 
     @Test
     void algorithm_ecc() {
