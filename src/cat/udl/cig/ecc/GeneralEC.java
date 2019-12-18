@@ -396,6 +396,37 @@ public class GeneralEC implements EC {
         return null;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        GeneralEC other = (GeneralEC) obj;
+        if (this.coefficients.length != other.coefficients.length) {
+            return false;
+        }
+        for (int i = 0; i < this.coefficients.length; i++) {
+            if(!this.coefficients[i].equals(other.coefficients[i])) {
+                return false;
+            }
+        }
+        if (this.cardFactors.size() != other.cardFactors.size()) {
+            return false;
+        }
+        for (int i = 0; i < this.cardFactors.size(); i++) {
+            if(!this.cardFactors.get(i).equals(other.cardFactors.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /*public GeneralECPoint getBigPrimeOrderGenerator() {
         GeneralECPoint P = getRandomElement();
         while (!P.pow(cardFactors.get(cardFactors.size() - 1)).isInfinity) {

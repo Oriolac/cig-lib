@@ -30,6 +30,9 @@ public class PollardsLambdaECCTest {
     static RingElement[] COEF = new RingElement[2];
     static ArrayList<BigInteger> card = new ArrayList<>();
     static GeneralECPoint gen;
+    static GeneralECPoint alpha;
+    static ECPrimeOrderSubgroup g;
+    static GeneralEC curve;
 
     @BeforeEach
     void start(){
@@ -42,25 +45,35 @@ public class PollardsLambdaECCTest {
                 .replaceAll("\\s", ""), 16);
         gy = new BigInteger(toml.getString("gy")
                 .replaceAll("\\s", ""), 16);
-    }
-
-    @Test
-    void algorithm_ecc() {
         PrimeField ring = new PrimeField(MODULE_ECC);
 
         COEF[0] = new PrimeFieldElement(ring, BigInteger.valueOf(-3));
         COEF[1] = new PrimeFieldElement(ring, b);
         card.add(n);
-        GeneralEC curve = new GeneralEC(ring, COEF, card);
+        curve = new GeneralEC(ring, COEF, card);
         gen = new GeneralECPoint(curve, new PrimeFieldElement(ring, gx), new PrimeFieldElement(ring, gy));
-        ECPrimeOrderSubgroup g = new ECPrimeOrderSubgroup(curve, n, gen);
-        GeneralECPoint alpha = g.getGenerator();
-        //TODO: eliminar 2^20
+        g = new ECPrimeOrderSubgroup(curve, n, gen);
+        alpha = g.getGenerator();
+    }
+
+    @Test
+    void algorithm_ecc() {
         for(BigInteger xi = BigInteger.TEN.pow(4); xi.compareTo(BigInteger.TEN.pow(4).multiply(BigInteger.TWO)) < 0; xi = xi.add(BigInteger.ONE)) {
-            GeneralECPoint beta = alpha.pow(xi);
-            PollardsLambda lambda = new PollardsLambda(alpha, beta);
-            Optional<BigInteger> res = lambda.algorithm();
-            assertEquals(Optional.of(xi), res);
+            test_value(xi);
         }
     }
+
+    @Test
+    void algorithm_test_compromised_values() {
+        test_value(BigInteger.valueOf(495853));
+    }
+
+
+    void test_value(BigInteger xi) {
+        GeneralECPoint beta = alpha.pow(xi);
+        PollardsLambda lambda = new PollardsLambda(alpha, beta);
+        Optional<BigInteger> res = lambda.algorithm();
+        assertEquals(Optional.of(xi), res);
+    }
+
 }
