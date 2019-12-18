@@ -29,7 +29,7 @@ public class PollardsLambda {
             throw new ConstructionException();
         }
         group = alpha.getGroup();
-        b = group.getSize().subtract(BigInteger.ONE);
+        b = BigInteger.TWO.pow(20);
         N = b.sqrt().add(BigInteger.ONE);
         this.alpha = alpha;
         this.beta = beta;
@@ -51,9 +51,9 @@ public class PollardsLambda {
 
     private void getHashMap() {
         this.hashMap = new HashMap<>();
-        for (int k = 0; k < N.sqrt().intValue(); k++) {
+        for (BigInteger k = BigInteger.ZERO; k.compareTo(N.sqrt()) < 0; k = k.add(BigInteger.ONE)) {
             BigInteger r = new BigInteger(group.getSize().bitLength(), new SecureRandom()).remainder(N).add(BigInteger.ONE);
-            hashMap.put(BigInteger.valueOf(k), new Pair<>(r, alpha.pow(r)));
+            hashMap.put(k, new Pair<>(r, alpha.pow(r)));
         }
     }
 

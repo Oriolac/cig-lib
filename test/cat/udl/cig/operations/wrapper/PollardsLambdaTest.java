@@ -4,28 +4,31 @@ import cat.udl.cig.ecc.ECPrimeOrderSubgroup;
 import cat.udl.cig.ecc.GeneralEC;
 import cat.udl.cig.ecc.GeneralECPoint;
 import cat.udl.cig.fields.*;
+import com.moandjiezana.toml.Toml;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Array;
+import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PollardsLambdaTest {
 
-    static BigInteger MODULE = new BigInteger("1259");
-    static BigInteger MODULE_ECC = new BigInteger("11");
+    static BigInteger MODULE = new BigInteger("11");
     static BigInteger n = new BigInteger("14");
     static BigInteger b = new BigInteger("1", 16);
-    static BigInteger gx = new BigInteger("1", 16);
+    static BigInteger gx;// = new BigInteger("1", 16);
     static BigInteger gy = new BigInteger("6"
             .replaceAll("\\s", ""), 16);
     static RingElement[] COEF = new RingElement[2];
     static ArrayList<BigInteger> card = new ArrayList<>();
     static GeneralECPoint gen;
+
 
     @Test
     void algorithm() {
@@ -38,7 +41,7 @@ class PollardsLambdaTest {
             GroupElement beta = alpha.pow(x);
             PollardsLambda lambda = new PollardsLambda(alpha, beta);
             Optional<BigInteger> res = lambda.algorithm();
-            if(res.get().equals(x)) {
+            if(res.isPresent() && res.get().equals(x)) {
                 vertader.add(xi);
             } else {
                 falser.add(xi);
@@ -55,7 +58,7 @@ class PollardsLambdaTest {
 
     @Test
     void algorithm_ecc() {
-        PrimeField ring = new PrimeField(MODULE_ECC);
+        PrimeField ring = new PrimeField(MODULE);
 
         COEF[0] = new PrimeFieldElement(ring, BigInteger.valueOf(1));
         COEF[1] = new PrimeFieldElement(ring, b);
