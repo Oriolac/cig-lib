@@ -16,11 +16,9 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PollardsLambdaECCTest {
 
-    static BigInteger MODULE = new BigInteger("1259");
     static BigInteger MODULE_ECC = new BigInteger("11");
     static BigInteger n = new BigInteger("14");
     static BigInteger b = new BigInteger("1", 16);
@@ -65,7 +63,7 @@ public class PollardsLambdaECCTest {
 
     @Test
     void algorithm_test_compromised_values() {
-        test_value(BigInteger.valueOf(495853));
+        test_value(BigInteger.valueOf(4));
     }
 
 
@@ -73,6 +71,9 @@ public class PollardsLambdaECCTest {
         GeneralECPoint beta = alpha.pow(xi);
         PollardsLambda lambda = new PollardsLambda(alpha, beta);
         Optional<BigInteger> res = lambda.algorithm();
+        System.out.println("alpha:  " + alpha);
+        System.out.println("beta: " + beta);
+        System.out.println("res: " + res);
         assertEquals(Optional.of(xi), res);
     }
 
