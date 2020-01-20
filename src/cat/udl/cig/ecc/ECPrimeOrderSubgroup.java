@@ -1,13 +1,9 @@
-/**
- * $Id$
- * @author vmateu
- * @date   Sep 29, 2015 12:43:52 PM
- *
- */
+
 package cat.udl.cig.ecc;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Objects;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.ParametersException;
@@ -15,7 +11,12 @@ import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.MultiplicativeSubgroup;
 import cat.udl.cig.fields.Group;
 
-
+/**
+ * $Id$
+ * @author vmateu
+ * @date   Sep 29, 2015 12:43:52 PM
+ *
+ */
 public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
     private final GeneralEC EC;
@@ -114,4 +115,18 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
         return generator;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ECPrimeOrderSubgroup that = (ECPrimeOrderSubgroup) o;
+        return Objects.equals(EC, that.EC) &&
+                Objects.equals(cardinality, that.cardinality) &&
+                Objects.equals(generator, that.generator);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(EC, cardinality, generator);
+    }
 }

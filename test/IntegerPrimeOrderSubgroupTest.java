@@ -3,31 +3,28 @@ import cat.udl.cig.fields.IntegerPrimeOrderSubgroup;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigInteger;
 
 public class IntegerPrimeOrderSubgroupTest {
 
-    private static final BigInteger EXPONENT = BigInteger.valueOf(10);
-    private static final BigInteger GENERATOR = BigInteger.valueOf(6);
-    private static final BigInteger MODULE = BigInteger.valueOf(11);
 
-    @Test(expected = ConstructionException.class)
+    @Test
     public void constructionExceptionTest() {
         final BigInteger EXPONENT = BigInteger.valueOf(1);
         final BigInteger GENERATOR = BigInteger.valueOf(6);
         final BigInteger MODULE = BigInteger.valueOf(11);
 
-        IntegerPrimeOrderSubgroup group = new IntegerPrimeOrderSubgroup(MODULE, EXPONENT, GENERATOR);
+        assertThrows(ConstructionException.class, () -> new IntegerPrimeOrderSubgroup(MODULE, EXPONENT, GENERATOR));
     }
 
-    @Test(expected = ArithmeticException.class)
+    @Test
     public void constructionArithmeticExceptionTest(){
         final BigInteger EXPONENT = BigInteger.valueOf(10);
         final BigInteger GENERATOR = BigInteger.valueOf(6);
         final BigInteger MODULE = BigInteger.valueOf(-11);
-
-        IntegerPrimeOrderSubgroup group = new IntegerPrimeOrderSubgroup(MODULE, EXPONENT, GENERATOR);
+        assertThrows(ArithmeticException.class, () -> new IntegerPrimeOrderSubgroup(MODULE, EXPONENT, GENERATOR));
     }
 
     @Test
@@ -50,11 +47,4 @@ public class IntegerPrimeOrderSubgroupTest {
         }
     }
 
-    @Test(expected = ConstructionException.class)
-    public void testingCardinality(int e) {
-        final BigInteger GENERATOR = BigInteger.valueOf(6);
-        final BigInteger MODULE = BigInteger.valueOf(11);
-        BigInteger exponent = BigInteger.valueOf(e);
-        IntegerPrimeOrderSubgroup group = new IntegerPrimeOrderSubgroup(MODULE, exponent, GENERATOR);
-    }
 }

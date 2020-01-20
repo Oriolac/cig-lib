@@ -15,7 +15,7 @@ import java.util.Optional;
 import static java.lang.Math.abs;
 import static org.junit.Assert.assertEquals;
 
-public class PollardsLambda {
+public class PollardsLambda implements PollardsLambdaInt {
 
     private final GroupElement alpha, beta;
     private final Group group;
@@ -36,7 +36,8 @@ public class PollardsLambda {
     }
 
 
-    public Optional<BigInteger> algorithm() throws NotSolutionException {
+    @Override
+    public Optional<BigInteger> algorithm() {
         //TODO: Preguntar a @miret o @fsebe per a tot Zn o per  a tot Zp. A vegades no funciona ni per Zp
         Optional<BigInteger> res = Optional.empty();
         int i = 0;
@@ -71,7 +72,6 @@ public class PollardsLambda {
                 return Optional.of(b.add(d).subtract(acc).remainder(group.getSize()).add(group.getSize())
                         .remainder(group.getSize()));
             }
-            //assertEquals(beta.multiply(alpha.pow(acc)), yn);
         }
         return Optional.empty();
     }
