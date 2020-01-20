@@ -250,8 +250,6 @@ public class GeneralECPoint implements ECPoint {
             computeDoublePoint(x.getIntValue(), y.getIntValue());
         return new GeneralECPoint(E, E.getRing().toElement(point[0]), E
             .getRing().toElement(point[1]), order, false, true);
-        //return computeDoublePoint();
-
     }
 
     private BigInteger[] computeDoublePoint(final BigInteger Bx,
@@ -275,34 +273,6 @@ public class GeneralECPoint implements ECPoint {
         return result;
 
     }
-
-
-
-
-    /*private GeneralECPoint computeDoublePoint() {
-        RingElement[] result = new RingElement[2];
-        RingElement num, denom;
-        BigInteger two = BigInteger.valueOf(2);
-        RingElement threeElement = x.getGroup().toElement(BigInteger.valueOf(3));
-        RingElement twoElement = x.getGroup().toElement(two);
-
-        num = x.pow(two).multiply(threeElement);//x.multiply(x.multiply(threeElement));
-        num = num.add(E.getA());
-        denom = y.multiply(twoElement);//.add(y);
-
-        result[1] = num.divide(denom);
-        result[0] = result[1].pow(two);//multiply(result[1]);
-        result[0] = result[0].subtract(x.multiply(twoElement));//.subtract(x);
-
-        result[1] = result[1].multiply(x.subtract(result[0]));
-        result[1] = result[1].subtract(y);
-
-        return new GeneralECPoint(E, result[0], result[1], order, false, true);
-
-    }*/
-
-
-
 
     @Override
     public GeneralECPoint multiply(final GroupElement iQ)
@@ -352,28 +322,6 @@ public class GeneralECPoint implements ECPoint {
         return result;
 
     }
-
-
-
-    /*private GeneralECPoint computePointAddition(GeneralECPoint Q) {
-        final RingElement[] result = new RingElement[2];
-        final RingElement num, denom;
-
-        num = Q.getY().subtract(y);
-        denom = Q.getX().subtract(x);
-
-        result[1] = num.divide(denom);
-        result[0] = result[1].multiply(result[1]);
-        result[0] = result[0].subtract(x).subtract(Q.getX());
-
-        result[1] = result[1].multiply(x.subtract(result[0]));
-        result[1] = result[1].subtract(y);
-
-        return new GeneralECPoint(E,result[0],result[1], order, false, true);
-
-    }*/
-
-
 
 
     @Override
@@ -445,13 +393,8 @@ public class GeneralECPoint implements ECPoint {
             return false;
         }
         if (y == null) {
-            if (other.y != null) {
-                return false;
-            }
-        } else if (!y.equals(other.y)) {
-            return false;
-        }
-        return true;
+            return other.y == null;
+        } else return y.equals(other.y);
     }
 
     @Override

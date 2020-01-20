@@ -1,21 +1,12 @@
 package cat.udl.cig.operations.wrapper;
 
-import cat.udl.cig.ecc.ECPrimeOrderSubgroup;
-import cat.udl.cig.ecc.GeneralEC;
-import cat.udl.cig.ecc.GeneralECPoint;
-import cat.udl.cig.fields.*;
-import com.moandjiezana.toml.Toml;
-import org.junit.jupiter.api.BeforeEach;
+import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.IntegerPrimeOrderSubgroup;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Optional;
-
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PollardsLambdaTest {
 
@@ -32,8 +23,8 @@ class PollardsLambdaTest {
         for(int xi = 1; xi < g.getSize().intValue(); xi++) {
             BigInteger x = BigInteger.valueOf(xi);
             GroupElement beta = alpha.pow(x);
-            PollardsLambda lambda = new PollardsLambda(alpha, beta);
-            Optional<BigInteger> res = lambda.algorithm();
+            PollardsLambda lambda = new PollardsLambda(alpha);
+            Optional<BigInteger> res = lambda.algorithm(beta);
             if(res.isPresent() && res.get().equals(x)) {
                 vertader.add(xi);
             } else {

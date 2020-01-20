@@ -17,34 +17,32 @@ import static org.junit.Assert.assertEquals;
 
 public class PollardsLambda implements PollardsLambdaInt {
 
-    private final GroupElement alpha, beta;
+    private final GroupElement alpha;
     private final Group group;
     private final BigInteger b;
     private final BigInteger N;
     private HashMap<BigInteger, Pair<BigInteger, GroupElement>> hashMap;
 
 
-    public PollardsLambda(GroupElement alpha, GroupElement beta) {
-        if (!alpha.belongsToSameGroup(beta)) {
-            throw new ConstructionException();
-        }
+    public PollardsLambda(GroupElement alpha) {
         group = alpha.getGroup();
         b = BigInteger.TWO.pow(20);
         N = b.sqrt().add(BigInteger.ONE);
         this.alpha = alpha;
-        this.beta = beta;
     }
 
 
     @Override
-    public Optional<BigInteger> algorithm() {
-        //TODO: Preguntar a @miret o @fsebe per a tot Zn o per  a tot Zp. A vegades no funciona ni per Zp
+    public Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException {
+        if (!alpha.belongsToSameGroup(beta)) {
+            throw new ArithmeticException("Alpha and beta don't belong to the same group");
+        }
         Optional<BigInteger> res = Optional.empty();
         int i = 0;
         while (i < 10 && res.isEmpty()) {
             getHashMap();
             Pair<GroupElement, BigInteger> pair = getD();
-            res = getExponent(pair);
+            res = getExponent(pair, beta);
             i++;
         }
         return res;
@@ -58,7 +56,7 @@ public class PollardsLambda implements PollardsLambdaInt {
         }
     }
 
-    private Optional<BigInteger> getExponent(Pair<GroupElement, BigInteger> pair) {
+    private Optional<BigInteger> getExponent(Pair<GroupElement, BigInteger> pair, GroupElement beta) {
         Group group = alpha.getGroup();
         BigInteger d = pair.getValue();
         GroupElement xn = pair.getKey();

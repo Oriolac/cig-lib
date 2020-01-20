@@ -27,8 +27,8 @@ public class PollardsLambdaECCTest extends AbstractSetUpP192 {
 
     void test_value(BigInteger xi) {
         GeneralECPoint beta = alpha.pow(xi);
-        PollardsLambda lambda = new PollardsLambda(alpha, beta);
-        Optional<BigInteger> res = lambda.algorithm();
+        PollardsLambda lambda = new PollardsLambda(alpha);
+        Optional<BigInteger> res = lambda.algorithm(beta);
         assertEquals(Optional.of(xi), res);
     }
 
