@@ -4,12 +4,9 @@ import cat.udl.cig.AbstractSetUpP192;
 import cat.udl.cig.cryptography.cryptosystems.ElGamal;
 import cat.udl.cig.cryptography.cryptosystems.ElGamalCypher;
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
-import cat.udl.cig.fields.*;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ECPrimeOrderSubgroupTest extends AbstractSetUpP192 {
 
@@ -20,7 +17,7 @@ class ECPrimeOrderSubgroupTest extends AbstractSetUpP192 {
         GeneralECPoint message = g.getRandomElement();
         ElGamalCiphertext ciphertext = cipher.encrypt(message);
         GeneralECPoint decryptedMessage = (GeneralECPoint) elgamal.decrypt(ciphertext);
-        Assert.assertEquals(message, decryptedMessage);
+        assertEquals(message, decryptedMessage);
     }
 
 }

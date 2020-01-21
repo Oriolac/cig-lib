@@ -1,8 +1,8 @@
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.fields.IntegerPrimeOrderSubgroup;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigInteger;
