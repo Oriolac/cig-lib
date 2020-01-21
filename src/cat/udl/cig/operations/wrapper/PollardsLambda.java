@@ -12,7 +12,7 @@ import java.util.Optional;
 
 import static java.lang.Math.abs;
 
-public class PollardsLambda implements PollardsLambdaInt {
+public class PollardsLambda implements LogarithmAlgorithm {
 
     private final GroupElement alpha;
     private final Group group;

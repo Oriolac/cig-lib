@@ -1,9 +1,9 @@
 package cat.udl.cig.operations.wrapper;
 
 import cat.udl.cig.AbstractSetUpP192;
-import cat.udl.cig.ecc.GeneralEC;
 import cat.udl.cig.ecc.GeneralECPoint;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -11,14 +11,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class PollardsLambdaECCTest extends AbstractSetUpP192 {
+public class BruteForceTest extends AbstractSetUpP192 {
 
-
-    static PollardsLambda lambda;
+    static BruteForce bruteForce;
 
     @BeforeAll
     static void setUp() {
-        lambda = new PollardsLambda(alpha);
+        bruteForce = new BruteForce(alpha);
     }
 
     @Test
@@ -30,7 +29,6 @@ public class PollardsLambdaECCTest extends AbstractSetUpP192 {
         }
     }
 
-
     @Test
     void algorithmTestCompromisedValues() {
         testValue(BigInteger.valueOf(9));
@@ -39,8 +37,7 @@ public class PollardsLambdaECCTest extends AbstractSetUpP192 {
 
     void testValue(BigInteger xi) {
         GeneralECPoint beta = alpha.pow(xi);
-        Optional<BigInteger> res = lambda.algorithm(beta);
+        Optional<BigInteger> res = bruteForce.algorithm(beta);
         assertEquals(Optional.of(xi), res);
     }
-
 }

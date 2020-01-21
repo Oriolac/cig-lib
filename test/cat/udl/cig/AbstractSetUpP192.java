@@ -7,7 +7,7 @@ import cat.udl.cig.fields.PrimeField;
 import cat.udl.cig.fields.PrimeFieldElement;
 import cat.udl.cig.fields.RingElement;
 import com.moandjiezana.toml.Toml;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -16,20 +16,20 @@ import java.util.ArrayList;
 public abstract class AbstractSetUpP192 {
 
 
-    BigInteger MODULE_ECC ;
-    BigInteger n;
-    BigInteger b;
-    BigInteger gx;
-    BigInteger gy;
-    RingElement[] COEF;
-    ArrayList<BigInteger> card = new ArrayList<>();
-    GeneralECPoint gen;
-    protected GeneralECPoint alpha;
-    protected ECPrimeOrderSubgroup g;
-    protected GeneralEC curve;
+    static BigInteger MODULE_ECC;
+    static BigInteger n;
+    static BigInteger b;
+    static BigInteger gx;
+    static BigInteger gy;
+    static RingElement[] COEF;
+    static ArrayList<BigInteger> card = new ArrayList<>();
+    static GeneralECPoint gen;
+    static protected GeneralECPoint alpha;
+    static protected ECPrimeOrderSubgroup g;
+    static protected GeneralEC curve;
 
-    @BeforeEach
-    void setUp(){
+    @BeforeAll
+    static void setP192Up() {
         File file = new File("p192.toml");
         Toml toml = new Toml().read(file);
         MODULE_ECC = new BigInteger(toml.getString("p"));
