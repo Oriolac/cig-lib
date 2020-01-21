@@ -1,8 +1,5 @@
 package cat.udl.cig.operations.wrapper;
 
-import cat.udl.cig.exceptions.ConstructionException;
-import cat.udl.cig.exceptions.NotSolutionException;
-import cat.udl.cig.exceptions.ParametersException;
 import cat.udl.cig.fields.Group;
 import cat.udl.cig.fields.GroupElement;
 import javafx.util.Pair;
@@ -10,10 +7,10 @@ import javafx.util.Pair;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.lang.Math.abs;
-import static org.junit.Assert.assertEquals;
 
 public class PollardsLambda implements PollardsLambdaInt {
 
@@ -34,16 +31,14 @@ public class PollardsLambda implements PollardsLambdaInt {
 
     @Override
     public Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException {
-        if (!alpha.belongsToSameGroup(beta)) {
+        if (!alpha.belongsToSameGroup(beta))
             throw new ArithmeticException("Alpha and beta don't belong to the same group");
-        }
         Optional<BigInteger> res = Optional.empty();
-        int i = 0;
-        while (i < 10 && res.isEmpty()) {
+        Pair<GroupElement, BigInteger> pair;
+        for (int i = 0; i < 30 && res.isEmpty(); i++) {
             getHashMap();
-            Pair<GroupElement, BigInteger> pair = getD();
+            pair = getD();
             res = getExponent(pair, beta);
-            i++;
         }
         return res;
     }
@@ -66,10 +61,9 @@ public class PollardsLambda implements PollardsLambdaInt {
             Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(yn.hashCode()) % hashMap.size()));
             acc = acc.add(tmp.getKey());
             yn = yn.multiply(tmp.getValue());
-            if (xn.equals(yn)) {
+            if (xn.equals(yn))
                 return Optional.of(b.add(d).subtract(acc).remainder(group.getSize()).add(group.getSize())
                         .remainder(group.getSize()));
-            }
         }
         return Optional.empty();
     }
@@ -83,6 +77,22 @@ public class PollardsLambda implements PollardsLambdaInt {
             xn = xn.multiply(tmp.getValue());
         }
         return new Pair<>(xn, d);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PollardsLambda that = (PollardsLambda) o;
+        return Objects.equals(alpha, that.alpha) &&
+                Objects.equals(group, that.group) &&
+                Objects.equals(b, that.b) &&
+                Objects.equals(N, that.N);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(alpha, group, b, N);
     }
 
 }
