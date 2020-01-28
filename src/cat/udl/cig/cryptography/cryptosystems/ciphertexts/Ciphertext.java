@@ -6,6 +6,8 @@
 
 package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
 
+import cat.udl.cig.fields.GroupElement;
+
 /**
  * Models an encrypted text. This encrypted text is done with an specific
  * <i>Cryptosystem</i>.
@@ -14,5 +16,5 @@ package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
  */
 public interface Ciphertext {
 
-    Object[] getParts();
+    GroupElement[] getParts();
 }

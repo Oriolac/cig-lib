@@ -7,8 +7,12 @@
 package cat.udl.cig.cryptography.cryptosystems;
 
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
+import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
 import cat.udl.cig.fields.Group;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.Ring;
+
+import java.math.BigInteger;
 
 /**
  * Models the general skeleton of a <i>Cypher</i>, the component of any
@@ -29,19 +33,22 @@ public interface Cypher {
      * @return the cyphertext corresponding to the given {@code message}.
      * @see Ciphertext
      */
-    Ciphertext encrypt(Object message);
-
+    default Ciphertext encrypt(final GroupElement message) {
+        BigInteger rand = getGroup().getRandomExponent();
+        return encrypt(message, rand);
+    }
     /**
      * Encrypts the given {@code message} (a plain text) and returns its
      * corresponding <i>Cyphertext</i>.
      *
-     * @param message
-     *            the plain text to be encrypted.
+     * @param message message to be encrypted.
+     * @param rand Random BigInteger to be used for encrypt.
      * @return the cyphertext corresponding to the given {@code message}.
      * @see Ciphertext
      */
+    Ciphertext encrypt(final GroupElement message, BigInteger rand);
 
-    Object getPublicKey();
+    GroupElement getPublicKey();
 
     /**
      * Returns the generator element of the cyclic group in the <i>Ring</i> or
@@ -50,7 +57,7 @@ public interface Cypher {
      * @return the generator element of the cyclic groun of {@code this}
      *         <i>Cryptosystem</i> <i>Ring</i> or <i>Field</i> {@code F}.
      */
-    Object getGenerator();
+    GroupElement getGenerator();
 
     /**
      * Returns the <i>Ring</i> or <i>Field</i> {@code F} of the

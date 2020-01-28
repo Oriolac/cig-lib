@@ -12,6 +12,8 @@ package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
 
 import cat.udl.cig.fields.GroupElement;
 
+import java.util.Arrays;
+
 /**
  *
  */
@@ -43,5 +45,25 @@ public class ElGamalCiphertext implements HomomorphicCiphertext {
             result[i] = parts[i].multiply(input.getParts()[i]);
         }
         return new ElGamalCiphertext(result);
+    }
+
+    @Override
+    public String toString() {
+        return "ElGamalCiphertext{" +
+                "parts=" + Arrays.toString(parts) +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ElGamalCiphertext that = (ElGamalCiphertext) o;
+        return Arrays.equals(parts, that.parts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(parts);
     }
 }

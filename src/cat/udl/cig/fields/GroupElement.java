@@ -98,7 +98,7 @@ public interface GroupElement {
      * Returns \(1 / p\), where {@code p} is the {@code this}
      * <i>GroupElement</i>.
      *
-     * @return a new <i>GroupElement</i> \(r\), where \(r = 1 / p\) and
+     * @return a new <i>GroupElement</i> \(r\), where \(r = 1 / p\) and;
      *         {@code r.getGroup() = this.getGroup()}.
      * @throws IncorrectGroupElementException
      *             if {@code this} is not initialized.
@@ -120,4 +120,8 @@ public interface GroupElement {
     public GroupElement pow(BigInteger k)
             throws IncorrectRingElementException;
 
+
+    default byte[] toBytes() throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
 }

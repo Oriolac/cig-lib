@@ -11,9 +11,9 @@ import cat.udl.cig.fields.RingElement;
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
  * \(E\).
  *
+ * @author Víctor Mateu
  * @see cat.udl.cig.ecc.ECPoint
  * @see cat.udl.cig.ecc.GeneralEC
- * @author Víctor Mateu
  */
 public class GeneralECPoint implements ECPoint {
 
@@ -51,8 +51,7 @@ public class GeneralECPoint implements ECPoint {
      * The <i>Infinity Point</i> has the coordinates \((0:1:0)\). If {@code E}
      * is not initialized, then \(P\) is a null <i>Point</i>.
      *
-     * @param E1
-     *            the <i>GeneralEC</i> to which \(P\) belongs.
+     * @param E1 the <i>GeneralEC</i> to which \(P\) belongs.
      */
     public GeneralECPoint(final GeneralEC E1) {
         E = E1;
@@ -67,8 +66,7 @@ public class GeneralECPoint implements ECPoint {
      * Creates a copy of the <i>GeneralECPoint</i> \(P\). This constructor makes
      * a deep copy of \(P\).
      *
-     * @param P
-     *            the <i>GeneralECPoint</i> to be copied.
+     * @param P the <i>GeneralECPoint</i> to be copied.
      */
     public GeneralECPoint(final GeneralECPoint P) {
         E = P.E;
@@ -85,21 +83,17 @@ public class GeneralECPoint implements ECPoint {
      * initialized or {@code x} and {@code y} are not elements of the same
      * <i>GneralField</i>, then \(P\) is a null <i>Point</i>.
      *
-     * @param E
-     *            the <i>GeneralEC</i> to which \(P\) belongs.
-     * @param ix
-     *            the \(x\) coordinate for \(P\). It must belong to
-     *            {@code this.E.getRing()}.
-     * @param iy
-     *            the \(y\) coordinate for \(P\). It must belong to
-     *            {@code this.E.getRing()}.
-     * @param iOrder
-     *            the order of the newly created <i>GeneralECPoint</i>. This
-     *            constructor checks if the order is correct. If not, it is
-     *            initialized to ONE.
+     * @param E      the <i>GeneralEC</i> to which \(P\) belongs.
+     * @param ix     the \(x\) coordinate for \(P\). It must belong to
+     *               {@code this.E.getRing()}.
+     * @param iy     the \(y\) coordinate for \(P\). It must belong to
+     *               {@code this.E.getRing()}.
+     * @param iOrder the order of the newly created <i>GeneralECPoint</i>. This
+     *               constructor checks if the order is correct. If not, it is
+     *               initialized to ONE.
      */
     public GeneralECPoint(final GeneralEC E, final RingElement ix,
-            final RingElement iy, final BigInteger iOrder) {
+                          final RingElement iy, final BigInteger iOrder) {
         this.E = E;
         RingElement elem = E.getRing().getNeuterElement();
         if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem)) {
@@ -118,8 +112,8 @@ public class GeneralECPoint implements ECPoint {
     }
 
     protected GeneralECPoint(final GeneralEC iE, final RingElement ix,
-            final RingElement iy, final BigInteger iOrder,
-            final boolean iIsInfinity, final boolean safe) {
+                             final RingElement iy, final BigInteger iOrder,
+                             final boolean iIsInfinity, final boolean safe) {
         E = iE;
         if (!iIsInfinity) {
             x = ix;
@@ -142,17 +136,14 @@ public class GeneralECPoint implements ECPoint {
      * initialized or {@code x} and {@code y} are not elements of the same
      * <i>GneralField</i>, then \(P\) is a null <i>Point</i>.
      *
-     * @param iE
-     *            the <i>GeneralEC</i> to which \(P\) belongs.
-     * @param ix
-     *            the \(x\) coordinate for \(P\). It must belong to
-     *            {@code this.E.getRing()}.
-     * @param iy
-     *            the \(y\) coordinate for \(P\). It must belong to
-     *            {@code this.E.getRing()}.
+     * @param iE the <i>GeneralEC</i> to which \(P\) belongs.
+     * @param ix the \(x\) coordinate for \(P\). It must belong to
+     *           {@code this.E.getRing()}.
+     * @param iy the \(y\) coordinate for \(P\). It must belong to
+     *           {@code this.E.getRing()}.
      */
     public GeneralECPoint(final GeneralEC iE, final RingElement ix,
-            final RingElement iy) {
+                          final RingElement iy) {
         E = iE;
         RingElement elem = E.getRing().getNeuterElement();
         if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem)) {
@@ -170,12 +161,12 @@ public class GeneralECPoint implements ECPoint {
     }
 
     public GeneralECPoint(final GeneralEC iE, final RingElement ix,
-            final RingElement iy, final BigInteger iorder,
-            final boolean iIsInfinity) {
+                          final RingElement iy, final BigInteger iorder,
+                          final boolean iIsInfinity) {
         E = iE;
         RingElement elem = E.getRing().getNeuterElement();
         if (!iIsInfinity && ix.belongsToSameGroup(elem)
-            && iy.belongsToSameGroup(elem)) {
+                && iy.belongsToSameGroup(elem)) {
             x = ix;
             y = iy;
             isInfinity = false;
@@ -195,7 +186,7 @@ public class GeneralECPoint implements ECPoint {
      * \(P\) belongs.
      *
      * @return an EC, the <i>EllipticCurve</i> to which {@code this}
-     *         <i>ECPoint</i> \(P\) belongs. That is, \(P \in E(K)\).
+     * <i>ECPoint</i> \(P\) belongs. That is, \(P \in E(K)\).
      */
     @Override
     public GeneralEC getCurve() {
@@ -206,7 +197,7 @@ public class GeneralECPoint implements ECPoint {
      * Returns the coordinate \(x\) of {@code this} <i>ECPoint</i> \(P\).
      *
      * @return a copy of the RingElement representing the \(x\) of {@code this}
-     *         <i>ECPoint</i> \(P\).
+     * <i>ECPoint</i> \(P\).
      */
     @Override
     public RingElement getX() {
@@ -217,7 +208,7 @@ public class GeneralECPoint implements ECPoint {
      * Returns the coordinate \(y\) of {@code this} <i>ECPoint</i> \(P\).
      *
      * @return a copy of the RingElement representing the \(x\) of {@code this}
-     *         <i>ECPoint</i> \(P\).
+     * <i>ECPoint</i> \(P\).
      */
     @Override
     public RingElement getY() {
@@ -247,13 +238,13 @@ public class GeneralECPoint implements ECPoint {
         }
 
         BigInteger[] point =
-            computeDoublePoint(x.getIntValue(), y.getIntValue());
+                computeDoublePoint(x.getIntValue(), y.getIntValue());
         return new GeneralECPoint(E, E.getRing().toElement(point[0]), E
-            .getRing().toElement(point[1]), order, false, true);
+                .getRing().toElement(point[1]), order, false, true);
     }
 
     private BigInteger[] computeDoublePoint(final BigInteger Bx,
-            final BigInteger By) {
+                                            final BigInteger By) {
         final BigInteger THREE = BigInteger.valueOf(3);
         BigInteger[] result = new BigInteger[2];
         BigInteger num;
@@ -280,7 +271,7 @@ public class GeneralECPoint implements ECPoint {
         GeneralECPoint Q = (GeneralECPoint) iQ;
         if (!E.equals(Q.E)) {
             throw new ArithmeticException(
-                "Trying to add points from different Elliptic Curves");
+                    "Trying to add points from different Elliptic Curves");
         }
 
         if (Q.isInfinity()) {
@@ -295,15 +286,15 @@ public class GeneralECPoint implements ECPoint {
             }
         } else {
             BigInteger[] point =
-                computePointAddition(Q.x.getIntValue(), Q.y.getIntValue());
+                    computePointAddition(Q.x.getIntValue(), Q.y.getIntValue());
             return new GeneralECPoint(E, E.getRing().toElement(point[0]),
-                E.getRing().toElement(point[1]), order, false, true);
+                    E.getRing().toElement(point[1]), order, false, true);
             //return computePointAddition(Q);
         }
     }
 
     private BigInteger[] computePointAddition(final BigInteger Bx,
-            final BigInteger By) {
+                                              final BigInteger By) {
         final BigInteger[] result = new BigInteger[2];
         final BigInteger Mx = x.getIntValue();
         final BigInteger My = y.getIntValue();
@@ -403,17 +394,16 @@ public class GeneralECPoint implements ECPoint {
             return this;
         }
         return new GeneralECPoint(getCurve(), getX(), getY().opposite(),
-            order, false, true);
+                order, false, true);
     }
 
     /**
      * Returns the result of \(k \cdot P\), where \(P\) is {@code this}
      * <i>Point</i>.
      *
-     * @param k
-     *            a BigInteger number to multiply the <i>Point</i> \(P\).
+     * @param k a BigInteger number to multiply the <i>Point</i> \(P\).
      * @return a <i>Point</i> \(R\), where \(R = k \cdot P\) or {@code null} if
-     *         {@code this} is not initialized.
+     * {@code this} is not initialized.
      */
     @Override
     public GeneralECPoint pow(BigInteger k) {
@@ -427,7 +417,7 @@ public class GeneralECPoint implements ECPoint {
         BigInteger[] me = toProjective(this);
         BigInteger[] minusP = toProjective(inverse());
         BigInteger[] Q =
-            {BigInteger.ZERO, BigInteger.ONE, BigInteger.ZERO };
+                {BigInteger.ZERO, BigInteger.ONE, BigInteger.ZERO};
         ArrayList<Integer> kbits = NAF(k);
         for (int i = kbits.size() - 1; i >= 0; i--) {
             Q = ProjectiveDouble(Q);
@@ -470,9 +460,9 @@ public class GeneralECPoint implements ECPoint {
     }
 
     private BigInteger[] ProjectiveAdd(final BigInteger[] point1,
-            final BigInteger[] point2) {
+                                       final BigInteger[] point2) {
         final BigInteger[] infPoint =
-            {BigInteger.ZERO, BigInteger.ONE, BigInteger.ZERO };
+                {BigInteger.ZERO, BigInteger.ONE, BigInteger.ZERO};
         if (point2[2].equals(BigInteger.ZERO)) {
             return point1;
         }
@@ -498,7 +488,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     private BigInteger[] projectiveAddZs1(final BigInteger[] point1,
-            final BigInteger[] point2) {
+                                          final BigInteger[] point2) {
         final BigInteger TWO = BigInteger.valueOf(2);
         final BigInteger[] result = new BigInteger[3];
         final BigInteger u, uu, v, vv, vvv, R, A;
@@ -511,49 +501,49 @@ public class GeneralECPoint implements ECPoint {
         vvv = vv.multiply(v).mod(modulo);
         R = vv.multiply(point1[0]).mod(modulo);
         A =
-            uu.subtract(vvv).subtract(TWO.multiply(R).mod(modulo))
-                .mod(modulo);
+                uu.subtract(vvv).subtract(TWO.multiply(R).mod(modulo))
+                        .mod(modulo);
 
         result[0] = v.multiply(A).mod(modulo);
         result[1] =
-            u.multiply(R.subtract(A).mod(modulo)).mod(modulo)
-                .subtract(vvv.multiply(point1[1]).mod(modulo)).mod(modulo);
+                u.multiply(R.subtract(A).mod(modulo)).mod(modulo)
+                        .subtract(vvv.multiply(point1[1]).mod(modulo)).mod(modulo);
         result[2] = vvv;
         return result;
     }
 
     private BigInteger[] projectiveAddZ21(final BigInteger[] point1,
-            final BigInteger[] point2) {
+                                          final BigInteger[] point2) {
         final BigInteger TWO = BigInteger.valueOf(2);
         final BigInteger[] result = new BigInteger[3];
         final BigInteger u, uu, v, vv, vvv, R, A;
         final BigInteger modulo = x.getGroup().getSize();
 
         u =
-            point2[1].multiply(point1[2]).mod(modulo).subtract(point1[1])
-                .mod(modulo);
+                point2[1].multiply(point1[2]).mod(modulo).subtract(point1[1])
+                        .mod(modulo);
         uu = u.multiply(u).mod(modulo);
         v =
-            point2[0].multiply(point1[2]).mod(modulo).subtract(point1[0])
-                .mod(modulo);
+                point2[0].multiply(point1[2]).mod(modulo).subtract(point1[0])
+                        .mod(modulo);
         vv = v.multiply(v).mod(modulo);
         vvv = vv.multiply(v).mod(modulo);
         R = vv.multiply(point1[0]).mod(modulo);
         A =
-            uu.multiply(point1[2]).mod(modulo).subtract(vvv)
-                .subtract(TWO.multiply(R).mod(modulo)).mod(modulo);
+                uu.multiply(point1[2]).mod(modulo).subtract(vvv)
+                        .subtract(TWO.multiply(R).mod(modulo)).mod(modulo);
 
         result[0] = v.multiply(A).mod(modulo);
         result[1] =
-            u.multiply(R.subtract(A).mod(modulo)).mod(modulo)
-                .subtract(vvv.multiply(point1[1]).mod(modulo)).mod(modulo);
+                u.multiply(R.subtract(A).mod(modulo)).mod(modulo)
+                        .subtract(vvv.multiply(point1[1]).mod(modulo)).mod(modulo);
         result[2] = vvv.multiply(point1[2]).mod(modulo);
 
         return result;
     }
 
     private BigInteger[] projectiveAdd(final BigInteger[] point1,
-            final BigInteger[] point2) {
+                                       final BigInteger[] point2) {
         final BigInteger TWO = BigInteger.valueOf(2);
         final BigInteger FOUR = BigInteger.valueOf(4);
         final BigInteger[] result = new BigInteger[3];
@@ -569,27 +559,27 @@ public class GeneralECPoint implements ECPoint {
         TT = T.multiply(T).mod(modulo);// TT = T^2
         M = S1.add(S2).mod(modulo);// M = S1+S2
         R =
-            TT.subtract(U1.multiply(U2).mod(modulo))
-                .add(
-                    E.getA().getIntValue()
-                    .multiply(ZZ.multiply(ZZ).mod(modulo)).mod(modulo))
-                .mod(modulo);// R = TT-U1*U2+a*ZZ2
+                TT.subtract(U1.multiply(U2).mod(modulo))
+                        .add(
+                                E.getA().getIntValue()
+                                        .multiply(ZZ.multiply(ZZ).mod(modulo)).mod(modulo))
+                        .mod(modulo);// R = TT-U1*U2+a*ZZ2
         F = ZZ.multiply(M).mod(modulo);// F = ZZ*M
         L = M.multiply(F).mod(modulo);// L = M*F
         LL = L.multiply(L).mod(modulo);// LL = L2
         final BigInteger temp = T.add(L);
         G =
-            temp.multiply(temp).mod(modulo).subtract(TT).subtract(LL)
-                .mod(modulo);// G = (T+L)^2-TT-LL
+                temp.multiply(temp).mod(modulo).subtract(TT).subtract(LL)
+                        .mod(modulo);// G = (T+L)^2-TT-LL
         W =
-            R.multiply(R).mod(modulo).multiply(TWO).subtract(G)
-                .mod(modulo);// W = 2*R^2-G
+                R.multiply(R).mod(modulo).multiply(TWO).subtract(G)
+                        .mod(modulo);// W = 2*R^2-G
         result[0] = TWO.multiply(F).mod(modulo).multiply(W).mod(modulo); // X3 =
         // 2*F*W
         result[1] =
-            R.multiply(G.subtract(TWO.multiply(W).mod(modulo)).mod(modulo))
-                .mod(modulo).subtract(TWO.multiply(LL).mod(modulo))
-                .mod(modulo);// Y3 = R*(G-2*W)-2*LL
+                R.multiply(G.subtract(TWO.multiply(W).mod(modulo)).mod(modulo))
+                        .mod(modulo).subtract(TWO.multiply(LL).mod(modulo))
+                        .mod(modulo);// Y3 = R*(G-2*W)-2*LL
         result[2] = FOUR.multiply(F.pow(3).mod(modulo)).mod(modulo);// Z3 =
         // 4*F*F2
 
@@ -621,15 +611,15 @@ public class GeneralECPoint implements ECPoint {
         R = YY.add(YY).mod(modulo);
         RR = R.multiply(R).mod(modulo);
         B =
-            point[0].add(R).pow(2).mod(modulo).subtract(XX).subtract(RR)
-                .mod(modulo);
+                point[0].add(R).pow(2).mod(modulo).subtract(XX).subtract(RR)
+                        .mod(modulo);
         h = w.multiply(w).mod(modulo).subtract(B).subtract(B).mod(modulo);
         result[0] = h.add(h).multiply(point[1]).mod(modulo);
         result[1] =
-            w.multiply(B.subtract(h).mod(modulo)).mod(modulo).subtract(RR)
-                .subtract(RR).mod(modulo);
+                w.multiply(B.subtract(h).mod(modulo)).mod(modulo).subtract(RR)
+                        .subtract(RR).mod(modulo);
         result[2] =
-            FOUR.multiply(point[1]).mod(modulo).multiply(R).mod(modulo);
+                FOUR.multiply(point[1]).mod(modulo).multiply(R).mod(modulo);
         return result;
     }
 
@@ -643,25 +633,25 @@ public class GeneralECPoint implements ECPoint {
         XX = point[0].multiply(point[0]).mod(modulo);
         ZZ = point[2].multiply(point[2]).mod(modulo);
         w =
-            E.getA().getIntValue().multiply(ZZ).mod(modulo)
-                .add(THREE.multiply(XX)).mod(modulo);
+                E.getA().getIntValue().multiply(ZZ).mod(modulo)
+                        .add(THREE.multiply(XX)).mod(modulo);
         s =
-            TWO.multiply(point[1]).mod(modulo).multiply(point[2])
-                .mod(modulo);
+                TWO.multiply(point[1]).mod(modulo).multiply(point[2])
+                        .mod(modulo);
         // ss = s.pow(2).mod(modulo);
         R = point[1].multiply(s).mod(modulo);
         RR = R.multiply(R).mod(modulo);
         B =
-            point[0].add(R).pow(2).mod(modulo).subtract(XX).subtract(RR)
-                .mod(modulo);
+                point[0].add(R).pow(2).mod(modulo).subtract(XX).subtract(RR)
+                        .mod(modulo);
         h =
-            w.multiply(w).mod(modulo).subtract(TWO.multiply(B))
-                .mod(modulo);
+                w.multiply(w).mod(modulo).subtract(TWO.multiply(B))
+                        .mod(modulo);
 
         result[0] = h.multiply(s).mod(modulo);
         result[1] =
-            w.multiply(B.subtract(h).mod(modulo)).mod(modulo).subtract(RR)
-                .subtract(RR).mod(modulo);
+                w.multiply(B.subtract(h).mod(modulo)).mod(modulo).subtract(RR)
+                        .subtract(RR).mod(modulo);
         result[2] = s.pow(3).mod(modulo);
         return result;
     }
@@ -729,4 +719,13 @@ public class GeneralECPoint implements ECPoint {
         order = ord1;
     }
 
+    @Override
+    public byte[] toBytes() throws UnsupportedOperationException {
+        byte[] bytes = new byte[this.E.cardFactors.get(0).bitLength() / 8 * 2];
+        byte[] x = getX().toBytes();
+        byte[] y = getY().toBytes();
+        System.arraycopy(x, 0, bytes, bytes.length / 2 - x.length, x.length);
+        System.arraycopy(y, 0, bytes, bytes.length - y.length, y.length);
+        return bytes;
+    }
 }

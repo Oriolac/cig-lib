@@ -338,4 +338,8 @@ public class PrimeFieldElement implements RingElement {
         return k;
     }
 
+    @Override
+    public byte[] toBytes() throws UnsupportedOperationException {
+        return getIntValue().toByteArray();
+    }
 }

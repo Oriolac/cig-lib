@@ -1,3 +1,5 @@
+package cat.udl.cig.cryptography.cryptosystems;
+
 /**
  * $Id$
  * @author vmateu
@@ -6,11 +8,6 @@
  * Copyright (C) 2015 Scytl Secure Electronic Voting SA
  *
  * All rights reserved.
- *
- */
-package cat.udl.cig.cryptography.cryptosystems;
-
-/**
  *
  */
 public interface HomomorphicCryptosystem extends Cryptosystem {

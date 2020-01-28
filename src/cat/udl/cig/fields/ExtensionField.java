@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Random;
 
 import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.exceptions.NotImplementedException;
 import cat.udl.cig.utils.Polynomial;
 
 /**
@@ -233,6 +234,11 @@ public class ExtensionField implements Ring {
     public ExtensionFieldElement pow(final GroupElement x,
             final BigInteger pow) {
         return (ExtensionFieldElement) x.pow(pow);
+    }
+
+    @Override
+    public RingElement fromBytes(byte[] bytes) {
+        throw new NotImplementedException();
     }
 
     /**

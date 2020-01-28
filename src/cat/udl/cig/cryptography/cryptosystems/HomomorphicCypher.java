@@ -1,3 +1,11 @@
+package cat.udl.cig.cryptography.cryptosystems;
+
+import java.math.BigInteger;
+
+import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
+import cat.udl.cig.cryptography.cryptosystems.ciphertexts.HomomorphicCiphertext;
+import cat.udl.cig.fields.GroupElement;
+
 /**
  * $Id$
  * @author vmateu
@@ -6,15 +14,6 @@
  * Copyright (C) 2015 Scytl Secure Electronic Voting SA
  *
  * All rights reserved.
- *
- */
-package cat.udl.cig.cryptography.cryptosystems;
-
-import java.math.BigInteger;
-
-import cat.udl.cig.cryptography.cryptosystems.ciphertexts.HomomorphicCiphertext;
-
-/**
  *
  */
 public interface HomomorphicCypher extends Cypher {
@@ -28,7 +27,9 @@ public interface HomomorphicCypher extends Cypher {
      * @return the cyphertext corresponding to the given {@code message}.
      * @see HomomorphicCiphertext
      */
-    HomomorphicCiphertext encrypt(Object message);
-
-    HomomorphicCiphertext encrypt(Object message, BigInteger r);
+    default HomomorphicCiphertext encrypt(final GroupElement message) {
+        BigInteger rand = getGroup().getRandomExponent();
+        return encrypt(message, rand);
+    }
+    HomomorphicCiphertext encrypt(GroupElement message, BigInteger r);
 }

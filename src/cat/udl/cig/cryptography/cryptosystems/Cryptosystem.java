@@ -8,6 +8,7 @@ package cat.udl.cig.cryptography.cryptosystems;
 
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
 import cat.udl.cig.fields.Group;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.Ring;
 
 /**
@@ -34,14 +35,14 @@ public interface Cryptosystem {
      * @return the plain text corresponding to the given {@code cyphertext}
      * @see Ciphertext
      */
-    Object decrypt(Ciphertext cyphertext);
+    GroupElement decrypt(Ciphertext cyphertext);
 
     /**
      * Returns the public key of the <i>Cryptosystem</i>.
      *
      * @return the public key of {@code this} <i>Cryptosystem</i>.
      */
-    Object getPublicKey();
+    GroupElement getPublicKey();
 
     /**
      * Returns the generator element of the cyclic group in the <i>Ring</i> or
@@ -50,7 +51,7 @@ public interface Cryptosystem {
      * @return the generator element of the cyclic groun of {@code this}
      *         <i>Cryptosystem</i> <i>Ring</i> or <i>Field</i> {@code F}.
      */
-    Object getGenerator();
+    GroupElement getGenerator();
 
     /**
      * Returns the <i>Ring</i> or <i>Field</i> {@code F} of the

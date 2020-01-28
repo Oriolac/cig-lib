@@ -154,6 +154,12 @@ public class PrimeField implements Ring, ECField {
         return (PrimeFieldElement) x.pow(pow);
     }
 
+    @Override
+    public RingElement fromBytes(byte[] bytes) {
+        BigInteger bigInteger = new BigInteger(bytes);
+        return this.toElement(bigInteger);
+    }
+
 
     @Override
     public int getFieldSize() {

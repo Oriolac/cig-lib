@@ -89,4 +89,5 @@ public interface Ring extends Group {
      */
     public RingElement pow(GroupElement x, BigInteger pow);
 
+    RingElement fromBytes(byte[] bytes);
 }

@@ -1,24 +1,23 @@
-/**
- * $Id$
- * @author vmateu
- * @date   Sep 28, 2015 3:57:57 PM
- *
- * Copyright (C) 2015 Scytl Secure Electronic Voting SA
- *
- * All rights reserved.
- *
- */
+
 package cat.udl.cig.cryptography.cryptosystems;
 
 import java.math.BigInteger;
 
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
+import cat.udl.cig.cryptography.cryptosystems.ciphertexts.HomomorphicCiphertext;
 import cat.udl.cig.fields.Group;
 import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.MultiplicativeSubgroup;
 
 /**
+ * $Id$
  *
+ * @author vmateu
+ * @date Sep 28, 2015 3:57:57 PM
+ * <p>
+ * Copyright (C) 2015 Scytl Secure Electronic Voting SA
+ * <p>
+ * All rights reserved.
  */
 public class ElGamalCypher implements HomomorphicCypher {
 
@@ -29,56 +28,39 @@ public class ElGamalCypher implements HomomorphicCypher {
     private final GroupElement publicKey;
 
     public ElGamalCypher(final MultiplicativeSubgroup gr,
-            final GroupElement g, final GroupElement y) {
+                         final GroupElement g, final GroupElement y) {
         group = gr;
         generator = g;
         publicKey = y;
     }
 
-    /**
-     * @see cat.udl.cig.cryptography.cryptosystems.Cypher#getPublicKey()
-     */
     @Override
     public GroupElement getPublicKey() {
         return publicKey;
     }
 
-    /**
-     * @see cat.udl.cig.cryptography.cryptosystems.Cypher#getGenerator()
-     */
     @Override
     public GroupElement getGenerator() {
         return generator;
     }
 
-    /**
-     * @see cat.udl.cig.cryptography.cryptosystems.Cypher#getGroup()
-     */
     @Override
     public Group getGroup() {
         return group;
     }
 
-    /**
-     * @see cat.udl.cig.cryptography.cryptosystems.HomomorphicCypher#encrypt(java.lang.Object)
-     */
     @Override
-    public ElGamalCiphertext encrypt(final Object message) {
-        BigInteger rand = group.getRandomExponent();
+    public ElGamalCiphertext encrypt(final GroupElement message) {
+        BigInteger rand = getGroup().getRandomExponent();
         return encrypt(message, rand);
     }
 
-    /**
-     * @see cat.udl.cig.cryptography.cryptosystems.HomomorphicCypher#encrypt(java.lang.Object,
-     *      java.math.BigInteger)
-     */
     @Override
-    public ElGamalCiphertext encrypt(final Object message,
-            final BigInteger r) {
-        GroupElement mess = (GroupElement) message;
+    public ElGamalCiphertext encrypt(final GroupElement message,
+                                     final BigInteger r) {
         GroupElement[] result = new GroupElement[2];
         result[0] = generator.pow(r);
-        result[1] = publicKey.pow(r).multiply(mess);
+        result[1] = publicKey.pow(r).multiply(message);
         return new ElGamalCiphertext(result);
     }
 

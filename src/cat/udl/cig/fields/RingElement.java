@@ -168,4 +168,5 @@ public interface RingElement extends GroupElement {
     public RingElement pow(BigInteger k)
             throws IncorrectRingElementException;
 
+
 }

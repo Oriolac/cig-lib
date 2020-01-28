@@ -5,6 +5,7 @@ import java.util.BitSet;
 import java.util.Objects;
 import java.util.Random;
 
+import cat.udl.cig.exceptions.NotImplementedException;
 import cat.udl.cig.exceptions.ParametersException;
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
 import cat.udl.cig.utils.bfarithmetic.Irreducibility;
@@ -196,6 +197,11 @@ public class BinaryField implements Ring {
     public BinaryFieldElement pow(final GroupElement x,
             final BigInteger pow) {
         return (BinaryFieldElement) x.pow(pow);
+    }
+
+    @Override
+    public RingElement fromBytes(byte[] bytes) {
+        throw new NotImplementedException();
     }
 
     /**
