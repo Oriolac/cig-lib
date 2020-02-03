@@ -721,7 +721,7 @@ public class GeneralECPoint implements ECPoint {
 
     @Override
     public byte[] toBytes() throws UnsupportedOperationException {
-        byte[] bytes = new byte[this.E.cardFactors.get(0).bitLength() / 8 * 2];
+        byte[] bytes = new byte[this.E.cardFactors.get(0).bitLength() / 8 * 2 + 2];
         byte[] x = getX().toBytes();
         byte[] y = getY().toBytes();
         System.arraycopy(x, 0, bytes, bytes.length / 2 - x.length, x.length);
