@@ -100,13 +100,8 @@ public class PrimeField implements Ring, ECField {
         }
         PrimeField other = (PrimeField) obj;
         if (p == null) {
-            if (other.p != null) {
-                return false;
-            }
-        } else if (!p.equals(other.p)) {
-            return false;
-        }
-        return true;
+            return other.p == null;
+        } else return p.equals(other.p);
     }
 
     public BigInteger getRandomExponent() {

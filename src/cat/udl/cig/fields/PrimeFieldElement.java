@@ -15,9 +15,9 @@ import cat.udl.cig.exceptions.IncorrectRingElementException;
  * <i>PrimeFieldElement</i> with an instance of a different kind of
  * <i>RingElement</i> causes an runtime exception.
  *
- * @see RingElement
  * @author M.Àngels Cerveró
  * @author Ricard Garra
+ * @see RingElement
  */
 public class PrimeFieldElement implements RingElement {
     /**
@@ -41,12 +41,10 @@ public class PrimeFieldElement implements RingElement {
      * uninitialized. That is {@code this.F = null} and {@code this.k = null}.
      * This constructor does not make a deep compy of \(F\).
      *
-     * @param F
-     *            the <i>PrimeField</i> to which {@code this}
-     *            <i>PrimeFieldElement</i> will belong.
-     * @param k
-     *            a BigInteger representing the value for {@code this}
-     *            <i>PrimeFieldElement</i>.
+     * @param F the <i>PrimeField</i> to which {@code this}
+     *          <i>PrimeFieldElement</i> will belong.
+     * @param k a BigInteger representing the value for {@code this}
+     *          <i>PrimeFieldElement</i>.
      * @see PrimeField
      */
     public PrimeFieldElement(final PrimeField F, final BigInteger k) {
@@ -63,8 +61,7 @@ public class PrimeFieldElement implements RingElement {
      * Creates a copy of the <i>PrimeFieldElement</i> \(q\). If \(q\) is null or
      * uninitialized, {@code this} instance remains uninitialized.
      *
-     * @param q
-     *            the <i>PrimeFieldElement</i> to be copied.
+     * @param q the <i>PrimeFieldElement</i> to be copied.
      */
     public PrimeFieldElement(final PrimeFieldElement q) {
         F = q.getGroup();
@@ -72,7 +69,7 @@ public class PrimeFieldElement implements RingElement {
     }
 
     protected PrimeFieldElement(final PrimeField F, final BigInteger k,
-            final boolean safe) {
+                                final boolean safe) {
         this.F = F;
         this.k = k;
     }
@@ -90,8 +87,8 @@ public class PrimeFieldElement implements RingElement {
             return new PrimeFieldElement(F, val);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of PrimeFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of PrimeFieldElement");
         }
     }
 
@@ -103,8 +100,8 @@ public class PrimeFieldElement implements RingElement {
             return new PrimeFieldElement(F, val);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of PrimeFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of PrimeFieldElement");
         }
     }
 
@@ -117,8 +114,8 @@ public class PrimeFieldElement implements RingElement {
             return new PrimeFieldElement(F, val, true);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of PrimeFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of PrimeFieldElement");
         }
     }
 
@@ -137,8 +134,8 @@ public class PrimeFieldElement implements RingElement {
             return new PrimeFieldElement(F, val, true);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of PrimeFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of PrimeFieldElement");
         }
     }
 
@@ -200,7 +197,7 @@ public class PrimeFieldElement implements RingElement {
         BigInteger c = b.modPow(mod1, F.getSize());
         BigInteger r =
                 k.modPow(mod1.add(BigInteger.ONE).divide(new BigInteger("2")),
-                    F.getSize());
+                        F.getSize());
 
         for (int i = 1; i < e.intValue(); i++) {
             BigInteger exp =
@@ -209,7 +206,7 @@ public class PrimeFieldElement implements RingElement {
                     (r.pow(2)).multiply(inverse).modPow(exp, F.getSize());
 
             if (d.mod(F.getSize()).compareTo(
-                new BigInteger("-1").mod(F.getSize())) == 0) {
+                    new BigInteger("-1").mod(F.getSize())) == 0) {
                 r = r.multiply(c);
                 r.mod(F.getSize());
             }
@@ -246,15 +243,12 @@ public class PrimeFieldElement implements RingElement {
     /**
      * Computes the Jacobi Symbol of \(k\) with respecto to the modulus \(m\).
      *
-     * @param k
-     *            a BigInteger.
-     * @param m
-     *            a BigInteger representing the modulus.
+     * @param k a BigInteger.
+     * @param m a BigInteger representing the modulus.
      * @return 0 if \( k \equiv 0 (\pmod m) \), 1 if \( k \not\equiv 0 (\pmod m)
-     *         \) and \( \exist x : k \equiv x^2 (\pmod m) \) or -1 if \(
-     *         \not\exist x : k \equiv x^2 (\pmod m) \) \).
-     * @throws IncorrectModuleException
-     *             if {@code m == 0}.
+     * \) and \( \exist x : k \equiv x^2 (\pmod m) \) or -1 if \(
+     * \not\exist x : k \equiv x^2 (\pmod m) \) \).
+     * @throws IncorrectModuleException if {@code m == 0}.
      */
     private int jacobiSymbol(final BigInteger k, final BigInteger m)
             throws IncorrectModuleException {
@@ -309,7 +303,7 @@ public class PrimeFieldElement implements RingElement {
             BigInteger m1 = m.mod(k1);
             s =
                     s.multiply(new BigInteger(String.valueOf(jacobiSymbol(m1,
-                        k1))));
+                            k1))));
         }
         return s.intValue();
     }
