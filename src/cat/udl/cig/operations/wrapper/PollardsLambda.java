@@ -38,7 +38,7 @@ public class PollardsLambda implements LogarithmAlgorithm {
         for (int i = 0; i < 30 && res.isEmpty(); i++) {
             getHashMap();
             pair = getD();
-            res = getExponent(pair, beta);
+            res = getExponent(pair.getKey(), pair.getValue(), beta);
         }
         return res;
     }
@@ -51,19 +51,16 @@ public class PollardsLambda implements LogarithmAlgorithm {
         }
     }
 
-    private Optional<BigInteger> getExponent(Pair<GroupElement, BigInteger> pair, GroupElement beta) {
+    private Optional<BigInteger> getExponent(GroupElement xn, BigInteger d, GroupElement beta) {
         Group group = alpha.getGroup();
-        BigInteger d = pair.getValue();
-        GroupElement xn = pair.getKey();
-        GroupElement yn = beta;
-        BigInteger acc = BigInteger.ZERO;
-        while (acc.compareTo(b.add(d)) <= 0) {
-            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(yn.hashCode()) % hashMap.size()));
-            acc = acc.add(tmp.getKey());
-            yn = yn.multiply(tmp.getValue());
-            if (xn.equals(yn))
-                return Optional.of(b.add(d).subtract(acc).remainder(group.getSize()).add(group.getSize())
-                        .remainder(group.getSize()));
+        GroupElement yj = beta;
+        BigInteger dj = BigInteger.ZERO;
+        while (dj.compareTo(b.add(d)) <= 0) {
+            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(yj.hashCode()) % hashMap.size()));
+            dj = dj.add(tmp.getKey());
+            yj = yj.multiply(tmp.getValue());
+            if (xn.equals(yj))
+                return Optional.of(b.add(d).subtract(dj).remainder(group.getSize()));
         }
         return Optional.empty();
     }
