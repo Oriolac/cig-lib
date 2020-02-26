@@ -567,22 +567,17 @@ public class Polynomial {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof Polynomial)) {
-            return false;
-        }
-        Polynomial g = (Polynomial) obj;
-
-        return (this == obj)
-                || (coefficients.equals(g.coefficients) && degree == g.degree);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Polynomial that = (Polynomial) o;
+        return degree == that.degree &&
+                Objects.equals(coefficients, that.coefficients);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(coefficients);
-        hash = 97 * hash + degree;
-        return hash;
+        return Objects.hash(coefficients, degree);
     }
 
     /**

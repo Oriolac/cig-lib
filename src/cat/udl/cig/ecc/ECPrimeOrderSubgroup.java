@@ -7,7 +7,6 @@ import java.util.Objects;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.ParametersException;
-import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.MultiplicativeSubgroup;
 import cat.udl.cig.fields.Group;
 
@@ -89,21 +88,21 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see Group#multiply(GroupElement,
-     *      GroupElement)
+     * @see Group#multiply(cat.udl.cig.fields.GroupElement,
+     *      cat.udl.cig.fields.GroupElement)
      */
     @Override
-    public GeneralECPoint multiply(final GroupElement x,
-            final GroupElement y) {
+    public GeneralECPoint multiply(final cat.udl.cig.fields.GroupElement x,
+                                   final cat.udl.cig.fields.GroupElement y) {
         return (GeneralECPoint) x.multiply(y);
     }
 
     /**
-     * @see Group#pow(GroupElement,
+     * @see Group#pow(cat.udl.cig.fields.GroupElement,
      *      java.math.BigInteger)
      */
     @Override
-    public GeneralECPoint pow(final GroupElement x, final BigInteger pow) {
+    public GeneralECPoint pow(final cat.udl.cig.fields.GroupElement x, final BigInteger pow) {
         return (GeneralECPoint) x.pow(pow);
     }
 

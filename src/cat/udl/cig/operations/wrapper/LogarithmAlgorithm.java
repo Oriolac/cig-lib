@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface LogarithmAlgorithm {
 
 
-    Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException;
+    Optional<BigInteger> algorithm(cat.udl.cig.fields.GroupElement beta) throws ArithmeticException;
+
+    GroupElement getAlpha();
 }

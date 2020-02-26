@@ -1,7 +1,7 @@
 package cat.udl.cig.operations.wrapper;
 
-import cat.udl.cig.fields.Group;
 import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.Group;
 import javafx.util.Pair;
 
 import java.math.BigInteger;
@@ -14,14 +14,14 @@ import static java.lang.Math.abs;
 
 public class PollardsLambda implements LogarithmAlgorithm {
 
-    private final GroupElement alpha;
+    private final cat.udl.cig.fields.GroupElement alpha;
     private final Group group;
     private final BigInteger b;
     private final BigInteger N;
-    private HashMap<BigInteger, Pair<BigInteger, GroupElement>> hashMap;
+    private HashMap<BigInteger, Pair<BigInteger, cat.udl.cig.fields.GroupElement>> hashMap;
 
 
-    public PollardsLambda(GroupElement alpha) {
+    public PollardsLambda(cat.udl.cig.fields.GroupElement alpha) {
         group = alpha.getGroup();
         b = BigInteger.TWO.pow(20);
         N = b.sqrt().add(BigInteger.ONE);
@@ -30,17 +30,22 @@ public class PollardsLambda implements LogarithmAlgorithm {
 
 
     @Override
-    public Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException {
+    public Optional<BigInteger> algorithm(cat.udl.cig.fields.GroupElement beta) throws ArithmeticException {
         if (!alpha.belongsToSameGroup(beta))
             throw new ArithmeticException("Alpha and beta don't belong to the same group");
         Optional<BigInteger> res = Optional.empty();
-        Pair<GroupElement, BigInteger> pair;
+        Pair<cat.udl.cig.fields.GroupElement, BigInteger> pair;
         for (int i = 0; i < 30 && res.isEmpty(); i++) {
             getHashMap();
             pair = getD();
             res = getExponent(pair.getKey(), pair.getValue(), beta);
         }
         return res;
+    }
+
+    @Override
+    public GroupElement getAlpha() {
+        return this.alpha;
     }
 
     private void getHashMap() {
@@ -51,12 +56,12 @@ public class PollardsLambda implements LogarithmAlgorithm {
         }
     }
 
-    private Optional<BigInteger> getExponent(GroupElement xn, BigInteger d, GroupElement beta) {
+    private Optional<BigInteger> getExponent(cat.udl.cig.fields.GroupElement xn, BigInteger d, cat.udl.cig.fields.GroupElement beta) {
         Group group = alpha.getGroup();
-        GroupElement yj = beta;
+        cat.udl.cig.fields.GroupElement yj = beta;
         BigInteger dj = BigInteger.ZERO;
         while (dj.compareTo(b.add(d)) <= 0) {
-            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(yj.hashCode()) % hashMap.size()));
+            Pair<BigInteger, cat.udl.cig.fields.GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(yj.hashCode()) % hashMap.size()));
             dj = dj.add(tmp.getKey());
             yj = yj.multiply(tmp.getValue());
             if (xn.equals(yj))
@@ -65,11 +70,11 @@ public class PollardsLambda implements LogarithmAlgorithm {
         return Optional.empty();
     }
 
-    private Pair<GroupElement, BigInteger> getD() {
-        GroupElement xn = alpha.pow(b);
+    private Pair<cat.udl.cig.fields.GroupElement, BigInteger> getD() {
+        cat.udl.cig.fields.GroupElement xn = alpha.pow(b);
         BigInteger d = BigInteger.ZERO;
         for (long i = 0; i < N.intValue(); i++) {
-            Pair<BigInteger, GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(xn.hashCode()) % hashMap.size()));
+            Pair<BigInteger, cat.udl.cig.fields.GroupElement> tmp = hashMap.get(BigInteger.valueOf(abs(xn.hashCode()) % hashMap.size()));
             d = d.add(tmp.getKey());
             xn = xn.multiply(tmp.getValue());
         }

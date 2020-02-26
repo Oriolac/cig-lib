@@ -970,20 +970,17 @@ public class BinaryFieldElement implements RingElement {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 19 * hash + Objects.hashCode(F);
-        hash = 19 * hash + Objects.hashCode(k);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinaryFieldElement that = (BinaryFieldElement) o;
+        return Objects.equals(F, that.F) &&
+                Objects.equals(k, that.k);
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        final BinaryFieldElement other = (BinaryFieldElement) obj;
-        return k.equals(other.k) && F.equals(other.F);
+    public int hashCode() {
+        return Objects.hash(F, k);
     }
 
     /**

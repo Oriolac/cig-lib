@@ -191,29 +191,18 @@ public class ExtensionField implements Ring {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof ExtensionField)) {
-            return false;
-        }
-
-        ExtensionField F = (ExtensionField) obj;
-
-        /*
-         * if(!F.isInitialized() && !isInitialized()) { return true; }
-         * if(!F.isInitialized() || !isInitialized()) { return false; }
-         */
-
-        return (this == obj)
-            || (p.equals(F.p) && n == F.n && reducingPolynomial
-                .equals(F.reducingPolynomial));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExtensionField that = (ExtensionField) o;
+        return n == that.n &&
+                Objects.equals(p, that.p) &&
+                Objects.equals(reducingPolynomial, that.reducingPolynomial);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 11 * hash + n;
-        hash = 11 * hash + Objects.hashCode(reducingPolynomial);
-        return hash;
+        return Objects.hash(p, n, reducingPolynomial);
     }
 
     /**

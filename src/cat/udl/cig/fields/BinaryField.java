@@ -136,21 +136,17 @@ public class BinaryField implements Ring {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj == null || getClass() != obj.getClass()) {
-            throw new ParametersException();
-        }
-        final BinaryField other = (BinaryField) obj;
-        return reducingPolynomial.equals(other.reducingPolynomial)
-            && n == other.n;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinaryField that = (BinaryField) o;
+        return n == that.n &&
+                Objects.equals(reducingPolynomial, that.reducingPolynomial);
     }
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 47 * hash + Objects.hashCode(n);
-        hash = 47 * hash + Objects.hashCode(reducingPolynomial);
-        return hash;
+        return Objects.hash(n, reducingPolynomial);
     }
 
     @Override

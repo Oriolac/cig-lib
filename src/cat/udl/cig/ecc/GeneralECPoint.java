@@ -2,9 +2,9 @@ package cat.udl.cig.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import cat.udl.cig.fields.Group;
-import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.RingElement;
 
 /**
@@ -216,10 +216,10 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see GroupElement#divide(GroupElement)
+     * @see cat.udl.cig.fields.GroupElement#divide(cat.udl.cig.fields.GroupElement)
      */
     @Override
-    public GeneralECPoint divide(final GroupElement iQ)
+    public GeneralECPoint divide(final cat.udl.cig.fields.GroupElement iQ)
             throws ArithmeticException {
         GeneralECPoint Q = (GeneralECPoint) iQ;
         if (isInfinity) {
@@ -266,7 +266,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     @Override
-    public GeneralECPoint multiply(final GroupElement iQ)
+    public GeneralECPoint multiply(final cat.udl.cig.fields.GroupElement iQ)
             throws ArithmeticException {
         GeneralECPoint Q = (GeneralECPoint) iQ;
         if (!E.equals(Q.E)) {
@@ -316,7 +316,7 @@ public class GeneralECPoint implements ECPoint {
 
 
     @Override
-    public boolean belongsToSameGroup(final GroupElement q) {
+    public boolean belongsToSameGroup(final cat.udl.cig.fields.GroupElement q) {
         return E.equals(q.getGroup());
     }
 
@@ -329,63 +329,21 @@ public class GeneralECPoint implements ECPoint {
         return "(" + x.toString() + ":" + y.toString() + ":" + z + ")";
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((E == null) ? 0 : E.hashCode());
-        result = prime * result + (isInfinity ? 1231 : 1237);
-        result = prime * result + ((order == null) ? 0 : order.hashCode());
-        result = prime * result + ((x == null) ? 0 : x.hashCode());
-        result = prime * result + ((y == null) ? 0 : y.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeneralECPoint that = (GeneralECPoint) o;
+        return isInfinity == that.isInfinity &&
+                Objects.equals(E, that.E) &&
+                Objects.equals(x, that.x) &&
+                Objects.equals(y, that.y) &&
+                Objects.equals(order, that.order);
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        GeneralECPoint other = (GeneralECPoint) obj;
-        if (E == null) {
-            if (other.E != null) {
-                return false;
-            }
-        } else if (!E.equals(other.E)) {
-            return false;
-        }
-        if (isInfinity != other.isInfinity) {
-            return false;
-        }
-        if (order == null) {
-            if (other.order != null) {
-                return false;
-            }
-        } else if (!order.equals(other.order)) {
-            return false;
-        }
-        if (x == null) {
-            if (other.x != null) {
-                return false;
-            }
-        } else if (!x.equals(other.x)) {
-            return false;
-        }
-        if (y == null) {
-            return other.y == null;
-        } else return y.equals(other.y);
+    public int hashCode() {
+        return Objects.hash(E, x, y, isInfinity, order);
     }
 
     @Override
@@ -676,7 +634,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see GroupElement#getGroup()
+     * @see cat.udl.cig.fields.GroupElement#getGroup()
      */
     @Override
     public Group getGroup() {
@@ -684,7 +642,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see GroupElement#getValue()
+     * @see cat.udl.cig.fields.GroupElement#getValue()
      */
     @Override
     public Object getValue() {
@@ -692,7 +650,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see GroupElement#getIntValue()
+     * @see cat.udl.cig.fields.GroupElement#getIntValue()
      */
     @Override
     public BigInteger getIntValue() {

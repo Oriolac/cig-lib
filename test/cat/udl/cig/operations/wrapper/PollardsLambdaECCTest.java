@@ -1,7 +1,6 @@
 package cat.udl.cig.operations.wrapper;
 
 import cat.udl.cig.AbstractSetUpP192;
-import cat.udl.cig.ecc.GeneralEC;
 import cat.udl.cig.ecc.GeneralECPoint;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

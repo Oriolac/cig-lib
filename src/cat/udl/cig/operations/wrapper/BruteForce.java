@@ -42,4 +42,9 @@ public class BruteForce implements LogarithmAlgorithm {
     public int hashCode() {
         return Objects.hash(alpha);
     }
+
+    @Override
+    public GroupElement getAlpha() {
+        return alpha;
+    }
 }
