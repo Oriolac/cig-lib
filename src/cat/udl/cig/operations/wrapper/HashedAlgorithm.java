@@ -11,34 +11,48 @@ public class HashedAlgorithm implements LogarithmAlgorithm {
 
     private final GroupElement alpha;
     private final BigInteger order;
-    HashMap<GroupElement, BigInteger> hash;
-    static final LogarithmAlgorithm hashedInstance =
-            new HashedAlgorithm(LoadCurve.P192().getGroup().getGenerator(), BigInteger.valueOf(1024 * 1024));
+    private final BigInteger times;
+    private HashMap<GroupElement, BigInteger> hash;
+    private static LogarithmAlgorithm hashedInstance;
 
-    public HashedAlgorithm(GroupElement alpha, BigInteger order) {
+    private HashedAlgorithm(GroupElement alpha, BigInteger order, BigInteger times) {
         this.alpha = alpha;
         hash = new HashMap<>();
         this.order = order;
-        generateHash(alpha, order);
+        this.times = times;
+        generateHash();
     }
 
-    private void generateHash(GroupElement alpha, BigInteger order) {
+    private void generateHash() {
         GroupElement actual = alpha.getGroup().getNeuterElement();
         hash.putIfAbsent(actual, BigInteger.ZERO);
-        for (BigInteger x = BigInteger.ONE; x.compareTo(order) < 0; x = x.add(BigInteger.ONE)) {
-            actual = actual.multiply(alpha);
+        hash.putIfAbsent(alpha, BigInteger.ONE);
+        GroupElement gen = alpha.pow(times);
+        for (BigInteger x = times; x.compareTo(order) <= 0; x = x.add(times)) {
+            actual = actual.multiply(gen);
             hash.putIfAbsent(actual, x);
         }
     }
 
     @Override
     public Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException {
-        return Optional.of(hash.get(beta));
+        GroupElement actual = beta.multiply(beta.getGroup().getNeuterElement());
+        Optional<BigInteger> res = Optional.ofNullable(hash.get(actual));
+        for (BigInteger x = BigInteger.ONE; res.isEmpty() && x.compareTo(times) <= 0; x = x.add(BigInteger.ONE)) {
+            actual = actual.multiply(alpha);
+            BigInteger finalX = x;
+            res = Optional.ofNullable(hash.get(actual)).map((y) -> y.subtract(finalX));
+        }
+        return res;
     }
 
     @Override
     public GroupElement getAlpha() {
         return this.alpha;
+    }
+
+    public static void loadHashedInstance(GroupElement alpha, BigInteger order, BigInteger times) {
+        hashedInstance = new HashedAlgorithm(alpha, order, times);
     }
 
     public static LogarithmAlgorithm getHashedInstance() {

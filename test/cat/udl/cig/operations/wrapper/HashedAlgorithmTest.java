@@ -16,6 +16,7 @@ class HashedAlgorithmTest extends AbstractSetUpP192 {
 
     @BeforeAll
     static void setUp() {
+        HashedAlgorithm.loadHashedInstance(alpha, BigInteger.valueOf(1024), BigInteger.valueOf(32));
         hashedForce = (HashedAlgorithm) HashedAlgorithm.getHashedInstance();
     }
 
@@ -23,7 +24,7 @@ class HashedAlgorithmTest extends AbstractSetUpP192 {
     void algorithmEcc() {
         BigInteger bigInici = BigInteger.ZERO;
         BigInteger bigFinal = hashedForce.getOrder();
-        for(BigInteger xi = bigInici; xi.compareTo(bigFinal) < 0; xi = xi.add(BigInteger.TEN)) {
+        for(BigInteger xi = bigInici; xi.compareTo(bigFinal) < 0; xi = xi.add(BigInteger.valueOf(512))) {
             testValue(xi);
         }
     }
