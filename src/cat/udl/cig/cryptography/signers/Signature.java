@@ -6,6 +6,7 @@
 
 package cat.udl.cig.cryptography.signers;
 
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.RingElement;
 
 /**
@@ -24,7 +25,7 @@ public class Signature {
      * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
-    private final Object A;
+    private final GroupElement A;
     
     /**
      * An <i>Object</i> representing the second item that forms the tuple of
@@ -36,7 +37,7 @@ public class Signature {
      * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
-    private final Object B;
+    private final GroupElement B;
     
     /**
      * Creates a <i>Signature</i> which content is the tuple \( (A, B) \).
@@ -51,7 +52,7 @@ public class Signature {
      * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
-    public Signature(Object A, Object B) {
+    public Signature(GroupElement A, GroupElement B) {
         this.A = A;
         this.B = B;
     }
@@ -68,7 +69,7 @@ public class Signature {
      * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
-    public Object getA() {
+    public GroupElement getA() {
         return A;
     }
     
@@ -84,7 +85,7 @@ public class Signature {
      * @see RingElement
      * @see cat.udl.cig.ecc.ECPoint
      */
-    public Object getB() {
+    public GroupElement getB() {
         return B;
     }
 }

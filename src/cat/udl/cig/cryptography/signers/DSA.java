@@ -10,6 +10,7 @@ import java.math.BigInteger;
 import java.util.Random;
 
 import cat.udl.cig.cryptography.hashes.SHA1;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.PrimeField;
 import cat.udl.cig.fields.PrimeFieldElement;
 
@@ -88,7 +89,7 @@ public class DSA extends Signer {
     }
 
     @Override
-    public Signature sign(final Object message) {
+    public Signature sign(final GroupElement message) {
         BigInteger k = new BigInteger(securityBits, new Random());
         while (k.compareTo(BigInteger.ONE) < 1 && k.compareTo(q) > -1) {
             k = new BigInteger(securityBits, new Random());

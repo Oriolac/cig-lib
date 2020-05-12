@@ -10,6 +10,7 @@ import java.math.BigInteger;
 
 import cat.udl.cig.cryptography.hashes.SHA1;
 import cat.udl.cig.ecc.ECPoint;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.PrimeFieldElement;
 
 /**
@@ -55,7 +56,7 @@ public class ECDSAVerifier implements SignerVerifier {
     }
 
     @Override
-    public boolean verifySignature(final Object message,
+    public boolean verifySignature(final GroupElement message,
             final Signature signature) {
         BigInteger r = ((PrimeFieldElement) signature.getA()).getValue();
         BigInteger s = ((PrimeFieldElement) signature.getB()).getValue();

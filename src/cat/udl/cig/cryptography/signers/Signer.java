@@ -7,6 +7,7 @@
 package cat.udl.cig.cryptography.signers;
 
 import cat.udl.cig.fields.Group;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.Ring;
 
 /**
@@ -50,7 +51,7 @@ public abstract class Signer {
      * @return a <i>Signature</i> containing the digital signature of the user
      *         over the given message.
      */
-    public abstract Signature sign(Object message);
+    public abstract Signature sign(GroupElement message);
 
     /**
      * Returns the verifier corresponding to {@code this} <i>Signer</i>

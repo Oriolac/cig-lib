@@ -11,6 +11,7 @@ import java.math.BigInteger;
 import cat.udl.cig.cryptography.hashes.SHA1;
 import cat.udl.cig.ecc.ECPoint;
 import cat.udl.cig.ecc.ECPrimeOrderSubgroup;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.PrimeField;
 import cat.udl.cig.fields.PrimeFieldElement;
 
@@ -70,7 +71,7 @@ public class ECDSA extends Signer {
     }
 
     @Override
-    public Signature sign(final Object message) {
+    public Signature sign(final GroupElement message) {
         ECPoint kP;
         BigInteger r = BigInteger.ZERO, s = BigInteger.ZERO;
         BigInteger k, invK, imhash;

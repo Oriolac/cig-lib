@@ -6,6 +6,8 @@
 
 package cat.udl.cig.cryptography.signers;
 
+import cat.udl.cig.fields.GroupElement;
+
 /**
  * Models a Digital Signature Verifier (DSV). Any DSV needs to ensure that a
  * <i>Signature</i>: 1.- corresponds to the given message; 2.- has been done for
@@ -27,5 +29,5 @@ public interface SignerVerifier {
      *            {@code message}.
      * @return true if the {@code signature} is correct and false otherwise.
      */
-    boolean verifySignature(Object message, Signature signature);
+    boolean verifySignature(GroupElement message, Signature signature);
 }

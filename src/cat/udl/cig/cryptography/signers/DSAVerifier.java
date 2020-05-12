@@ -9,6 +9,7 @@ package cat.udl.cig.cryptography.signers;
 import java.math.BigInteger;
 
 import cat.udl.cig.cryptography.hashes.SHA1;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.PrimeFieldElement;
 
 /**
@@ -57,9 +58,6 @@ public class DSAVerifier implements SignerVerifier {
      * Creates an instance of <i>DSAVerifier</i> containing the specified
      * <i>PrimeField</i> \( F \), and the values q, g and y.
      *
-     * @param F
-     *            the <i>PrimeField</i> where the message and its corresponding
-     *            <i>Signature</i> lies.
      * @param q
      *            a BigInteger value to initialize the DSA algorithm and
      *            {@code this} verifier.
@@ -79,7 +77,7 @@ public class DSAVerifier implements SignerVerifier {
     }
 
     @Override
-    public boolean verifySignature(final Object message,
+    public boolean verifySignature(final GroupElement message,
             final Signature signature) {
         PrimeFieldElement r = (PrimeFieldElement) signature.getA();
         PrimeFieldElement s = (PrimeFieldElement) signature.getB();
@@ -94,13 +92,9 @@ public class DSAVerifier implements SignerVerifier {
         BigInteger v1 = g.pow(u1).multiply(y.pow(u2)).getValue();
         v1 = v1.mod(q);
 
-        if (v1.compareTo(r.getValue()) == 0) {
-            return true;
-        }
+        return v1.compareTo(r.getValue()) == 0;
         // } catch (IncorrectRingElementException e) {
         // e.printStackTrace();
         // }
-
-        return false;
     }
 }
