@@ -5,6 +5,7 @@ import cat.udl.cig.exceptions.ConstructionException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.security.spec.ECField;
+import java.util.Objects;
 
 /**
  * Models a <i>Prime Field</i> \(\mathbb{F}_{p}\), where \(p\) is positive and a
@@ -73,35 +74,17 @@ public class PrimeField implements Ring, ECField {
             + String.valueOf(p.bitLength()) + " bits).";
     }
 
-    /**
-     * @see java.lang.Object#hashCode()
-     */
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((p == null) ? 0 : p.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PrimeField that = (PrimeField) o;
+        return Objects.equals(p, that.p);
     }
 
-    /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        PrimeField other = (PrimeField) obj;
-        if (p == null) {
-            return other.p == null;
-        } else return p.equals(other.p);
+    public int hashCode() {
+        return Objects.hash(p);
     }
 
     public BigInteger getRandomExponent() {

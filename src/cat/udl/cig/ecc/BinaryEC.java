@@ -2,6 +2,7 @@ package cat.udl.cig.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.fields.BinaryField;
@@ -414,4 +415,17 @@ public class BinaryEC extends GeneralEC {
         return P;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        BinaryEC binaryEC = (BinaryEC) o;
+        return isSuperSingular == binaryEC.isSuperSingular;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), isSuperSingular);
+    }
 }

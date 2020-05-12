@@ -8,22 +8,23 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class BruteForceTest extends AbstractSetUpP192 {
+class HashedAlgorithmTest extends AbstractSetUpP192 {
 
-    static BruteForce bruteForce;
+    static HashedAlgorithm hashedForce;
 
     @BeforeAll
     static void setUp() {
-        bruteForce = new BruteForce(alpha);
+        HashedAlgorithm.loadHashedInstance(alpha, BigInteger.valueOf(1024), BigInteger.valueOf(32));
+        hashedForce = (HashedAlgorithm) HashedAlgorithm.getHashedInstance();
     }
 
     @Test
     void algorithmEcc() {
-        BigInteger bigInici = BigInteger.TEN.pow(2);
-        BigInteger bigFinal = bigInici.multiply(BigInteger.TWO);
-        for(BigInteger xi = bigInici; xi.compareTo(bigFinal) < 0; xi = xi.add(BigInteger.TEN)) {
+        BigInteger bigInici = BigInteger.ZERO;
+        BigInteger bigFinal = hashedForce.getOrder();
+        for(BigInteger xi = bigInici; xi.compareTo(bigFinal) < 0; xi = xi.add(BigInteger.valueOf(512))) {
             testValue(xi);
         }
     }
@@ -36,7 +37,7 @@ public class BruteForceTest extends AbstractSetUpP192 {
 
     void testValue(BigInteger xi) {
         GeneralECPoint beta = alpha.pow(xi);
-        Optional<BigInteger> res = bruteForce.algorithm(beta);
+        Optional<BigInteger> res = hashedForce.algorithm(beta);
         assertEquals(Optional.of(xi), res);
     }
 }

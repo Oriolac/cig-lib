@@ -7,6 +7,7 @@ import cat.udl.cig.exceptions.ParametersException;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Objects;
 
 /**
  * Models any kind of <i>Multiplicative subgroup</i> with a prime order generator.
@@ -55,45 +56,18 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = super.hashCode();
-        result =
-            prime * result
-                + ((cardinality == null) ? 0 : cardinality.hashCode());
-        result =
-            prime
-                * result
-                + ((generator == null) ? 0 : generator.getValue()
-                    .hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegerPrimeOrderSubgroup that = (IntegerPrimeOrderSubgroup) o;
+        return Objects.equals(field, that.field) &&
+                Objects.equals(cardinality, that.cardinality) &&
+                Objects.equals(generator, that.generator);
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        IntegerPrimeOrderSubgroup other = (IntegerPrimeOrderSubgroup) obj;
-        if (cardinality == null) {
-            if (other.cardinality != null) {
-                return false;
-            }
-        } else if (!cardinality.equals(other.cardinality)) {
-            return false;
-        }
-        if (generator == null) {
-            return other.generator == null;
-        } else if (!generator.equals(other.generator)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(field, cardinality, generator);
     }
 
     /**

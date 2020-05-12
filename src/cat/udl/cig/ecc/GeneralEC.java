@@ -75,7 +75,7 @@ public class GeneralEC implements EC {
                 iK.getSize().equals(BigInteger.valueOf(3))) {
             throw new ConstructionException("Coefficients must be 2 and the ring must not be 2 or 3");
         }
-        GroupElement elem;
+        cat.udl.cig.fields.GroupElement elem;
         elem = iK.getNeuterElement();
         for (RingElement coefficient : coefficients) {
             if (!coefficient.belongsToSameGroup(elem)) {
@@ -112,7 +112,7 @@ public class GeneralEC implements EC {
                         || K.getSize().equals(BigInteger.valueOf(2)) || K
                         .getSize().equals(BigInteger.valueOf(3)));
         correctInput = correctInput && conditions;
-        GroupElement elem = null;
+        cat.udl.cig.fields.GroupElement elem = null;
         if (K != null) {
             elem = K.getNeuterElement();
         } else {
@@ -309,21 +309,21 @@ public class GeneralEC implements EC {
     }
 
     /**
-     * @see Group#multiply(GroupElement,
-     * GroupElement)
+     * @see Group#multiply(cat.udl.cig.fields.GroupElement,
+     * cat.udl.cig.fields.GroupElement)
      */
     @Override
-    public GeneralECPoint multiply(final GroupElement x,
-                                   final GroupElement y) {
+    public GeneralECPoint multiply(final cat.udl.cig.fields.GroupElement x,
+                                   final cat.udl.cig.fields.GroupElement y) {
         return (GeneralECPoint) x.multiply(y);
     }
 
     /**
-     * @see Group#pow(GroupElement,
+     * @see Group#pow(cat.udl.cig.fields.GroupElement,
      * java.math.BigInteger)
      */
     @Override
-    public GeneralECPoint pow(final GroupElement x, final BigInteger pow) {
+    public GeneralECPoint pow(final cat.udl.cig.fields.GroupElement x, final BigInteger pow) {
         return (GeneralECPoint) x.pow(pow);
     }
 
@@ -397,34 +397,21 @@ public class GeneralEC implements EC {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        GeneralEC other = (GeneralEC) obj;
-        if (this.coefficients.length != other.coefficients.length) {
-            return false;
-        }
-        for (int i = 0; i < this.coefficients.length; i++) {
-            if(!this.coefficients[i].equals(other.coefficients[i])) {
-                return false;
-            }
-        }
-        if (this.cardFactors.size() != other.cardFactors.size()) {
-            return false;
-        }
-        for (int i = 0; i < this.cardFactors.size(); i++) {
-            if(!this.cardFactors.get(i).equals(other.cardFactors.get(i))) {
-                return false;
-            }
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GeneralEC generalEC = (GeneralEC) o;
+        return Objects.equals(k, generalEC.k) &&
+                Arrays.equals(coefficients, generalEC.coefficients) &&
+                Objects.equals(cardFactors, generalEC.cardFactors) &&
+                Objects.equals(orders, generalEC.orders);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(k, cardFactors, orders);
+        result = 31 * result + Arrays.hashCode(coefficients);
+        return result;
     }
 
     /*public GeneralECPoint getBigPrimeOrderGenerator() {

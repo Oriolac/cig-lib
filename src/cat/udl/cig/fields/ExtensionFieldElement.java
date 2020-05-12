@@ -257,28 +257,16 @@ public class ExtensionFieldElement implements RingElement {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof ExtensionFieldElement)) {
-            return false;
-        }
-
-        ExtensionFieldElement g = (ExtensionFieldElement) obj;
-
-        /*
-         * if(!g.isInitialized() && !isInitialized()) { return true; }
-         * if(!g.isInitialized() || !isInitialized()) { return false; }
-         */
-
-        return (this == obj)
-                || (Fpn.equals(g.Fpn) && polynomial.equals(g.polynomial));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExtensionFieldElement that = (ExtensionFieldElement) o;
+        return Objects.equals(Fpn, that.Fpn) &&
+                Objects.equals(polynomial, that.polynomial);
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + Objects.hashCode(Fpn);
-        hash = 97 * hash + Objects.hashCode(polynomial);
-        return hash;
+        return Objects.hash(Fpn, polynomial);
     }
-
 }

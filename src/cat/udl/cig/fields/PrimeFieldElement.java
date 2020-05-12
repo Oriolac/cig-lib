@@ -224,20 +224,17 @@ public class PrimeFieldElement implements RingElement {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof PrimeFieldElement)) {
-            return false;
-        }
-        PrimeFieldElement g = (PrimeFieldElement) obj;
-        return (this == obj) || (F.equals(g.F) && (k.equals(g.k)));
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PrimeFieldElement that = (PrimeFieldElement) o;
+        return Objects.equals(F, that.F) &&
+                Objects.equals(k, that.k);
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(F);
-        hash = 97 * hash + Objects.hashCode(k);
-        return hash;
+        return Objects.hash(F, k);
     }
 
     /**
