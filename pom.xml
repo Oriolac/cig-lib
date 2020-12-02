@@ -18,6 +18,14 @@
     <description>Library of Cryptography and Graphs research group from Universitat de Lleida</description>
     <url>https://github.com/Oriolac/cig-lib</url>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub OWNER Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/Oriolac/cig-lib</url>
+        </repository>
+    </distributionManagement>
+
     <licenses>
         <license>
             <name>MIT License</name>
