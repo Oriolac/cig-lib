@@ -22,8 +22,12 @@ public class PollardsLambda implements LogarithmAlgorithm {
 
 
     public PollardsLambda(GroupElement alpha) {
+        this(alpha, BigInteger.TWO.pow(20));
+    }
+
+    public PollardsLambda(GroupElement alpha, BigInteger b) {
         group = alpha.getGroup();
-        b = BigInteger.TWO.pow(20);
+        this.b = b;
         N = b.sqrt().add(BigInteger.ONE);
         this.alpha = alpha;
     }
