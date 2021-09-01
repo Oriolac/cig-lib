@@ -16,5 +16,5 @@ import cat.udl.cig.fields.GroupElement;
  */
 public interface Ciphertext {
 
-    GroupElement[] getParts();
+    GroupElement getElement();
 }
