@@ -1,21 +1,22 @@
 package cat.udl.cig.fields;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Random;
-
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.NotImplementedException;
 import cat.udl.cig.utils.Polynomial;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * Models an <i>Extension Field</i> \(\mathbb{F}_{p^{n}}\), where \(p\) is
  * positive and a prime number.
  *
- * @see Ring
  * @author M.Àngels Cerveró
  * @author Ricard Garra
+ * @see Ring
  */
 public class ExtensionField implements Ring {
 
@@ -42,20 +43,17 @@ public class ExtensionField implements Ring {
      * \(m\) is a positive and a prime number, \(e\) is greater than 0 and the
      * degree of the reducingPoly is exactly \(e\).
      *
-     * @param m
-     *            the characteristic of {@code this} newly created
-     *            <i>ExtensionField</i>. It must be positive and a prime number.
-     * @param e
-     *            the exponent of {@code this} newly created
-     *            <i>ExtensionField</i>. It must be greater than 0.
-     * @param reducingPoly
-     *            the reducing polynomail of {@code this} newly created
-     *            <i>ExtensionField</i>. It must be an irreducible polynomial of
-     *            degree \(e\).
+     * @param m            the characteristic of {@code this} newly created
+     *                     <i>ExtensionField</i>. It must be positive and a prime number.
+     * @param e            the exponent of {@code this} newly created
+     *                     <i>ExtensionField</i>. It must be greater than 0.
+     * @param reducingPoly the reducing polynomail of {@code this} newly created
+     *                     <i>ExtensionField</i>. It must be an irreducible polynomial of
+     *                     degree \(e\).
      */
 
     public ExtensionField(final BigInteger m, final int e,
-            final Polynomial reducingPoly) {
+                          final Polynomial reducingPoly) {
         // TODO: CHECK IF THE POLYNOMIAL IS IRREDUCIBLE!
         // Using BigInteger.valueOf(4) when
         // super(
@@ -76,8 +74,7 @@ public class ExtensionField implements Ring {
      * has a correct characteristic, exponent and reducing polynomial. So, the
      * constructor does not check the correctness of the attributes fo \(F\).
      *
-     * @param F
-     *            the <i>ExtensionField</i> to be copied.
+     * @param F the <i>ExtensionField</i> to be copied.
      */
     public ExtensionField(final ExtensionField F) {
         p = F.p;
@@ -92,7 +89,7 @@ public class ExtensionField implements Ring {
     /**
      * Returns the exponent \(n\) of this <i>ExtensionField</i>.
      *
-     * @return (\n\), the exponent of this <i>ExtensionField</i>.
+     * @return (\ n \), the exponent of this <i>ExtensionField</i>.
      */
     public int getExponent() {
         return n;
@@ -102,7 +99,7 @@ public class ExtensionField implements Ring {
      * Returns the reducing polynomial of this <i>ExtensionField</i>.
      *
      * @return reducingPolynomial, the reducing polynomial of this
-     *         <i>ExtensionField</i>.
+     * <i>ExtensionField</i>.
      */
     public Polynomial getReducingPolynomial() {
         return reducingPolynomial;
@@ -119,9 +116,11 @@ public class ExtensionField implements Ring {
     }
 
     @Override
-    public ExtensionFieldElement toElement(final Object polynomial) {
+    public Optional<? extends ExtensionFieldElement> toElement(final Object polynomial) {
+        if (!(polynomial instanceof Polynomial))
+            return Optional.empty();
         Polynomial result = (Polynomial) polynomial;
-        return new ExtensionFieldElement(this, result);
+        return Optional.of(new ExtensionFieldElement(this, result));
     }
 
     @Override
@@ -132,7 +131,7 @@ public class ExtensionField implements Ring {
          */
 
         ArrayList<PrimeFieldElement> coefficients =
-            new ArrayList<PrimeFieldElement>();
+                new ArrayList<PrimeFieldElement>();
         Random rnd = new Random();
         String val;
         PrimeFieldElement elem;
@@ -162,7 +161,7 @@ public class ExtensionField implements Ring {
          */
 
         ArrayList<PrimeFieldElement> coefficients =
-            new ArrayList<PrimeFieldElement>();
+                new ArrayList<PrimeFieldElement>();
         PrimeField F = new PrimeField(p);
         PrimeFieldElement elem = new PrimeFieldElement(F, BigInteger.ZERO);
         coefficients.add(elem);
@@ -180,7 +179,7 @@ public class ExtensionField implements Ring {
          */
 
         ArrayList<PrimeFieldElement> coefficients =
-            new ArrayList<PrimeFieldElement>();
+                new ArrayList<PrimeFieldElement>();
         PrimeField F = new PrimeField(p);
         PrimeFieldElement elem = new PrimeFieldElement(F, BigInteger.ONE);
         coefficients.add(elem);
@@ -207,26 +206,26 @@ public class ExtensionField implements Ring {
 
     /**
      * @see Group#multiply(GroupElement,
-     *      GroupElement)
+     * GroupElement)
      */
     @Override
     public ExtensionFieldElement multiply(final GroupElement x,
-            final GroupElement y) {
+                                          final GroupElement y) {
         return (ExtensionFieldElement) x.multiply(y);
     }
 
     /**
      * @see Group#pow(GroupElement,
-     *      BigInteger)
+     * BigInteger)
      */
     @Override
     public ExtensionFieldElement pow(final GroupElement x,
-            final BigInteger pow) {
+                                     final BigInteger pow) {
         return (ExtensionFieldElement) x.pow(pow);
     }
 
     @Override
-    public RingElement fromBytes(byte[] bytes) {
+    public Optional<? extends ExtensionFieldElement> fromBytes(byte[] bytes) {
         throw new NotImplementedException();
     }
 

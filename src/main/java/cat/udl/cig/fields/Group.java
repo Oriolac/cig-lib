@@ -10,9 +10,8 @@
  */
 package cat.udl.cig.fields;
 
-import cat.udl.cig.fields.GroupElement;
-
 import java.math.BigInteger;
+import java.util.Optional;
 
 /**
  *
@@ -38,7 +37,7 @@ public interface Group {
      *         {@code r value = k.mod(this.getSize())} and
      *         {@code r.getGroup() = this}.
      */
-    public GroupElement toElement(Object k);
+    public Optional<? extends GroupElement> toElement(Object k);
 
     /**
      * Returns a random element \(k\) of {@code this} <i>Ring</i>.

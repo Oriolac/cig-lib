@@ -4,9 +4,11 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Objects;
+import java.util.Optional;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.ParametersException;
+import cat.udl.cig.fields.GroupElement;
 import cat.udl.cig.fields.MultiplicativeSubgroup;
 import cat.udl.cig.fields.Group;
 
@@ -46,16 +48,18 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
     /**
      * @see Group#toElement(Object)
+     * @return
      */
     @Override
-    public GeneralECPoint toElement(final Object k) {
-        GeneralECPoint aux = EC.toElement(k);
-        if (aux != null) {
-            if (aux.pow(cardinality).isInfinity()) {
-                return aux;
+    public Optional<? extends GroupElement> toElement(final Object k) {
+        Optional<? extends GroupElement> aux = EC.toElement(k);
+        if (aux.isPresent() && aux.get() instanceof GeneralECPoint) {
+            GeneralECPoint point = (GeneralECPoint) aux.get();
+            if (point.pow(cardinality).isInfinity()) {
+                return Optional.of(point);
             }
         }
-        throw new ParametersException();
+        return Optional.empty();
     }
 
     /**

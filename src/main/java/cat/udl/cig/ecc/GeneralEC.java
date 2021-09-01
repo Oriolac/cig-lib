@@ -229,7 +229,7 @@ public class GeneralEC implements EC {
     }
 
     @Override
-    public GeneralECPoint liftX(final RingElement ix) {
+    public Optional<? extends GeneralECPoint> liftX(final RingElement ix) {
 
         try {
             PrimeFieldElement x = (PrimeFieldElement) ix;
@@ -243,14 +243,14 @@ public class GeneralEC implements EC {
             y = y.add(getB());
             sqRoots = y.squareRoot();
             if (sqRoots.isEmpty()) {
-                return null;
+                return Optional.empty();
             }
             y = (PrimeFieldElement) sqRoots.get(0);
 
             P = new GeneralECPoint(this, x, y);
-            return isOnCurve(P) ? P : null;
+            return isOnCurve(P) ? Optional.of(P) : Optional.empty();
         } catch (IncorrectRingElementException ex) {
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -287,11 +287,14 @@ public class GeneralEC implements EC {
 
     /**
      * @see Group#toElement(Object)
+     * @return
      */
     @Override
-    public GeneralECPoint toElement(final Object k) {
-        RingElement xinput = this.k.toElement(k);
-        return liftX(xinput);
+    public Optional<? extends GroupElement> toElement(final Object k) {
+        Optional<? extends RingElement> xinput = this.k.toElement(k);
+        if (xinput.isPresent())
+            return liftX(xinput.get());
+        return Optional.empty();
     }
 
     /**
@@ -366,15 +369,15 @@ public class GeneralEC implements EC {
     public GeneralECPoint getRandomElement() {
         RingElement x;
         boolean incorrecte = true;
-        GeneralECPoint P = null;
+        Optional<? extends GeneralECPoint> P = Optional.empty();
         while (incorrecte) {
             x = k.getRandomElement();
             P = liftX(x);
-            if (!(P == null) && isOnCurve(P)) {
+            if (P.isPresent() && isOnCurve(P.get())) {
                 incorrecte = false;
             }
         }
-        return P;
+        return P.get();
     }
 
     /**

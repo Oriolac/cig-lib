@@ -3,10 +3,10 @@ package cat.udl.cig.fields;
 import java.math.BigInteger;
 import java.util.BitSet;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 import cat.udl.cig.exceptions.NotImplementedException;
-import cat.udl.cig.exceptions.ParametersException;
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
 import cat.udl.cig.utils.bfarithmetic.Irreducibility;
 
@@ -130,9 +130,12 @@ public class BinaryField implements Ring {
     }
 
     @Override
-    public BinaryFieldElement toElement(final Object k) {
+    public Optional<? extends BinaryFieldElement> toElement(final Object k) {
+        if (!(k instanceof BitSet)) {
+            return Optional.empty();
+        }
         BitSet result = (BitSet) k;
-        return new BinaryFieldElement(this, result);
+        return Optional.of(new BinaryFieldElement(this, result));
     }
 
     @Override
@@ -196,7 +199,7 @@ public class BinaryField implements Ring {
     }
 
     @Override
-    public RingElement fromBytes(byte[] bytes) {
+    public Optional<? extends BinaryFieldElement> fromBytes(byte[] bytes) {
         throw new NotImplementedException();
     }
 

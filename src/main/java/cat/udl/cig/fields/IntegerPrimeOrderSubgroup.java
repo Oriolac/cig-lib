@@ -8,6 +8,7 @@ import cat.udl.cig.exceptions.ParametersException;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Models any kind of <i>Multiplicative subgroup</i> with a prime order generator.
@@ -80,9 +81,10 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
     /**
      * @see Ring#toElement(Object)
+     * @return
      */
     @Override
-    public PrimeFieldElement toElement(final Object k) {
+    public Optional<? extends GroupElement> toElement(final Object k) {
         if(k instanceof BigInteger) {
             BigInteger input = (BigInteger) k;
             if (input.modPow(getSize(), field.getSize())

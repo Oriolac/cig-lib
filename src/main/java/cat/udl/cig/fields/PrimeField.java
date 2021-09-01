@@ -6,6 +6,7 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.security.spec.ECField;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Models a <i>Prime Field</i> \(\mathbb{F}_{p}\), where \(p\) is positive and a
@@ -98,11 +99,15 @@ public class PrimeField implements Ring, ECField {
 
     /**
      * @see Group#toElement(Object)
+     * @return
      */
     @Override
-    public PrimeFieldElement toElement(final Object k) {
+    public Optional<? extends PrimeFieldElement> toElement(final Object k) {
+        if (!(k instanceof BigInteger)) {
+            return Optional.empty();
+        }
         BigInteger result = (BigInteger) k;
-        return new PrimeFieldElement(this, result);
+        return Optional.of(new PrimeFieldElement(this, result));
     }
 
     /**
@@ -133,7 +138,7 @@ public class PrimeField implements Ring, ECField {
     }
 
     @Override
-    public RingElement fromBytes(byte[] bytes) {
+    public Optional<? extends PrimeFieldElement> fromBytes(byte[] bytes) {
         BigInteger bigInteger = new BigInteger(bytes);
         return this.toElement(bigInteger);
     }

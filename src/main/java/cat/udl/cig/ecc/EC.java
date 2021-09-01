@@ -2,6 +2,7 @@ package cat.udl.cig.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Optional;
 
 import cat.udl.cig.fields.Group;
 import cat.udl.cig.fields.Ring;
@@ -131,6 +132,6 @@ public interface EC extends Group {
      *         \(x\).
      * @see ECPoint
      */
-    ECPoint liftX(RingElement x);
+    Optional<? extends ECPoint> liftX(RingElement x);
 
 }

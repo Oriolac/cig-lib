@@ -1,6 +1,7 @@
 package cat.udl.cig.fields;
 
 import java.math.BigInteger;
+import java.util.Optional;
 
 /**
  * Models any kind of <i>Ring</i>.
@@ -34,7 +35,7 @@ public interface Ring extends Group {
      *         {@code r.getRing() = this}.
      */
     @Override
-    public RingElement toElement(Object k);
+    public Optional<? extends RingElement> toElement(Object k);
 
     /**
      * Returns a random element \(k\) of {@code this} <i>Ring</i>.
@@ -89,5 +90,5 @@ public interface Ring extends Group {
      */
     public RingElement pow(GroupElement x, BigInteger pow);
 
-    RingElement fromBytes(byte[] bytes);
+    Optional<? extends RingElement> fromBytes(byte[] bytes);
 }
