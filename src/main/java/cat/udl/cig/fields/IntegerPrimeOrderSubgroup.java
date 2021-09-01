@@ -89,12 +89,12 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
             BigInteger input = (BigInteger) k;
             if (input.modPow(getSize(), field.getSize())
                     .equals(BigInteger.ONE)) {
-                return new PrimeFieldElement(field, input);
+                return Optional.of(new PrimeFieldElement(field, input));
             }
         } else {
             throw new ParametersException();
         }
-        return null;
+        return Optional.empty();
     }
 
     /**

@@ -3,9 +3,11 @@ package cat.udl.cig.ecc;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 
 import cat.udl.cig.fields.Group;
 import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.operations.wrapper.data.Pair;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
@@ -236,11 +238,22 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity) {
             return E.getNeuterElement();
         }
-
         BigInteger[] point =
                 computeDoublePoint(x.getIntValue(), y.getIntValue());
-        return new GeneralECPoint(E, E.getRing().toElement(point[0]), E
-                .getRing().toElement(point[1]), order, false, true);
+        Optional<GeneralECPoint> generalECPoint = fromCoordinates(point[0], point[1]);
+        if (generalECPoint.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return generalECPoint.get();
+    }
+
+    private Optional<GeneralECPoint> fromCoordinates(BigInteger xCoord, BigInteger yCoord) {
+        Optional<? extends RingElement> optXCoord = E.getRing().toElement(xCoord);
+        Optional<? extends RingElement> optYCoord = E.getRing().toElement(yCoord);
+        if (optXCoord.isPresent() && optYCoord.isPresent()) {
+            return Optional.of(new GeneralECPoint(E, optXCoord.get(), optYCoord.get(), order, false, true));
+        }
+        return Optional.empty();
     }
 
     private BigInteger[] computeDoublePoint(final BigInteger Bx,
@@ -287,8 +300,8 @@ public class GeneralECPoint implements ECPoint {
         } else {
             BigInteger[] point =
                     computePointAddition(Q.x.getIntValue(), Q.y.getIntValue());
-            return new GeneralECPoint(E, E.getRing().toElement(point[0]),
-                    E.getRing().toElement(point[1]), order, false, true);
+            return fromCoordinates(point[0], point[1]).orElse(null);
+
             //return computePointAddition(Q);
         }
     }
@@ -368,7 +381,6 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity()) {
             return this;
         }
-
         if (order != null && k.compareTo(order) >= 0) {
             k = k.mod(order);
         }
@@ -387,8 +399,7 @@ public class GeneralECPoint implements ECPoint {
                 Q = ProjectiveAdd(Q, minusP);
             }
         }
-
-        return toECPoint(Q);
+        return toECPoint(Q).orElse(null);
     }
 
     private BigInteger[] toProjective(final GeneralECPoint P) {
@@ -399,11 +410,10 @@ public class GeneralECPoint implements ECPoint {
         return result;
     }
 
-    private GeneralECPoint toECPoint(final BigInteger[] point) {
+    private Optional<GeneralECPoint> toECPoint(final BigInteger[] point) {
         if (point[2].equals(BigInteger.ZERO)) {
-            return E.getNeuterElement();
+            return Optional.of(E.getNeuterElement());
         }
-
         final BigInteger aux = point[2].modInverse(E.getRing().getSize());
         //final PrimeFieldElement X =
         //    (PrimeFieldElement) E.getRing().toElement(
@@ -411,10 +421,7 @@ public class GeneralECPoint implements ECPoint {
         //final PrimeFieldElement Y =
         //    (PrimeFieldElement) E.getRing().toElement(
         //            aux.multiply(point[1]));
-        return new GeneralECPoint(E,
-                E.getRing().toElement(aux.multiply(point[0])),
-                E.getRing().toElement(aux.multiply(point[1])),
-                order, false, true);
+        return fromCoordinates(aux.multiply(point[0]), aux.multiply(point[1]));
     }
 
     private BigInteger[] ProjectiveAdd(final BigInteger[] point1,

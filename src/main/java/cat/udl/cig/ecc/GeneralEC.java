@@ -4,6 +4,7 @@ import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.fields.*;
 
+import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
@@ -65,11 +66,8 @@ public class GeneralEC implements EC {
      * @see PrimeField
      * @see PrimeFieldElement
      */
-    public GeneralEC(final Ring iK, final RingElement[] coefficients,
-                     final ArrayList<BigInteger> cardFactors) {
-        if (iK == null || cardFactors == null) {
-            throw new ConstructionException("Ring must not be null.");
-        }
+    public GeneralEC(@Nonnull final Ring iK, @Nonnull final RingElement[] coefficients,
+                     @Nonnull final ArrayList<BigInteger> cardFactors) {
         if (coefficients.length != 2
                 || iK.getSize().equals(BigInteger.valueOf(2)) ||
                 iK.getSize().equals(BigInteger.valueOf(3))) {

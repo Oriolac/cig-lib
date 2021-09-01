@@ -338,11 +338,7 @@ public class BinaryEC extends GeneralEC {
      */
     @Override
     public BigInteger getSize() {
-        BigInteger result = BigInteger.ONE;
-        for (int i = 0; i < cardFactors.size(); i++) {
-            result = result.multiply(cardFactors.get(i));
-        }
-        return result;
+        return cardFactors.stream().reduce(BigInteger::multiply).get().multiply(BigInteger.ONE);
     }
 
     /**
