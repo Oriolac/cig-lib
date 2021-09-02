@@ -6,7 +6,7 @@
 
 package cat.udl.cig.cryptography.signers;
 
-import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.structures.RingElement;
 
 /**
  * Models a digital <i>Signtarue</i> and stores its information data.
@@ -22,7 +22,7 @@ public class Signature {
      * <i>Signer</i>.
      * 
      * @see RingElement
-     * @see cat.udl.cig.ecc.ECPoint
+     * @see cat.udl.cig.structures.ecc.ECPoint
      */
     private final Object A;
     
@@ -34,7 +34,7 @@ public class Signature {
      * <i>Signer</i>.
      * 
      * @see RingElement
-     * @see cat.udl.cig.ecc.ECPoint
+     * @see cat.udl.cig.structures.ecc.ECPoint
      */
     private final Object B;
     
@@ -49,7 +49,7 @@ public class Signature {
      *          or an <i>ECPoint</i>.
      * 
      * @see RingElement
-     * @see cat.udl.cig.ecc.ECPoint
+     * @see cat.udl.cig.structures.ecc.ECPoint
      */
     public Signature(Object A, Object B) {
         this.A = A;
@@ -66,7 +66,7 @@ public class Signature {
      * 
      * @see Signer
      * @see RingElement
-     * @see cat.udl.cig.ecc.ECPoint
+     * @see cat.udl.cig.structures.ecc.ECPoint
      */
     public Object getA() {
         return A;
@@ -82,7 +82,7 @@ public class Signature {
      * 
      * @see Signer
      * @see RingElement
-     * @see cat.udl.cig.ecc.ECPoint
+     * @see cat.udl.cig.structures.ecc.ECPoint
      */
     public Object getB() {
         return B;

@@ -1,4 +1,4 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import java.math.BigInteger;
 import java.util.BitSet;
@@ -7,6 +7,8 @@ import java.util.Optional;
 import java.util.Random;
 
 import cat.udl.cig.exceptions.NotImplementedException;
+import cat.udl.cig.structures.builder.BinaryFieldElementBuilder;
+import cat.udl.cig.structures.builder.GroupElementBuilder;
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
 import cat.udl.cig.utils.bfarithmetic.Irreducibility;
 
@@ -89,6 +91,11 @@ public class BinaryField implements Ring {
     }
 
     @Override
+    public BinaryFieldElementBuilder buildElement() {
+        return new BinaryFieldElementBuilder(this);
+    }
+
+    @Override
     public BinaryFieldElement getRandomElement() {
         BitSet out = new BitSet(n);
         Random rand = new Random();
@@ -100,12 +107,12 @@ public class BinaryField implements Ring {
         return new BinaryFieldElement(this, out);
     }
 
-    public BinaryFieldElement getElementZERO() {
+    public BinaryFieldElement getAdditiveIdentity() {
         return new BinaryFieldElement(this, new BitSet());
     }
 
     @Override
-    public BinaryFieldElement getNeuterElement() {
+    public BinaryFieldElement getMultiplicativeIdentity() {
         return new BinaryFieldElement(this,
             BitSetManipulation.longToBitSet(1));
     }

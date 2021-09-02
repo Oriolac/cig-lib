@@ -1,4 +1,4 @@
-package cat.udl.cig.ecc;
+package cat.udl.cig.structures.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -6,9 +6,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.BinaryField;
-import cat.udl.cig.fields.BinaryFieldElement;
-import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.structures.BinaryField;
+import cat.udl.cig.structures.BinaryFieldElement;
+import cat.udl.cig.structures.RingElement;
+import cat.udl.cig.structures.GroupElement;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>Binary Elliptic Curve</i>
@@ -175,7 +176,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     @Override
-    public BinaryECPoint multiply(final cat.udl.cig.fields.GroupElement iQ)
+    public BinaryECPoint multiply(final GroupElement iQ)
             throws ArithmeticException {
         /*
          * if(!isInitialized() || !Q.isInitialized()) { return null; }
@@ -249,7 +250,7 @@ public class BinaryECPoint extends GeneralECPoint {
     @Override
     public BinaryECPoint pow(final BigInteger k) {
         if (k.equals(BigInteger.ZERO) || isInfinity) {
-            return (BinaryECPoint) E.getNeuterElement();
+            return (BinaryECPoint) E.getMultiplicativeIdentity();
         }
         if (((BinaryEC) E).isSuperSingularEC()) {
             return normalPow(k);
@@ -310,7 +311,7 @@ public class BinaryECPoint extends GeneralECPoint {
             k = k.mod(order);
         }
         ArrayList<Integer> kbits = NAF(k);
-        BinaryECPoint Q = (BinaryECPoint) E.getNeuterElement();
+        BinaryECPoint Q = (BinaryECPoint) E.getMultiplicativeIdentity();
         final ECPoint minusP = inverse();
         for (int i = kbits.size() - 1; i >= 0; i--) {
             Q = Q.square();
@@ -396,9 +397,9 @@ public class BinaryECPoint extends GeneralECPoint {
     private BinaryECPoint NSSDoublePoint() {
         BinaryFieldElement Rx, Ry;
         BinaryFieldElement l;
-        if (x.equals(x.getGroup().getElementZERO())) {
+        if (x.equals(x.getGroup().getAdditiveIdentity())) {
             // if x == 0, it's double is the infinity point
-            return (BinaryECPoint) E.getNeuterElement();
+            return (BinaryECPoint) E.getMultiplicativeIdentity();
         }
         try {
             l = (BinaryFieldElement) y.divide(x);
@@ -450,7 +451,7 @@ public class BinaryECPoint extends GeneralECPoint {
             return Q;
         }
         if (equals(Q.inverse())) {
-            return (BinaryECPoint) E.getNeuterElement(); /* Point at infinity */
+            return (BinaryECPoint) E.getMultiplicativeIdentity(); /* Point at infinity */
         }
         if (equals(Q)) {
             return square();
@@ -505,7 +506,7 @@ public class BinaryECPoint extends GeneralECPoint {
             return Q;
         }
         if (equals(Q.inverse())) {
-            return (BinaryECPoint) E.getNeuterElement();
+            return (BinaryECPoint) E.getMultiplicativeIdentity();
         }
         if (equals(Q)) {
             return square();
@@ -536,16 +537,16 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#belongsToSameGroup(cat.udl.cig.fields.GroupElement)
+     * @see GroupElement#belongsToSameGroup(GroupElement)
      */
     @Override
-    public boolean belongsToSameGroup(final cat.udl.cig.fields.GroupElement iq) {
+    public boolean belongsToSameGroup(final GroupElement iq) {
         BinaryECPoint q = (BinaryECPoint) iq;
         return E.equals(q.getCurve());
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getGroup()
+     * @see GroupElement#getGroup()
      */
     @Override
     public BinaryField getGroup() {
@@ -553,7 +554,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getValue()
+     * @see GroupElement#getValue()
      */
     @Override
     public Object getValue() {
@@ -561,7 +562,7 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getIntValue()
+     * @see GroupElement#getIntValue()
      */
     @Override
     public BigInteger getIntValue() {
@@ -601,10 +602,10 @@ public class BinaryECPoint extends GeneralECPoint {
     }
 
     /**
-     * @see ECPoint#divide(cat.udl.cig.fields.GroupElement)
+     * @see ECPoint#divide(GroupElement)
      */
     @Override
-    public BinaryECPoint divide(final cat.udl.cig.fields.GroupElement Q)
+    public BinaryECPoint divide(final GroupElement Q)
             throws ArithmeticException {
         return multiply(Q.inverse());
     }

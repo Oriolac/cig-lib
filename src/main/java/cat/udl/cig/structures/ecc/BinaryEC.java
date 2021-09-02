@@ -1,4 +1,4 @@
-package cat.udl.cig.ecc;
+package cat.udl.cig.structures.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -6,11 +6,11 @@ import java.util.Objects;
 import java.util.Optional;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.BinaryField;
-import cat.udl.cig.fields.BinaryFieldElement;
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.RingElement;
-import cat.udl.cig.fields.Group;
+import cat.udl.cig.structures.BinaryField;
+import cat.udl.cig.structures.BinaryFieldElement;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.RingElement;
+import cat.udl.cig.structures.Group;
 import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
 
 /**
@@ -171,7 +171,7 @@ public class BinaryEC extends GeneralEC {
     }
 
     @Override
-    public BinaryECPoint getNeuterElement() {
+    public BinaryECPoint getMultiplicativeIdentity() {
         return new BinaryECPoint(this);
     }
 

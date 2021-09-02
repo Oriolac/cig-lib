@@ -1,10 +1,10 @@
-package cat.udl.cig.ecc;
+package cat.udl.cig.structures.ecc;
 
 import java.math.BigInteger;
 
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.RingElement;
-import cat.udl.cig.fields.Group;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.RingElement;
+import cat.udl.cig.structures.Group;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to an <i>Elliptic Curve</i> \(E\).

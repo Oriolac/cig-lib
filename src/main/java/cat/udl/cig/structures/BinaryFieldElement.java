@@ -1,4 +1,4 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
+
+import javax.annotation.Nonnull;
 
 /**
  * Models a <i>Binary Field Element</i>. This <i>Binary Field Element</i> has a
@@ -47,7 +49,7 @@ public class BinaryFieldElement implements RingElement {
      *            <i>BinaryFieldElement</i>.
      * @see BinaryField
      */
-    public BinaryFieldElement(final BinaryField F, final BitSet k) {
+    public BinaryFieldElement(@Nonnull final BinaryField F,@Nonnull final BitSet k) {
         this.F = F;
         this.k = k.get(0, F.getDimension());
     }
@@ -370,7 +372,7 @@ public class BinaryFieldElement implements RingElement {
 
         // BitSet temp = new BitSet();
         // temp.set(0);
-        BinaryFieldElement result = F.getNeuterElement();
+        BinaryFieldElement result = F.getMultiplicativeIdentity();
         BinaryFieldElement b = new BinaryFieldElement(this);
 
         // k mod ((2^m) -1)

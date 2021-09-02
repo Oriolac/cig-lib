@@ -1,10 +1,11 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.structures.builder.GroupElementBuilder;
+import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.security.spec.ECField;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ import java.util.Optional;
  * @author M.Àngels Cerveró
  * @author Ricard Garra
  */
-public class PrimeField implements Ring, ECField {
+public class PrimeField implements Ring {
 
     /**
      * A BigInteger that encapsulates the characteristic of this <i>Field</i>.
@@ -59,13 +60,18 @@ public class PrimeField implements Ring, ECField {
     }
 
     @Override
+    public PrimeFieldElementBuilder buildElement() {
+        return new PrimeFieldElementBuilder(this);
+    }
+
+    @Override
     public PrimeFieldElement getRandomElement() {
         BigInteger result =
             new BigInteger(p.bitLength(), new SecureRandom());
         return new PrimeFieldElement(this, result);
     }
 
-    public PrimeFieldElement getElementZERO() {
+    public PrimeFieldElement getAdditiveIdentity() {
         return new PrimeFieldElement(this, BigInteger.ZERO);
     }
 
@@ -111,10 +117,10 @@ public class PrimeField implements Ring, ECField {
     }
 
     /**
-     * @see Group#getNeuterElement()
+     * @see Group#getMultiplicativeIdentity()
      */
     @Override
-    public PrimeFieldElement getNeuterElement() {
+    public PrimeFieldElement getMultiplicativeIdentity() {
         return new PrimeFieldElement(this, BigInteger.ONE);
     }
 
@@ -141,11 +147,5 @@ public class PrimeField implements Ring, ECField {
     public Optional<? extends PrimeFieldElement> fromBytes(byte[] bytes) {
         BigInteger bigInteger = new BigInteger(bytes);
         return this.toElement(bigInteger);
-    }
-
-
-    @Override
-    public int getFieldSize() {
-        return getSize().intValue();
     }
 }

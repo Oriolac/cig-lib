@@ -1,4 +1,7 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
+
+import cat.udl.cig.structures.builder.GroupElementBuilder;
+import cat.udl.cig.structures.builder.RingElementBuilder;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -15,13 +18,6 @@ import java.util.Optional;
 // Base code by Víctor Mateu; Refactorization by M.Àngels Cerveró and Ricard
 // Garra.
 public interface Ring extends Group {
-
-    /**
-     * Returns the cardinality of the <i>Ring</i>.
-     *
-     * @return a BigInteger representing the cardinality of the <i>Ring</i>.
-     */
-    public BigInteger getSize();
 
     /**
      * Converts a T \(k\) to a <i>RingElement</i> belonging to {@code this}
@@ -44,7 +40,12 @@ public interface Ring extends Group {
      *         The element \(k\) is an instance of <i>RingElement</i>.
      * @see RingElement
      */
+    @Override
     public RingElement getRandomElement();
+
+    @Override
+    public RingElementBuilder buildElement();
+
 
     /**
      * Returns the element ZERO of {@code this} <i>Ring</i>.
@@ -53,7 +54,7 @@ public interface Ring extends Group {
      *         The element \(k\) is an instance of <i>RingElement</i>.
      * @see RingElement
      */
-    public RingElement getElementZERO();
+    public RingElement getAdditiveIdentity();
 
     /**
      * Returns the neuter element of {@code this} <i>Group</i>.
@@ -62,7 +63,8 @@ public interface Ring extends Group {
      *         The element \(k\) is an instance of <i>GroupElement</i>.
      * @see GroupElement
      */
-    public RingElement getNeuterElement();
+    @Override
+    public RingElement getMultiplicativeIdentity();
 
     /**
      * Returns the element resulting of the multiplication of two elements of
@@ -75,6 +77,7 @@ public interface Ring extends Group {
      * @return a ring element being x multiplied by y
      * @see RingElement
      */
+    @Override
     public RingElement multiply(GroupElement x, GroupElement y);
 
     /**
@@ -88,6 +91,7 @@ public interface Ring extends Group {
      * @return a ring element being x power y.
      * @see RingElement
      */
+    @Override
     public RingElement pow(GroupElement x, BigInteger pow);
 
     Optional<? extends RingElement> fromBytes(byte[] bytes);

@@ -6,7 +6,7 @@
 
 package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
 
-import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.structures.GroupElement;
 
 /**
  * Models an encrypted text. This encrypted text is done with an specific

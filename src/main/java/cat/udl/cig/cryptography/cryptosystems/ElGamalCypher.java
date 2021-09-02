@@ -4,10 +4,9 @@ package cat.udl.cig.cryptography.cryptosystems;
 import java.math.BigInteger;
 
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
-import cat.udl.cig.cryptography.cryptosystems.ciphertexts.HomomorphicCiphertext;
-import cat.udl.cig.fields.Group;
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.MultiplicativeSubgroup;
+import cat.udl.cig.structures.Group;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.MultiplicativeSubgroup;
 
 /**
  * $Id$

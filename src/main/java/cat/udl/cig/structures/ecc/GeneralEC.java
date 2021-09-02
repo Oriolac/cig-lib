@@ -1,8 +1,9 @@
-package cat.udl.cig.ecc;
+package cat.udl.cig.structures.ecc;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.*;
+import cat.udl.cig.structures.*;
+import cat.udl.cig.structures.builder.GroupElementBuilder;
 
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
@@ -74,7 +75,7 @@ public class GeneralEC implements EC {
             throw new ConstructionException("Coefficients must be 2 and the ring must not be 2 or 3");
         }
         GroupElement elem;
-        elem = iK.getNeuterElement();
+        elem = iK.getMultiplicativeIdentity();
         for (RingElement coefficient : coefficients) {
             if (!coefficient.belongsToSameGroup(elem)) {
                 throw new ConstructionException("The coefficients does not belong to the same group.");
@@ -112,7 +113,7 @@ public class GeneralEC implements EC {
         correctInput = correctInput && conditions;
         GroupElement elem = null;
         if (K != null) {
-            elem = K.getNeuterElement();
+            elem = K.getMultiplicativeIdentity();
         } else {
             correctInput = false;
         }
@@ -156,7 +157,7 @@ public class GeneralEC implements EC {
     }
 
     @Override
-    public GeneralECPoint getNeuterElement() {
+    public GeneralECPoint getMultiplicativeIdentity() {
         return infintiyPoint;
     }
 
@@ -283,8 +284,13 @@ public class GeneralEC implements EC {
         return result;
     }
 
+    @Override
+    public GroupElementBuilder buildElement() {
+        return null;
+    }
+
     /**
-     * @see Group#toElement(Object)
+     * @see Group#(Object)
      * @return
      */
     @Override

@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.ExtensionField;
-import cat.udl.cig.fields.PrimeFieldElement;
+import cat.udl.cig.structures.ExtensionField;
+import cat.udl.cig.structures.PrimeFieldElement;
 
 /**
  * Models a polynomial which coefficients are <i>PrimeFieldElement</i>.

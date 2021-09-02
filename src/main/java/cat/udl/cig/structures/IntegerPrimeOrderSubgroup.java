@@ -1,9 +1,10 @@
 
 
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.ParametersException;
+import cat.udl.cig.structures.builder.IntegerPrimeOrderElementBuilder;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -79,6 +80,11 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
         return cardinality;
     }
 
+    @Override
+    public IntegerPrimeOrderElementBuilder buildElement() {
+        return new IntegerPrimeOrderElementBuilder(this.field);
+    }
+
     /**
      * @see Ring#toElement(Object)
      * @return
@@ -98,11 +104,11 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see Group#getNeuterElement()
+     * @see Group#getMultiplicativeIdentity()
      */
     @Override
-    public PrimeFieldElement getNeuterElement() {
-        return field.getNeuterElement();
+    public PrimeFieldElement getMultiplicativeIdentity() {
+        return field.getMultiplicativeIdentity();
     }
 
     /**

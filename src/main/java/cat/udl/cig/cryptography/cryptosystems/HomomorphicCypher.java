@@ -2,9 +2,8 @@ package cat.udl.cig.cryptography.cryptosystems;
 
 import java.math.BigInteger;
 
-import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.HomomorphicCiphertext;
-import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.structures.GroupElement;
 
 /**
  * $Id$

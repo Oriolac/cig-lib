@@ -8,7 +8,9 @@
  * All rights reserved.
  *
  */
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
+
+import cat.udl.cig.structures.builder.GroupElementBuilder;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -25,6 +27,8 @@ public interface Group {
      *         <i>Group</i>.
      */
     public BigInteger getSize();
+
+    public GroupElementBuilder buildElement();
 
     /**
      * Converts a k to a <i>GroupElement</i> belonging to {@code this}
@@ -62,7 +66,7 @@ public interface Group {
      *         The element \(k\) is an instance of <i>GroupElement</i>.
      * @see GroupElement
      */
-    public GroupElement getNeuterElement();
+    public GroupElement getMultiplicativeIdentity();
 
     /**
      * Returns the element resulting of the multiplication of two elements of

@@ -1,5 +1,5 @@
 
-package cat.udl.cig.ecc;
+package cat.udl.cig.structures.ecc;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -7,10 +7,9 @@ import java.util.Objects;
 import java.util.Optional;
 
 import cat.udl.cig.exceptions.ConstructionException;
-import cat.udl.cig.exceptions.ParametersException;
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.MultiplicativeSubgroup;
-import cat.udl.cig.fields.Group;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.MultiplicativeSubgroup;
+import cat.udl.cig.structures.Group;
 
 /**
  * $Id$
@@ -84,29 +83,29 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     }
 
     /**
-     * @see Group#getNeuterElement()
+     * @see Group#getMultiplicativeIdentity()
      */
     @Override
-    public GeneralECPoint getNeuterElement() {
-        return EC.getNeuterElement();
+    public GeneralECPoint getMultiplicativeIdentity() {
+        return EC.getMultiplicativeIdentity();
     }
 
     /**
-     * @see Group#multiply(cat.udl.cig.fields.GroupElement,
-     *      cat.udl.cig.fields.GroupElement)
+     * @see Group#multiply(GroupElement,
+     *      GroupElement)
      */
     @Override
-    public GeneralECPoint multiply(final cat.udl.cig.fields.GroupElement x,
-                                   final cat.udl.cig.fields.GroupElement y) {
+    public GeneralECPoint multiply(final GroupElement x,
+                                   final GroupElement y) {
         return (GeneralECPoint) x.multiply(y);
     }
 
     /**
-     * @see Group#pow(cat.udl.cig.fields.GroupElement,
+     * @see Group#pow(GroupElement,
      *      BigInteger)
      */
     @Override
-    public GeneralECPoint pow(final cat.udl.cig.fields.GroupElement x, final BigInteger pow) {
+    public GeneralECPoint pow(final GroupElement x, final BigInteger pow) {
         return (GeneralECPoint) x.pow(pow);
     }
 

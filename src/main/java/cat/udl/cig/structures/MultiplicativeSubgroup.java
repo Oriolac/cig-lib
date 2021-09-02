@@ -8,7 +8,7 @@
  * All rights reserved.
  *
  */
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 /**
  *
