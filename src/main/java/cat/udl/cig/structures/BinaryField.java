@@ -87,7 +87,7 @@ public class BinaryField implements Ring {
 
     @Override
     public BigInteger getSize() {
-        return BigInteger.valueOf(2).pow(n);
+        return BigInteger.TWO.pow(n);
     }
 
     @Override
