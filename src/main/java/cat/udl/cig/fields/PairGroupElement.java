@@ -18,6 +18,21 @@ public class PairGroupElement implements GroupElement {
         this.groupElementB = groupElementB;
     }
 
+    public PairGroupElement(GroupElement groupElementA, GroupElement groupElementB) {
+        this.pairGroup = new PairGroup(groupElementA.getGroup(), groupElementB.getGroup());
+        this.groupElementA = groupElementA;
+        this.groupElementB = groupElementB;
+    }
+
+
+    public GroupElement getGroupElementA() {
+        return groupElementA;
+    }
+
+    public GroupElement getGroupElementB() {
+        return groupElementB;
+    }
+
     @Override
     public boolean belongsToSameGroup(GroupElement q) {
         if (!( q instanceof PairGroupElement)) return false;

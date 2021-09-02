@@ -11,26 +11,19 @@
 package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
 
 import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.fields.PairGroupElement;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 /**
  *
  */
 public class ElGamalCiphertext implements HomomorphicCiphertext {
 
-    private final GroupElement[] parts;
+    private final PairGroupElement pairGroupElement;
 
-    public ElGamalCiphertext(final GroupElement[] parts1) {
-        parts = parts1.clone();
-    }
-
-    /**
-     * @see Ciphertext#getParts()
-     */
-    @Override
-    public GroupElement[] getParts() {
-        return parts;
+    public ElGamalCiphertext(final PairGroupElement element) {
+        pairGroupElement = element;
     }
 
     /**
@@ -40,18 +33,9 @@ public class ElGamalCiphertext implements HomomorphicCiphertext {
     public ElGamalCiphertext HomomorphicOperation(
             final HomomorphicCiphertext op2) {
         ElGamalCiphertext input = (ElGamalCiphertext) op2;
-        GroupElement[] result = new GroupElement[parts.length];
-        for (int i = 0; i < parts.length; i++) {
-            result[i] = parts[i].multiply(input.getParts()[i]);
-        }
-        return new ElGamalCiphertext(result);
-    }
-
-    @Override
-    public String toString() {
-        return "ElGamalCiphertext{" +
-                "parts=" + Arrays.toString(parts) +
-                '}';
+        GroupElement resultA = pairGroupElement.getGroupElementA().multiply(input.getElement().getGroupElementA());
+        GroupElement resultB = pairGroupElement.getGroupElementB().multiply(input.getElement().getGroupElementB());
+        return new ElGamalCiphertext(new PairGroupElement(resultA, resultB));
     }
 
     @Override
@@ -59,11 +43,23 @@ public class ElGamalCiphertext implements HomomorphicCiphertext {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ElGamalCiphertext that = (ElGamalCiphertext) o;
-        return Arrays.equals(parts, that.parts);
+        return Objects.equals(pairGroupElement, that.pairGroupElement);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(parts);
+        return Objects.hash(pairGroupElement);
+    }
+
+    @Override
+    public String toString() {
+        return "ElGamalCiphertext{" +
+                "pairGroupElement=" + pairGroupElement +
+                '}';
+    }
+
+    @Override
+    public PairGroupElement getElement() {
+        return null;
     }
 }
