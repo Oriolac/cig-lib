@@ -44,8 +44,8 @@ public class ElGamal implements HomomorphicCryptosystem {
     @Override
     public GroupElement decrypt(final Ciphertext cyphertext) {
         ElGamalCiphertext input = (ElGamalCiphertext) cyphertext;
-        return input.getParts()[1].divide(input.getParts()[0]
-                .pow(secretKey));
+        return input.getElement().getGroupElementB().divide(input.getElement().getGroupElementA().pow(secretKey));
+
     }
 
     /**

@@ -7,6 +7,7 @@ import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.MultiplicativeSubgroup;
+import cat.udl.cig.structures.PairGroupElement;
 
 /**
  * $Id$
@@ -57,9 +58,7 @@ public class ElGamalCypher implements HomomorphicCypher {
     @Override
     public ElGamalCiphertext encrypt(final GroupElement message,
                                      final BigInteger r) {
-        GroupElement[] result = new GroupElement[2];
-        result[0] = generator.pow(r);
-        result[1] = publicKey.pow(r).multiply(message);
+        PairGroupElement result = new PairGroupElement(generator.pow(r), publicKey.pow(r).multiply(message));
         return new ElGamalCiphertext(result);
     }
 

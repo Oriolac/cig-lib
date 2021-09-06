@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import cat.udl.cig.cryptography.cryptosystems.ElGamalCypher;
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
 import cat.udl.cig.cryptography.hashes.SHA1;
+import cat.udl.cig.structures.PairGroupElement;
 import cat.udl.cig.structures.GroupElement;
 
 /**
@@ -45,8 +46,8 @@ public class ElGamalMLSVerifier implements MLSVerifier {
         BigInteger[] wlist = data.getWValues();
         BigInteger[] ulist = data.getUValues();
 
-        String AString = new String();
-        String BString = new String();
+        String AString = "";
+        String BString = "";
 
         int mlength = data.getPossibleMessages().size();
         if (mlength != ABlist.length || mlength != wlist.length
@@ -57,8 +58,8 @@ public class ElGamalMLSVerifier implements MLSVerifier {
         }
 
         for (int i = 0; i < mlength; ++i) {
-            AString = AString.concat(ABlist[i].getParts()[0].toString());
-            BString = BString.concat(ABlist[i].getParts()[1].toString());
+            AString = AString.concat(((PairGroupElement)ABlist[i].getElement()).getGroupElementA().toString());
+            BString = BString.concat(((PairGroupElement)ABlist[i].getElement()).getGroupElementB().toString());
         }
         String ABString = AString.concat(BString);
         String ABHash = SHA1.getHash(ABString);
@@ -70,10 +71,10 @@ public class ElGamalMLSVerifier implements MLSVerifier {
 
         for (int i = 0; i < mlength; ++i) {
             GroupElement AElem =
-                (GroupElement) data.getCiphertextToBeProven().getParts()[0];
+                    ((PairGroupElement) data.getCiphertextToBeProven().getElement()).getGroupElementA();
 
             GroupElement BElem =
-                (GroupElement) data.getCiphertextToBeProven().getParts()[1];
+                    ((PairGroupElement) data.getCiphertextToBeProven().getElement()).getGroupElementB();
 
             AElem = AElem.pow(ulist[i]);
             AElem = cipher.getGenerator().pow(wlist[i]).multiply(AElem);
@@ -85,10 +86,9 @@ public class ElGamalMLSVerifier implements MLSVerifier {
                 cipher.getPublicKey().pow(wlist[i])
                     .multiply(BElem.pow(ulist[i]));
 
-            if (!ABlist[i].getParts()[0].equals(AElem)
-                || !ABlist[i].getParts()[1].equals(BElem)) {
-                return false;
-            }
+            Boolean cond1 = !((PairGroupElement)ABlist[i].getElement()).getGroupElementA().equals(AElem);
+            Boolean cond2 = !((PairGroupElement)ABlist[i].getElement()).getGroupElementB().equals(BElem);
+            if (cond1 || cond2) return false;
         }
 
         return true;

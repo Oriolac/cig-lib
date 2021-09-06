@@ -67,7 +67,7 @@ public interface GroupElement {
      *            the <i>GroupElement</i> we want to multiply {@code this}.
      * @return a new <i>GroupElement</i> \(r\), where \(r = p \cdot q\) and
      *         {@code r.getGroup() = this.getGroup()}.
-     * @throws IncorrectGroupElementException
+     * @throws IncorrectRingElementException
      *             if {@code this} or {@code q} are not initialized. Also throws
      *             IncorrectGroupElementException {@code q} does not belong to
      *             the same <i>Group</i> than {@code this} ({@code this} and
@@ -85,7 +85,7 @@ public interface GroupElement {
      *            the <i>GroupElement</i> we want to divide {@code this}.
      * @return a new <i>GroupElement</i> \(r\), where \(r = p / q\) and
      *         {@code r.getGroup() = this.getGroup()}.
-     * @throws IncorrectGroupElementException
+     * @throws IncorrectRingElementException
      *             if {@code this} or {@code q} are not initialized. Also throws
      *             IncorrectGroupElementException {@code q} does not belong to
      *             the same <i>Group</i> than {@code this} ({@code this} and
@@ -100,7 +100,6 @@ public interface GroupElement {
      *
      * @return a new <i>GroupElement</i> \(r\), where \(r = 1 / p\) and;
      *         {@code r.getGroup() = this.getGroup()}.
-     * @throws IncorrectGroupElementException
      *             if {@code this} is not initialized.
      */
     public GroupElement inverse();
@@ -114,7 +113,7 @@ public interface GroupElement {
      *            {@code this}.
      * @return a new <i>GroupElement</i> \(r\), where \(r = p^{k}\) and
      *         {@code r.getGroup() = this.getGroup()}.
-     * @throws IncorrectGroupElementException
+     * @throws IncorrectRingElementException
      *             if {@code this} is not initialized.
      */
     public GroupElement pow(BigInteger k)
