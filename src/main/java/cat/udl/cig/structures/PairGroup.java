@@ -1,7 +1,9 @@
 package cat.udl.cig.structures;
 
 import cat.udl.cig.structures.builder.GroupElementBuilder;
+import cat.udl.cig.structures.builder.PairGroupElementBuilder;
 
+import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -22,7 +24,7 @@ public class PairGroup implements Group {
 
     @Override
     public GroupElementBuilder buildElement() {
-        return null;
+        return new PairGroupElementBuilder(this);
     }
 
     @Override
@@ -53,5 +55,17 @@ public class PairGroup implements Group {
     @Override
     public PairGroupElement pow(GroupElement x, BigInteger pow) {
         return (PairGroupElement) x.pow(pow);
+    }
+
+    public boolean contains(@Nonnull PairGroupElement element) {
+        return this.equals(element.getGroup());
+    }
+
+    public boolean isFromSetA(@Nonnull GroupElement elementA) {
+        return this.a.equals(elementA.getGroup());
+    }
+
+    public boolean isFromSetB(@Nonnull GroupElement elementB) {
+        return this.b.equals(elementB.getGroup());
     }
 }
