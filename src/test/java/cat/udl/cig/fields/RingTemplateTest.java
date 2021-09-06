@@ -5,11 +5,17 @@ import cat.udl.cig.structures.RingElement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public abstract class RingTemplateTest {
 
     Ring ring;
+    RingElement operandA;
+    RingElement operandB;
+    BigInteger power;
 
     @BeforeEach
     public void setUp() {
@@ -34,7 +40,22 @@ public abstract class RingTemplateTest {
 
     @Test
     public void getCorrectlyIdentityElement() {
+        RingElement randomElement = ring.getRandomElement();
+        RingElement identity = ring.getMultiplicativeIdentity();
+        RingElement result = randomElement.multiply(identity);
+        assertEquals(randomElement, result);
+    }
 
+    @Test
+    public void multiplicationTest() {
+        RingElement result = ring.multiply(operandA, operandB);
+        assertEquals(operandA.multiply(operandB), result);
+    }
+
+    @Test
+    public void powTest() {
+        RingElement result = ring.pow(operandA, power);
+        assertEquals(operandA.pow(power), result);
     }
 
 }

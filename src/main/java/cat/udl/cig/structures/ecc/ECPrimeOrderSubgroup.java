@@ -10,6 +10,7 @@ import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.MultiplicativeSubgroup;
 import cat.udl.cig.structures.Group;
+import cat.udl.cig.structures.builder.GroupElementBuilder;
 
 /**
  * $Id$
@@ -43,6 +44,11 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     @Override
     public BigInteger getSize() {
         return cardinality;
+    }
+
+    @Override
+    public GroupElementBuilder buildElement() {
+        return null;
     }
 
     /**

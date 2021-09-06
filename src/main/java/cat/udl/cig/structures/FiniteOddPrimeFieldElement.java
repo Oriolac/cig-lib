@@ -2,9 +2,11 @@ package cat.udl.cig.structures;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Map;
 
 public class FiniteOddPrimeFieldElement implements RingElement {
 
@@ -27,8 +29,8 @@ public class FiniteOddPrimeFieldElement implements RingElement {
     }
 
     @Override
-    public BitSet getValue() {
-        return null;
+    public ArrayList<PrimeFieldElement> getValue() {
+        return this.value;
     }
 
     @Override
@@ -37,7 +39,15 @@ public class FiniteOddPrimeFieldElement implements RingElement {
     }
 
     @Override
-    public RingElement add(RingElement q) throws IncorrectRingElementException {
+    public FiniteOddPrimeFieldElement add(RingElement q) throws IncorrectRingElementException {
+        if (!(q instanceof FiniteOddPrimeFieldElement))
+            throw new IncorrectRingElementException();
+        FiniteOddPrimeFieldElement elementB = (FiniteOddPrimeFieldElement) q;
+        for(int i = 0; i < Math.min(this.value.size(), elementB.value.size()); i++) {
+            PrimeFieldElement operandA = value.get(i);
+            PrimeFieldElement operandB = elementB.value.get(i);
+
+        }
         return null;
     }
 

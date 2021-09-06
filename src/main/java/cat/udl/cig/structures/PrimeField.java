@@ -94,6 +94,7 @@ public class PrimeField implements Ring {
         return Objects.hash(p);
     }
 
+    @Override
     public BigInteger getRandomExponent() {
         BigInteger result =
             new BigInteger(getSize().bitLength(), new SecureRandom());
