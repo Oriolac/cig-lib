@@ -12,6 +12,8 @@ package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
 
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.PairGroupElement;
+import cat.udl.cig.structures.Ring;
+import cat.udl.cig.structures.RingElement;
 
 import java.util.Objects;
 
@@ -33,8 +35,8 @@ public class ElGamalCiphertext implements HomomorphicCiphertext {
     public ElGamalCiphertext HomomorphicOperation(
             final HomomorphicCiphertext op2) {
         ElGamalCiphertext input = (ElGamalCiphertext) op2;
-        GroupElement resultA = pairGroupElement.getGroupElementA().multiply(input.getElement().getGroupElementA());
-        GroupElement resultB = pairGroupElement.getGroupElementB().multiply(input.getElement().getGroupElementB());
+        RingElement resultA = (RingElement) pairGroupElement.getGroupElementA().multiply(input.getElement().getGroupElementA());
+        RingElement resultB = (RingElement) pairGroupElement.getGroupElementB().multiply(input.getElement().getGroupElementB());
         return new ElGamalCiphertext(new PairGroupElement(resultA, resultB));
     }
 

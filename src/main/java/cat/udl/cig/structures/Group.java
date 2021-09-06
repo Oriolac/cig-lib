@@ -94,4 +94,6 @@ public interface Group {
      */
     public GroupElement pow(GroupElement x, BigInteger pow);
 
+
+    public boolean containsElement(GroupElement groupElement);
 }

@@ -57,21 +57,6 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
         return generator.pow(getRandomExponent());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        IntegerPrimeOrderSubgroup that = (IntegerPrimeOrderSubgroup) o;
-        return Objects.equals(field, that.field) &&
-                Objects.equals(cardinality, that.cardinality) &&
-                Objects.equals(generator, that.generator);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(field, cardinality, generator);
-    }
-
     /**
      * @see Ring#getSize()
      */
@@ -82,7 +67,7 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
     @Override
     public IntegerPrimeOrderElementBuilder buildElement() {
-        return new IntegerPrimeOrderElementBuilder(this.field);
+        return new IntegerPrimeOrderElementBuilder(this, this.field);
     }
 
     /**
@@ -133,4 +118,25 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
         return (PrimeFieldElement) x.pow(pow);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegerPrimeOrderSubgroup that = (IntegerPrimeOrderSubgroup) o;
+        return Objects.equals(field, that.field) && Objects.equals(cardinality, that.cardinality) && Objects.equals(generator, that.generator);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(field, cardinality, generator);
+    }
+
+    @Override
+    public String toString() {
+        return "IntegerPrimeOrderSubgroup{" +
+                "field=" + field +
+                ", cardinality=" + cardinality +
+                ", generator=" + generator +
+                '}';
+    }
 }
