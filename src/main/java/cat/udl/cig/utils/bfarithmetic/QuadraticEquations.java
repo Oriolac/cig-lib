@@ -9,8 +9,8 @@ import java.math.BigInteger;
 import java.util.BitSet;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.fields.BinaryField;
-import cat.udl.cig.fields.BinaryFieldElement;
+import cat.udl.cig.structures.BinaryField;
+import cat.udl.cig.structures.BinaryFieldElement;
 
 /**
  * Auxiliar class to compute quadratic equations over GF(2).
@@ -173,7 +173,7 @@ public class QuadraticEquations {
                     s = s.add(d.pow(first_term.add(second_term)));
                 }
             }
-            BinaryFieldElement sum = k.getNeuterElement();
+            BinaryFieldElement sum = k.getMultiplicativeIdentity();
             for (int i = 0; i < quarterM; i++) {
                 // sum += d^(2^(2*i+m//2))
                 sum = sum.add(d.pow(TWO.pow(2 * i + m / 2)));

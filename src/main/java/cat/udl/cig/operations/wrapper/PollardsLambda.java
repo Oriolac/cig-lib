@@ -1,7 +1,7 @@
 package cat.udl.cig.operations.wrapper;
 
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.Group;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.Group;
 import cat.udl.cig.operations.wrapper.data.Pair;
 
 import java.math.BigInteger;

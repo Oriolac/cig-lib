@@ -1,6 +1,6 @@
 package cat.udl.cig.operations.wrapper;
 
-import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.structures.GroupElement;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ public class HashedAlgorithm implements LogarithmAlgorithm {
     }
 
     private void generateHash() {
-        GroupElement actual = alpha.getGroup().getNeuterElement();
+        GroupElement actual = alpha.getGroup().getMultiplicativeIdentity();
         hash.putIfAbsent(actual, BigInteger.ZERO);
         hash.putIfAbsent(alpha, BigInteger.ONE);
         GroupElement gen = alpha.pow(times);
@@ -35,7 +35,7 @@ public class HashedAlgorithm implements LogarithmAlgorithm {
 
     @Override
     public Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException {
-        GroupElement actual = beta.multiply(beta.getGroup().getNeuterElement());
+        GroupElement actual = beta.multiply(beta.getGroup().getMultiplicativeIdentity());
         Optional<BigInteger> res = Optional.ofNullable(hash.get(actual));
         for (BigInteger x = BigInteger.ONE; res.isEmpty() && x.compareTo(times) <= 0; x = x.add(BigInteger.ONE)) {
             actual = actual.multiply(alpha);

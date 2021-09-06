@@ -1,13 +1,13 @@
-package cat.udl.cig.ecc;
+package cat.udl.cig.structures.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
-import cat.udl.cig.fields.Group;
-import cat.udl.cig.fields.RingElement;
-import cat.udl.cig.operations.wrapper.data.Pair;
+import cat.udl.cig.structures.Group;
+import cat.udl.cig.structures.RingElement;
+import cat.udl.cig.structures.GroupElement;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
@@ -58,8 +58,8 @@ public class GeneralECPoint implements ECPoint {
     public GeneralECPoint(final GeneralEC E1) {
         E = E1;
         // Infinity point (0:1:0)
-        x = E.getRing().getElementZERO();
-        y = E.getRing().getNeuterElement();
+        x = E.getRing().getAdditiveIdentity();
+        y = E.getRing().getMultiplicativeIdentity();
         isInfinity = true;
         order = BigInteger.ONE;
     }
@@ -97,7 +97,7 @@ public class GeneralECPoint implements ECPoint {
     public GeneralECPoint(final GeneralEC E, final RingElement ix,
                           final RingElement iy, final BigInteger iOrder) {
         this.E = E;
-        RingElement elem = E.getRing().getNeuterElement();
+        RingElement elem = E.getRing().getMultiplicativeIdentity();
         if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem)) {
             x = ix;
             y = iy;
@@ -106,8 +106,8 @@ public class GeneralECPoint implements ECPoint {
         } else {
             // Infinity point (0:1:0)
             //System.out.println("Mal generador 2");
-            x = E.getRing().getElementZERO();
-            y = E.getRing().getNeuterElement();
+            x = E.getRing().getAdditiveIdentity();
+            y = E.getRing().getMultiplicativeIdentity();
             isInfinity = true;
             order = BigInteger.ONE;
         }
@@ -124,8 +124,8 @@ public class GeneralECPoint implements ECPoint {
             isInfinity = false;
         } else {
             // Infinity point (0:1:0)
-            x = E.getRing().getElementZERO();
-            y = E.getRing().getNeuterElement();
+            x = E.getRing().getAdditiveIdentity();
+            y = E.getRing().getMultiplicativeIdentity();
             isInfinity = true;
             order = BigInteger.ONE;
         }
@@ -147,7 +147,7 @@ public class GeneralECPoint implements ECPoint {
     public GeneralECPoint(final GeneralEC iE, final RingElement ix,
                           final RingElement iy) {
         E = iE;
-        RingElement elem = E.getRing().getNeuterElement();
+        RingElement elem = E.getRing().getMultiplicativeIdentity();
         if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem)) {
             x = ix;
             y = iy;
@@ -155,8 +155,8 @@ public class GeneralECPoint implements ECPoint {
             order = null;
         } else { // Infinity point (0:1:0)
             //System.out.println("Mal generador");
-            x = E.getRing().getElementZERO();
-            y = E.getRing().getNeuterElement();
+            x = E.getRing().getAdditiveIdentity();
+            y = E.getRing().getMultiplicativeIdentity();
             isInfinity = true;
             order = BigInteger.ONE;
         }
@@ -166,7 +166,7 @@ public class GeneralECPoint implements ECPoint {
                           final RingElement iy, final BigInteger iorder,
                           final boolean iIsInfinity) {
         E = iE;
-        RingElement elem = E.getRing().getNeuterElement();
+        RingElement elem = E.getRing().getMultiplicativeIdentity();
         if (!iIsInfinity && ix.belongsToSameGroup(elem)
                 && iy.belongsToSameGroup(elem)) {
             x = ix;
@@ -176,8 +176,8 @@ public class GeneralECPoint implements ECPoint {
         } else {
             // Infinity point (0:1:0)
             //System.out.println("Mal generador 2");
-            x = E.getRing().getElementZERO();
-            y = E.getRing().getNeuterElement();
+            x = E.getRing().getAdditiveIdentity();
+            y = E.getRing().getMultiplicativeIdentity();
             isInfinity = true;
             order = BigInteger.ONE;
         }
@@ -218,10 +218,10 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#divide(cat.udl.cig.fields.GroupElement)
+     * @see GroupElement#divide(GroupElement)
      */
     @Override
-    public GeneralECPoint divide(final cat.udl.cig.fields.GroupElement iQ)
+    public GeneralECPoint divide(final GroupElement iQ)
             throws ArithmeticException {
         GeneralECPoint Q = (GeneralECPoint) iQ;
         if (isInfinity) {
@@ -236,7 +236,7 @@ public class GeneralECPoint implements ECPoint {
     @Override
     public GeneralECPoint square() {
         if (isInfinity) {
-            return E.getNeuterElement();
+            return E.getMultiplicativeIdentity();
         }
         BigInteger[] point =
                 computeDoublePoint(x.getIntValue(), y.getIntValue());
@@ -279,7 +279,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     @Override
-    public GeneralECPoint multiply(final cat.udl.cig.fields.GroupElement iQ)
+    public GeneralECPoint multiply(final GroupElement iQ)
             throws ArithmeticException {
         GeneralECPoint Q = (GeneralECPoint) iQ;
         if (!E.equals(Q.E)) {
@@ -295,7 +295,7 @@ public class GeneralECPoint implements ECPoint {
             if (y.equals(Q.y)) {
                 return square();
             } else {
-                return E.getNeuterElement();
+                return E.getMultiplicativeIdentity();
             }
         } else {
             BigInteger[] point =
@@ -329,7 +329,7 @@ public class GeneralECPoint implements ECPoint {
 
 
     @Override
-    public boolean belongsToSameGroup(final cat.udl.cig.fields.GroupElement q) {
+    public boolean belongsToSameGroup(final GroupElement q) {
         return E.equals(q.getGroup());
     }
 
@@ -412,7 +412,7 @@ public class GeneralECPoint implements ECPoint {
 
     private Optional<GeneralECPoint> toECPoint(final BigInteger[] point) {
         if (point[2].equals(BigInteger.ZERO)) {
-            return Optional.of(E.getNeuterElement());
+            return Optional.of(E.getMultiplicativeIdentity());
         }
         final BigInteger aux = point[2].modInverse(E.getRing().getSize());
         //final PrimeFieldElement X =
@@ -641,7 +641,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getGroup()
+     * @see GroupElement#getGroup()
      */
     @Override
     public Group getGroup() {
@@ -649,7 +649,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getValue()
+     * @see GroupElement#getValue()
      */
     @Override
     public Object getValue() {
@@ -657,7 +657,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     /**
-     * @see cat.udl.cig.fields.GroupElement#getIntValue()
+     * @see GroupElement#getIntValue()
      */
     @Override
     public BigInteger getIntValue() {

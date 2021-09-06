@@ -1,12 +1,12 @@
-package cat.udl.cig.ecc;
+package cat.udl.cig.structures.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import cat.udl.cig.fields.Group;
-import cat.udl.cig.fields.Ring;
-import cat.udl.cig.fields.RingElement;
+import cat.udl.cig.structures.Group;
+import cat.udl.cig.structures.Ring;
+import cat.udl.cig.structures.RingElement;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} = x^{3} + ax + b\).
@@ -71,7 +71,7 @@ public interface EC extends Group {
      *         law \(E(K)\).
      * @see ECPoint
      */
-    ECPoint getNeuterElement();
+    ECPoint getMultiplicativeIdentity();
 
     /**
      * Not yet implemented!

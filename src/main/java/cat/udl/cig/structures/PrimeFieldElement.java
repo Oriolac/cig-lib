@@ -1,4 +1,4 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

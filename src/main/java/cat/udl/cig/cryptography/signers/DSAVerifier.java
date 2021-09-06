@@ -9,7 +9,7 @@ package cat.udl.cig.cryptography.signers;
 import java.math.BigInteger;
 
 import cat.udl.cig.cryptography.hashes.SHA1;
-import cat.udl.cig.fields.PrimeFieldElement;
+import cat.udl.cig.structures.PrimeFieldElement;
 
 /**
  * Models a Digital Signature Verifier (DSV) over the DSA signer. This DSV needs

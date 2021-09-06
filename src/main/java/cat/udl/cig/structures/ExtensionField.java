@@ -1,7 +1,9 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.NotImplementedException;
+import cat.udl.cig.structures.builder.ExtensionFieldElementBuilder;
+import cat.udl.cig.structures.builder.GroupElementBuilder;
 import cat.udl.cig.utils.Polynomial;
 
 import java.math.BigInteger;
@@ -116,6 +118,11 @@ public class ExtensionField implements Ring {
     }
 
     @Override
+    public ExtensionFieldElementBuilder buildElement() {
+        return new ExtensionFieldElementBuilder(this);
+    }
+
+    @Override
     public Optional<? extends ExtensionFieldElement> toElement(final Object polynomial) {
         if (!(polynomial instanceof Polynomial))
             return Optional.empty();
@@ -154,7 +161,7 @@ public class ExtensionField implements Ring {
         return new ExtensionFieldElement(this, poly);
     }
 
-    public ExtensionFieldElement getElementZERO() {
+    public ExtensionFieldElement getAdditiveIdentity() {
         /*
          * if(!isInitialized()) { return new ExtensionFieldElement(this, new
          * Polynomial()); }
@@ -172,7 +179,7 @@ public class ExtensionField implements Ring {
     }
 
     @Override
-    public ExtensionFieldElement getNeuterElement() {
+    public ExtensionFieldElement getMultiplicativeIdentity() {
         /*
          * if(!isInitialized()) { return new ExtensionFieldElement(this, new
          * Polynomial()); }

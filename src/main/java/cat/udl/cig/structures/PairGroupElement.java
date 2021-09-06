@@ -1,8 +1,9 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.exceptions.NotImplementedException;
-import cat.udl.cig.fields.GroupElement;
+import cat.udl.cig.structures.PairGroup;
+import cat.udl.cig.structures.GroupElement;
 
 import java.math.BigInteger;
 
