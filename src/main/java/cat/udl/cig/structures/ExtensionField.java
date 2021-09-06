@@ -45,25 +45,25 @@ public class ExtensionField implements Ring {
      * \(m\) is a positive and a prime number, \(e\) is greater than 0 and the
      * degree of the reducingPoly is exactly \(e\).
      *
-     * @param m            the characteristic of {@code this} newly created
+     * @param p            the characteristic of {@code this} newly created
      *                     <i>ExtensionField</i>. It must be positive and a prime number.
-     * @param e            the exponent of {@code this} newly created
+     * @param n            the exponent of {@code this} newly created
      *                     <i>ExtensionField</i>. It must be greater than 0.
      * @param reducingPoly the reducing polynomail of {@code this} newly created
      *                     <i>ExtensionField</i>. It must be an irreducible polynomial of
      *                     degree \(e\).
      */
 
-    public ExtensionField(final BigInteger m, final int e,
+    public ExtensionField(final BigInteger p, final int n,
                           final Polynomial reducingPoly) {
         // TODO: CHECK IF THE POLYNOMIAL IS IRREDUCIBLE!
         // Using BigInteger.valueOf(4) when
         // super(
         // ((check && e > 0 && reducingPoly.getDegree() == e) || !check) ? m
         // : BigInteger.valueOf(4), check);
-        if (e > 0 && reducingPoly.getDegree() == e && m != null) {
-            p = m;
-            n = e;
+        if (n > 0 && reducingPoly.getDegree() == n && p != null) {
+            this.p = p;
+            this.n = n;
             reducingPolynomial = reducingPoly;
         } else {
             throw new ConstructionException();
