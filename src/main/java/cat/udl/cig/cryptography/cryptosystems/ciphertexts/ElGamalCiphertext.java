@@ -10,8 +10,8 @@
  */
 package cat.udl.cig.cryptography.cryptosystems.ciphertexts;
 
-import cat.udl.cig.fields.GroupElement;
-import cat.udl.cig.fields.PairGroupElement;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.PairGroupElement;
 
 import java.util.Objects;
 

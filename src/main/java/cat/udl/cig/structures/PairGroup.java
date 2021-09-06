@@ -1,4 +1,6 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
+
+import cat.udl.cig.structures.builder.GroupElementBuilder;
 
 import java.math.BigInteger;
 import java.util.Optional;
@@ -19,6 +21,11 @@ public class PairGroup implements Group {
     }
 
     @Override
+    public GroupElementBuilder buildElement() {
+        return null;
+    }
+
+    @Override
     public Optional<? extends GroupElement> toElement(Object k) {
         return Optional.empty();
     }
@@ -34,8 +41,8 @@ public class PairGroup implements Group {
     }
 
     @Override
-    public PairGroupElement getNeuterElement() {
-        return new PairGroupElement(this, a.getNeuterElement(),b.getNeuterElement());
+    public PairGroupElement getMultiplicativeIdentity() {
+        return new PairGroupElement(this, a.getMultiplicativeIdentity(),b.getMultiplicativeIdentity());
     }
 
     @Override

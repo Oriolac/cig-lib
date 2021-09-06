@@ -18,7 +18,7 @@ import cat.udl.cig.cryptography.cryptosystems.ciphertexts.Ciphertext;
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
 import cat.udl.cig.cryptography.hashes.SHA1;
 import cat.udl.cig.structures.GroupElement;
-import cat.udl.cig.fields.PairGroupElement;
+import cat.udl.cig.structures.PairGroupElement;
 
 /**
  *
