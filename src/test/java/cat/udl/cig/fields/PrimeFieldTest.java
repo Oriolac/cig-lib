@@ -2,8 +2,6 @@ package cat.udl.cig.fields;
 
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
-import cat.udl.cig.structures.Ring;
-import cat.udl.cig.structures.RingElement;
 
 import java.math.BigInteger;
 
