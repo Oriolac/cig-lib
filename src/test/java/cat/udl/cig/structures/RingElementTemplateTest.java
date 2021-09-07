@@ -17,6 +17,8 @@ public abstract class RingElementTemplateTest {
     private RingElement expectedOpposite1;
     private RingElement expectedAddition;
     private RingElement expectedSubstraction;
+    private RingElement expectedMultiplication;
+    private RingElement expectedDivision;
     private RingElement expectedPower;
     private ArrayList<RingElement> expectedSquaresRootOfOp1;
 
@@ -31,6 +33,8 @@ public abstract class RingElementTemplateTest {
         expectedSubstraction = returnResultSubtraction();
         expectedPower = returnExpectedPower();
         expectedSquaresRootOfOp1 = returnSquaresRootOfOp1();
+        expectedMultiplication = expectedResultMultiplication();
+        expectedDivision = expectedResultDivision();
     }
 
     protected abstract Ring returnRing();
@@ -50,6 +54,10 @@ public abstract class RingElementTemplateTest {
     protected abstract RingElement returnExpectedPower();
 
     protected abstract ArrayList<RingElement> returnSquaresRootOfOp1();
+
+    protected abstract RingElement expectedResultMultiplication();
+
+    protected abstract RingElement expectedResultDivision();
 
     @Test
     void testAdditionWithIdentity() {
@@ -77,17 +85,28 @@ public abstract class RingElementTemplateTest {
 
     @Test
     void testMultiplicationWithIdentity() {
+        RingElement result = op1.multiply(ring.getMultiplicativeIdentity());
+        assertEquals(op1, result);
 
     }
 
     @Test
     void testMultiplicationTwoOps() {
+        RingElement result = op1.multiply(op2);
+        assertEquals(expectedMultiplication, result);
 
     }
 
     @Test
-    void testDivisionTwoOps() {
+    void testDivisionWithIdentity() {
+        RingElement result = op1.divide(ring.getMultiplicativeIdentity());
+        assertEquals(op1, result);
+    }
 
+    @Test
+    void testDivisionTwoOps() {
+        RingElement result = op1.divide(op2);
+        assertEquals(expectedDivision, result);
     }
 
     @Test
