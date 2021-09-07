@@ -4,27 +4,28 @@ import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.PairGroup;
 import cat.udl.cig.structures.PairGroupElement;
+import cat.udl.cig.structures.RingElement;
 
 import java.util.Optional;
 
-public class PairGroupElementBuilder implements GroupElementBuilder {
+public class PairGroupElementBuilder implements RingElementBuilder {
 
     private final PairGroup pairGroup;
-    private GroupElement elementA;
-    private GroupElement elementB;
+    private RingElement elementA;
+    private RingElement elementB;
 
     public PairGroupElementBuilder(PairGroup pairGroup) {
         this.pairGroup = pairGroup;
     }
 
-    public void setElementA(GroupElement elementA) {
+    public void setElementA(RingElement elementA) {
         if (!pairGroup.isFromSetA(elementA)){
             throw new ConstructionException("Element is not from set A.");
         }
         this.elementA = elementA;
     }
 
-    public PairGroupElementBuilder setElementB(GroupElement elementB) {
+    public PairGroupElementBuilder setElementB(RingElement elementB) {
         if (!pairGroup.isFromSetB(elementB)){
             throw new ConstructionException("Element is not from set A.");
         }
@@ -33,7 +34,7 @@ public class PairGroupElementBuilder implements GroupElementBuilder {
     }
 
     @Override
-    public Optional<? extends GroupElement> buildElement() {
+    public Optional<? extends RingElement> buildElement() {
         if (this.elementA == null || this.elementB == null)
             return Optional.empty();
         return Optional.of(new PairGroupElement(elementA, elementB));

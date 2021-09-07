@@ -19,6 +19,8 @@ import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
 import cat.udl.cig.cryptography.hashes.SHA1;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.PairGroupElement;
+import cat.udl.cig.structures.Ring;
+import cat.udl.cig.structures.RingElement;
 
 /**
  *
@@ -57,8 +59,8 @@ public class ElGamalMLSProver implements MLSProver {
         Ciphertext[] ciphertexts = new Ciphertext[mlength];
 
         PairGroupElement elementCypherText = (PairGroupElement) cyphertext.getElement();
-        GroupElement elementA = elementCypherText.getGroupElementA();
-        GroupElement elementB = elementCypherText.getGroupElementB();
+        RingElement elementA = (RingElement) elementCypherText.getGroupElementA();
+        RingElement elementB = (RingElement) elementCypherText.getGroupElementB();
 
         for (int i = 0; i < mlength; ++i) {
             if (i != vmidx) {
@@ -66,13 +68,13 @@ public class ElGamalMLSProver implements MLSProver {
                 wlist[i] = cipher.getGroup().getRandomExponent();
 
                 elementA =
-                        cipher.getGenerator().pow(wlist[i])
+                        (RingElement) cipher.getGenerator().pow(wlist[i])
                         .multiply(elementA.pow(ulist[i]));
 
                 elementB =
                     elementB.divide((GroupElement) vmessages.get(i));
                 elementB =
-                        cipher.getPublicKey().pow(wlist[i])
+                        (RingElement) cipher.getPublicKey().pow(wlist[i])
                         .multiply(elementB.pow(ulist[i]));
 
                 ciphertexts[i] = new ElGamalCiphertext(new PairGroupElement(elementA, elementB));

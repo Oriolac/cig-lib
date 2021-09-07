@@ -1,18 +1,18 @@
 package cat.udl.cig.structures;
 
-import cat.udl.cig.structures.builder.GroupElementBuilder;
 import cat.udl.cig.structures.builder.PairGroupElementBuilder;
+import cat.udl.cig.structures.builder.RingElementBuilder;
 
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Optional;
 
-public class PairGroup implements Group {
+public class PairGroup implements Ring {
 
-    private final Group a;
-    private final Group b;
+    private final Ring a;
+    private final Ring b;
 
-    public PairGroup(Group a, Group b) {
+    public PairGroup(Ring a, Ring b) {
         this.a = a;
         this.b = b;
     }
@@ -23,12 +23,17 @@ public class PairGroup implements Group {
     }
 
     @Override
-    public GroupElementBuilder buildElement() {
+    public RingElementBuilder buildElement() {
         return new PairGroupElementBuilder(this);
     }
 
     @Override
-    public Optional<? extends GroupElement> toElement(Object k) {
+    public RingElement getAdditiveIdentity() {
+        return (RingElement) new PairGroupElement(this.a.getAdditiveIdentity(), this.b.getAdditiveIdentity());
+    }
+
+    @Override
+    public Optional<? extends RingElement> toElement(Object k) {
         return Optional.empty();
     }
 
@@ -55,6 +60,16 @@ public class PairGroup implements Group {
     @Override
     public PairGroupElement pow(GroupElement x, BigInteger pow) {
         return (PairGroupElement) x.pow(pow);
+    }
+
+    @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
+    }
+
+    @Override
+    public Optional<? extends RingElement> fromBytes(byte[] bytes) {
+        return Optional.empty();
     }
 
     public boolean contains(@Nonnull PairGroupElement element) {

@@ -6,20 +6,22 @@ import cat.udl.cig.structures.PairGroup;
 import cat.udl.cig.structures.GroupElement;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Objects;
 
-public class PairGroupElement implements GroupElement {
+public class PairGroupElement implements RingElement {
 
     private final PairGroup pairGroup;
-    private final GroupElement groupElementA;
-    private final GroupElement groupElementB;
+    private final RingElement groupElementA;
+    private final RingElement groupElementB;
 
-    public PairGroupElement(final PairGroup pairGroup, GroupElement groupElementA, GroupElement groupElementB) {
+    public PairGroupElement(final PairGroup pairGroup, RingElement groupElementA, RingElement groupElementB) {
         this.pairGroup = pairGroup;
         this.groupElementA = groupElementA;
         this.groupElementB = groupElementB;
     }
 
-    public PairGroupElement(GroupElement groupElementA, GroupElement groupElementB) {
+    public PairGroupElement(RingElement groupElementA, RingElement groupElementB) {
         this.pairGroup = new PairGroup(groupElementA.getGroup(), groupElementB.getGroup());
         this.groupElementA = groupElementA;
         this.groupElementB = groupElementB;
@@ -44,7 +46,7 @@ public class PairGroupElement implements GroupElement {
     }
 
     @Override
-    public Group getGroup() {
+    public Ring getGroup() {
         return pairGroup;
     }
 
@@ -59,11 +61,35 @@ public class PairGroupElement implements GroupElement {
     }
 
     @Override
+    public PairGroupElement add(RingElement q) throws IncorrectRingElementException {
+        if (!( q instanceof PairGroupElement && belongsToSameGroup(q))) return null;
+        PairGroupElement element = (PairGroupElement) q;
+        RingElement resultA = this.groupElementA.add(element.groupElementA);
+        RingElement resultB = this.groupElementB.add(element.groupElementB);
+        return new PairGroupElement(this.pairGroup, resultA, resultB);
+    }
+
+    @Override
+    public PairGroupElement subtract(RingElement q) throws IncorrectRingElementException {
+        return this.add(q.opposite());
+    }
+
+    @Override
+    public RingElement opposite() {
+        return new PairGroupElement(this.groupElementA.opposite(), this.groupElementB.opposite());
+    }
+
+    @Override
+    public ArrayList<RingElement> squareRoot() throws IncorrectRingElementException {
+        return null;
+    }
+
+    @Override
     public PairGroupElement multiply(GroupElement q) throws IncorrectRingElementException {
         if (!( q instanceof PairGroupElement && belongsToSameGroup(q))) return null;
         PairGroupElement element = (PairGroupElement) q;
-        GroupElement resultA = this.groupElementA.multiply(element.groupElementA);
-        GroupElement resultB = this.groupElementB.multiply(element.groupElementB);
+        RingElement resultA = this.groupElementA.multiply(element.groupElementA);
+        RingElement resultB = this.groupElementB.multiply(element.groupElementB);
         return new PairGroupElement(this.pairGroup, resultA, resultB);
     }
 
@@ -71,22 +97,35 @@ public class PairGroupElement implements GroupElement {
     public PairGroupElement divide(GroupElement q) throws IncorrectRingElementException {
         if (!( q instanceof PairGroupElement && belongsToSameGroup(q))) return null;
         PairGroupElement element = (PairGroupElement) q;
-        GroupElement resultA = this.groupElementA.divide(element.groupElementA);
-        GroupElement resultB = this.groupElementB.divide(element.groupElementB);
+        RingElement resultA = this.groupElementA.divide(element.groupElementA);
+        RingElement resultB = this.groupElementB.divide(element.groupElementB);
         return new PairGroupElement(this.pairGroup, resultA, resultB);
     }
 
     @Override
     public PairGroupElement inverse() {
-        GroupElement inverseA = this.groupElementA.inverse();
-        GroupElement inverseB = this.groupElementB.inverse();
+        RingElement inverseA = this.groupElementA.inverse();
+        RingElement inverseB = this.groupElementB.inverse();
         return new PairGroupElement(this.pairGroup, inverseA, inverseB);
     }
 
     @Override
     public PairGroupElement pow(BigInteger k) throws IncorrectRingElementException {
-        GroupElement powA = this.groupElementA.pow(k);
-        GroupElement powB = this.groupElementB.pow(k);
+        RingElement powA = this.groupElementA.pow(k);
+        RingElement powB = this.groupElementB.pow(k);
         return new PairGroupElement(this.pairGroup, powA, powB);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PairGroupElement that = (PairGroupElement) o;
+        return Objects.equals(pairGroup, that.pairGroup) && Objects.equals(groupElementA, that.groupElementA) && Objects.equals(groupElementB, that.groupElementB);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pairGroup, groupElementA, groupElementB);
     }
 }

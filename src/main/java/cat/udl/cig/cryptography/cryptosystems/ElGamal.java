@@ -17,6 +17,7 @@ import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.MultiplicativeSubgroup;
+import cat.udl.cig.structures.RingElement;
 
 /**
  *
@@ -31,7 +32,7 @@ public class ElGamal implements HomomorphicCryptosystem {
         secretKey = gr.getRandomExponent();
         GroupElement g = gr.getRandomElement();
 
-        cypher = new ElGamalCypher(gr, g, g.pow(secretKey));
+        cypher = new ElGamalCypher(gr, (RingElement) g, g.pow(secretKey));
     }
 
 

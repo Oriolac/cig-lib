@@ -250,6 +250,11 @@ public class ExtensionField implements Ring {
     }
 
     @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
+    }
+
+    @Override
     public Optional<? extends ExtensionFieldElement> fromBytes(byte[] bytes) {
         throw new NotImplementedException();
     }

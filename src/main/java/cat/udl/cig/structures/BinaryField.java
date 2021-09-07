@@ -206,6 +206,11 @@ public class BinaryField implements Ring {
     }
 
     @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
+    }
+
+    @Override
     public Optional<? extends BinaryFieldElement> fromBytes(byte[] bytes) {
         throw new NotImplementedException();
     }
@@ -215,7 +220,6 @@ public class BinaryField implements Ring {
      */
     @Override
     public BigInteger getRandomExponent() {
-        // TODO Auto-generated method stub
-        return null;
+       throw new NotImplementedException();
     }
 }

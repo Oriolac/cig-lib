@@ -4,10 +4,7 @@ package cat.udl.cig.cryptography.cryptosystems;
 import java.math.BigInteger;
 
 import cat.udl.cig.cryptography.cryptosystems.ciphertexts.ElGamalCiphertext;
-import cat.udl.cig.structures.Group;
-import cat.udl.cig.structures.GroupElement;
-import cat.udl.cig.structures.MultiplicativeSubgroup;
-import cat.udl.cig.structures.PairGroupElement;
+import cat.udl.cig.structures.*;
 
 /**
  * $Id$
@@ -23,25 +20,25 @@ public class ElGamalCypher implements HomomorphicCypher {
 
     private final MultiplicativeSubgroup group;
 
-    private final GroupElement generator;
+    private final RingElement generator;
 
     private final GroupElement publicKey;
 
     public ElGamalCypher(final MultiplicativeSubgroup gr,
-                         final GroupElement g, final GroupElement y) {
+                         final RingElement g, final GroupElement y) {
         group = gr;
         generator = g;
         publicKey = y;
     }
 
     @Override
-    public GroupElement getPublicKey() {
-        return publicKey;
+    public RingElement getPublicKey() {
+        return (RingElement) publicKey;
     }
 
     @Override
-    public GroupElement getGenerator() {
-        return generator;
+    public RingElement getGenerator() {
+        return (RingElement) generator;
     }
 
     @Override
@@ -58,7 +55,7 @@ public class ElGamalCypher implements HomomorphicCypher {
     @Override
     public ElGamalCiphertext encrypt(final GroupElement message,
                                      final BigInteger r) {
-        PairGroupElement result = new PairGroupElement(generator.pow(r), publicKey.pow(r).multiply(message));
+        PairGroupElement result = new PairGroupElement(generator.pow(r), (RingElement) publicKey.pow(r).multiply(message));
         return new ElGamalCiphertext(result);
     }
 
