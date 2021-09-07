@@ -3,19 +3,34 @@ package cat.udl.cig.structures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public abstract class RingElementTemplateTest {
 
     private Ring ring;
     private RingElement op1;
     private RingElement op2;
-    private RingElement resultAddition;
+    private BigInteger power;
+    private RingElement expectedOpposite1;
+    private RingElement expectedAddition;
+    private RingElement expectedSubstraction;
+    private RingElement expectedPower;
+    private ArrayList<RingElement> expectedSquaresRootOfOp1;
 
     @BeforeEach
     void setUp() {
         ring = returnRing();
         op1 = returnOperand1();
         op2 = returnOperand2();
-        resultAddition = returnResultAddition();
+        power = returnPower();
+        expectedOpposite1 = returnExpectedOpposite1();
+        expectedAddition = returnResultAddition();
+        expectedSubstraction = returnResultSubtraction();
+        expectedPower = returnExpectedPower();
+        expectedSquaresRootOfOp1 = returnSquaresRootOfOp1();
     }
 
     protected abstract Ring returnRing();
@@ -26,19 +41,38 @@ public abstract class RingElementTemplateTest {
 
     protected abstract RingElement returnResultAddition();
 
+    protected abstract RingElement returnResultSubtraction();
+
+    protected abstract RingElement returnExpectedOpposite1();
+
+    protected abstract BigInteger returnPower();
+
+    protected abstract RingElement returnExpectedPower();
+
+    protected abstract ArrayList<RingElement> returnSquaresRootOfOp1();
+
     @Test
     void testAdditionWithIdentity() {
-
+        RingElement result = op1.add(ring.getAdditiveIdentity());
+        assertEquals(op1, result);
     }
 
     @Test
     void testAdditionTwoOps() {
-
+        RingElement result = op1.add(op2);
+        assertEquals(expectedAddition, result);
     }
 
     @Test
     void testSubstractTwoOps() {
+        RingElement result = op1.subtract(op2);
+        assertEquals(expectedSubstraction, result);
+    }
 
+    @Test
+    void testsubtractIdentity() {
+        RingElement result = op1.subtract(ring.getAdditiveIdentity());
+        assertEquals(op1, result);
     }
 
     @Test
@@ -58,21 +92,23 @@ public abstract class RingElementTemplateTest {
 
     @Test
     void getOppositeOfOneOperand() {
-
+        RingElement result = op1.opposite();
+        assertEquals(expectedOpposite1, result);
     }
 
     @Test
     void getRingOfOneOperand() {
-
+        assertEquals(ring, op1.getGroup());
+        assertEquals(ring, op2.getGroup());
     }
 
     @Test
     void testPow() {
-
+        assertEquals(expectedPower, op1.pow(power));
     }
 
     @Test
     void testSquareRoot() {
-
+        assertEquals(expectedSquaresRootOfOp1, op1.squareRoot());
     }
 }
