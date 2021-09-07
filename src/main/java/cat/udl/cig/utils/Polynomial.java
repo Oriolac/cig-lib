@@ -626,7 +626,7 @@ public class Polynomial {
             if (polynomialDegree.isEmpty())
                 return new Polynomial();
             PrimeField field = coefficients.get(polynomialDegree.get()).getGroup();
-            PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get()];
+            PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get() + 1];
             Arrays.fill(elements, field.getAdditiveIdentity());
             for (Map.Entry<Integer, PrimeFieldElement> entry : this.coefficients.entrySet()) {
                 elements[entry.getKey()] = entry.getValue();

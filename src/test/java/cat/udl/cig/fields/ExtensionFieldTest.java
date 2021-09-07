@@ -22,14 +22,11 @@ class ExtensionFieldTest extends RingTemplateTest {
     public void setUpRing() {
         primeField = new PrimeField(p);
         neuter = primeField.getAdditiveIdentity();
-        ArrayList<PrimeFieldElement> coefficients = new ArrayList<>(5);
-        coefficients.add(new PrimeFieldElement(primeField, BigInteger.valueOf(2)));
-        coefficients.add(neuter);
-        coefficients.add(neuter);
-        coefficients.add(new PrimeFieldElement(primeField, BigInteger.valueOf(2)));
-        coefficients.add(new PrimeFieldElement(primeField, BigInteger.valueOf(1)));
-        Polynomial polynomial = new Polynomial(coefficients);
-        extensionField = new ExtensionField(p, m.intValue(), polynomial);
+        Polynomial.PolynomialBuilder polyBuilder = new Polynomial.PolynomialBuilder()
+                .addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(2)))
+                .addTerm(3, new PrimeFieldElement(primeField, BigInteger.valueOf(2)))
+                .addTerm(4, new PrimeFieldElement(primeField, BigInteger.valueOf(1)));
+        extensionField = new ExtensionField(p, m.intValue(), polyBuilder.build());
         ring = extensionField;
         setUpOperandA(primeField, extensionField);
         setUpOperandB(primeField, extensionField);
@@ -37,45 +34,46 @@ class ExtensionFieldTest extends RingTemplateTest {
     }
 
     private void setUpOperandA(PrimeField field, ExtensionField extensionField) {
-        ArrayList<PrimeFieldElement> coefficients = new ArrayList<>(5);
-        coefficients.add(new PrimeFieldElement(field, BigInteger.valueOf(2)));
-        coefficients.add(new PrimeFieldElement(field, BigInteger.valueOf(1)));
-        coefficients.add(neuter);
-        coefficients.add(new PrimeFieldElement(field, BigInteger.valueOf(2)));
-        Polynomial polynomialA = new Polynomial(coefficients);
+        Polynomial polynomialA = new Polynomial.PolynomialBuilder()
+                .addTerm(0, new PrimeFieldElement(field, BigInteger.valueOf(2)))
+                .addTerm(1, new PrimeFieldElement(field, BigInteger.valueOf(1)))
+                .addTerm(3, new PrimeFieldElement(field, BigInteger.valueOf(2))).build();
         operandA = new ExtensionFieldElement(extensionField, polynomialA);
     }
 
     private void setUpOperandB(PrimeField field, ExtensionField extensionField) {
+        Polynomial polynomialA = new Polynomial.PolynomialBuilder()
+                .addTerm(0, new PrimeFieldElement(field, BigInteger.ONE))
+                .addTerm(2, new PrimeFieldElement(field, BigInteger.TWO))
+                .addTerm(3, new PrimeFieldElement(field, BigInteger.ONE))
+                .build();
         ArrayList<PrimeFieldElement> coefficients = new ArrayList<>(5);
-        coefficients.add(new PrimeFieldElement(field, BigInteger.valueOf(1)));
-        coefficients.add(neuter);
-        coefficients.add(new PrimeFieldElement(field, BigInteger.valueOf(2)));
-        coefficients.add(new PrimeFieldElement(field, BigInteger.valueOf(1)));
-        Polynomial polynomialA = new Polynomial(coefficients);
         operandB = new ExtensionFieldElement(extensionField, polynomialA);
     }
 
     @Test
     public void additiveTest() {
-        ArrayList<PrimeFieldElement> coefficients = new ArrayList<>(5);
-        coefficients.add(neuter);
-        coefficients.add(new PrimeFieldElement(primeField, BigInteger.valueOf(1)));
-        coefficients.add(new PrimeFieldElement(primeField, BigInteger.valueOf(2)));
-        Polynomial polynomial = new Polynomial(coefficients);
+        Polynomial polynomial = new Polynomial.PolynomialBuilder()
+                .addTerm(1, new PrimeFieldElement(primeField, BigInteger.ONE))
+                .addTerm(2, new PrimeFieldElement(primeField, BigInteger.TWO))
+                .build();
         ExtensionFieldElement expected = new ExtensionFieldElement(extensionField, polynomial);
         assertEquals(expected, operandA.add(operandB));
     }
 
     @Test
     public void multiplicativeTest() {
-        ArrayList<PrimeFieldElement> coefficients = new ArrayList<>(5);
-        coefficients.add(neuter);
-        coefficients.add(new PrimeFieldElement(primeField, BigInteger.valueOf(1)));
-        coefficients.add(neuter);
-        coefficients.add(new PrimeFieldElement(primeField, BigInteger.valueOf(1)));
-        Polynomial polynomial = new Polynomial(coefficients);
+        Polynomial polynomial = new Polynomial.PolynomialBuilder()
+                .addTerm(1, new PrimeFieldElement(primeField, BigInteger.ONE))
+                .addTerm(3, new PrimeFieldElement(primeField, BigInteger.ONE))
+                .build();
         ExtensionFieldElement expected = new ExtensionFieldElement(extensionField, polynomial);
         assertEquals(expected, operandA.multiply(operandB));
+    }
+
+    @Test
+    public void irreduciblePolynomialCreationP2Test() {
+        ExtensionField field = ExtensionField.ExtensionFieldP2(BigInteger.valueOf(11));
+        System.out.println(field.getReducingPolynomial());
     }
 }

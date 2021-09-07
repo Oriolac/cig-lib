@@ -336,7 +336,7 @@ public class PrimeFieldElement implements RingElement {
 
     public boolean isQuadraticNonResidue() {
         PrimeFieldElement i = field.getAdditiveIdentity();
-        for (i = i.add(field.getMultiplicativeIdentity()); i.equals(field.getAdditiveIdentity()); i.add(field.getMultiplicativeIdentity())) {
+        for (i = i.add(field.getMultiplicativeIdentity()); !i.equals(field.getAdditiveIdentity()); i = i.add(field.getMultiplicativeIdentity())) {
             if (i.multiply(i).equals(this)) {
                 return false;
             }
