@@ -145,6 +145,11 @@ public class PrimeField implements Ring {
     }
 
     @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
+    }
+
+    @Override
     public Optional<? extends PrimeFieldElement> fromBytes(byte[] bytes) {
         BigInteger bigInteger = new BigInteger(bytes);
         return this.toElement(bigInteger);

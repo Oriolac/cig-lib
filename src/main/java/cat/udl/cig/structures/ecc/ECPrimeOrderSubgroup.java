@@ -115,6 +115,11 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
         return (GeneralECPoint) x.pow(pow);
     }
 
+    @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
+    }
+
     /**
      * @see MultiplicativeSubgroup#getGenerator()
      */

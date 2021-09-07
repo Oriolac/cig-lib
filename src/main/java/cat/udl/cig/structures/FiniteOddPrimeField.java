@@ -90,6 +90,11 @@ public class FiniteOddPrimeField implements Ring {
     }
 
     @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
+    }
+
+    @Override
     public Optional<? extends RingElement> fromBytes(byte[] bytes) {
         return Optional.empty();
     }

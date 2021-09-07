@@ -47,6 +47,10 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
         return result;
     }
 
+    public PrimeField getField() {
+        return field;
+    }
+
     @Override
     public PrimeFieldElement getGenerator() {
         return generator;
@@ -116,6 +120,11 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
             pow = pow.mod(cardinality);
         }
         return (PrimeFieldElement) x.pow(pow);
+    }
+
+    @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
     }
 
     @Override

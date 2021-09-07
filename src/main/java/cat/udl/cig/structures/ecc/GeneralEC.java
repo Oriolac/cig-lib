@@ -334,6 +334,11 @@ public class GeneralEC implements EC {
         return (GeneralECPoint) x.pow(pow);
     }
 
+    @Override
+    public boolean containsElement(GroupElement groupElement) {
+        return groupElement.getGroup().equals(this);
+    }
+
     /**
      * @see EC#getRing()
      */
