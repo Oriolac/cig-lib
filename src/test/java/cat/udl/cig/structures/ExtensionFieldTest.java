@@ -76,6 +76,7 @@ class ExtensionFieldTest extends RingTemplateTest {
         BigInteger p = BigInteger.valueOf(11);
         PrimeField primeField = new PrimeField(p);
         ExtensionField field = ExtensionField.ExtensionFieldP2(p);
+        assertEquals(p.pow(2), field.getSize());
         Polynomial expected = new Polynomial.PolynomialBuilder()
                 .addTerm(2, new PrimeFieldElement(primeField, BigInteger.ONE))
                 .addTerm(0, new PrimeFieldElement(primeField, BigInteger.TWO))

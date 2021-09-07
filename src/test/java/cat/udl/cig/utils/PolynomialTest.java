@@ -37,6 +37,7 @@ class PolynomialTest {
             Boolean expected = quadraticNonResidues.getOrDefault(e, false);
             assertEquals(expected, e.isQuadraticNonResidue());
         }
+        assertEquals((11 - 1) / 2, quadraticNonResidues.size());
     }
 
 }
