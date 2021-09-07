@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class RingElementTemplateTest {
 
-    private Ring ring;
+    Ring ring;
     private RingElement op1;
     private RingElement op2;
     private BigInteger power;
