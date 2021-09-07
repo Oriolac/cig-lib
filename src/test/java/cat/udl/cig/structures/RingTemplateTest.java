@@ -1,4 +1,4 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;

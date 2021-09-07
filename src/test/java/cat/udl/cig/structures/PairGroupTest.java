@@ -1,6 +1,4 @@
-package cat.udl.cig.fields;
-
-import cat.udl.cig.structures.*;
+package cat.udl.cig.structures;
 
 import java.math.BigInteger;
 

@@ -1,6 +1,5 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
-import cat.udl.cig.structures.*;
 import cat.udl.cig.utils.Polynomial;
 import org.junit.jupiter.api.Test;
 

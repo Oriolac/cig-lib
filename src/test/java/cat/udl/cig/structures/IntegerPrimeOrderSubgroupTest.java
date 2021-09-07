@@ -1,7 +1,4 @@
-package cat.udl.cig.fields;
-
-import cat.udl.cig.structures.IntegerPrimeOrderSubgroup;
-import cat.udl.cig.structures.PrimeFieldElement;
+package cat.udl.cig.structures;
 
 import java.math.BigInteger;
 import java.util.Optional;

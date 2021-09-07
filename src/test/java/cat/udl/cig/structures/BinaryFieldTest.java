@@ -1,8 +1,5 @@
-package cat.udl.cig.fields;
+package cat.udl.cig.structures;
 
-import cat.udl.cig.structures.BinaryField;
-import cat.udl.cig.structures.BinaryFieldElement;
-import cat.udl.cig.utils.bfarithmetic.BasicOperations;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
