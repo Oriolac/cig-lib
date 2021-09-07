@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ExtensionFieldTest extends RingTemplateTest {
 
@@ -80,5 +81,31 @@ class ExtensionFieldTest extends RingTemplateTest {
                 .addTerm(0, new PrimeFieldElement(primeField, BigInteger.TWO))
                 .build();
         assertEquals(expected, field.getReducingPolynomial());
+    }
+
+    @Test
+    public void irreduciblePolynomialCreationP2TestWithMorePrimes() {
+        int[] numbers = new int[]{3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41};
+        for (int number : numbers) {
+            PrimeField primeField = new PrimeField(BigInteger.valueOf(number));
+            BigInteger p = BigInteger.valueOf(number);
+            ExtensionField field = ExtensionField.ExtensionFieldP2(p);
+            assertNotNull(field.getReducingPolynomial());
+            Optional<PrimeFieldElement> optElement = primeField.buildElement().setValue(BigInteger.ONE).buildElement();
+            assertTrue(optElement.isPresent());
+            assertEquals(optElement.get(), field.getReducingPolynomial().getCoefficient(2));
+            System.out.println("P: " + number + "; Polynomial: " + field.getReducingPolynomial());
+        }
+    }
+
+    @Test
+    public void irreduciblePolynomialOfLargePrime() {
+        BigInteger prime = new BigInteger("26745071");
+        ExtensionField field = ExtensionField.ExtensionFieldP2(prime);
+        PrimeField primeField = new PrimeField(prime);
+        Optional<PrimeFieldElement> optElement = primeField.buildElement().setValue(BigInteger.ONE).buildElement();
+        assertTrue(optElement.isPresent());
+        assertEquals(optElement.get(), field.getReducingPolynomial().getCoefficient(2));
+        System.out.println("Polynomial: " + field.getReducingPolynomial());
     }
 }

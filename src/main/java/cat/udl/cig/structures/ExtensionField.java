@@ -78,8 +78,8 @@ public class ExtensionField implements Ring {
         if (one.isEmpty())
             throw new ConstructionException();
         Polynomial.PolynomialBuilder polynomialBuilder = new Polynomial.PolynomialBuilder().addTerm(2, one.get());
-        for (int i = 1; i < p.intValue(); i = i + 1) {
-            Polynomial polynomial = polynomialBuilder.addTerm(0, new PrimeFieldElement(field, BigInteger.valueOf(i))).build();
+        for (BigInteger i = BigInteger.ONE; !i.equals(p.subtract(BigInteger.ONE)); i = i.add(BigInteger.ONE)) {
+            Polynomial polynomial = polynomialBuilder.addTerm(0, new PrimeFieldElement(field, i)).build();
             PrimeFieldElement independentTerm = polynomial.getCoefficient(0);
             if (independentTerm.isQuadraticNonResidue()) {
                 return polynomial;
