@@ -49,7 +49,6 @@ class BinaryFieldTest extends RingTemplateTest {
         BitSet expected = new BitSet(4);
         expected.set(3);
         expected.set(2);
-        assertEquals(expected, element.getValue());
-        assertEquals(BasicOperations.multiply(((BinaryFieldElement) operandA).getValue(), ((BinaryFieldElement) operandB).getValue()), element.getValue());
+        assertEquals(expected, element.getValue(), operandA.getValue() + " * " + operandB.getValue());
     }
 }
