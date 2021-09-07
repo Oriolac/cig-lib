@@ -26,7 +26,7 @@ public class PrimeFieldElement implements RingElement {
      *
      * @see PrimeField
      */
-    private final PrimeField F;
+    private final PrimeField field;
 
     /**
      * A BigInteger that encapsulates the value of this <i>Prime Field
@@ -41,17 +41,17 @@ public class PrimeFieldElement implements RingElement {
      * uninitialized. That is {@code this.F = null} and {@code this.k = null}.
      * This constructor does not make a deep compy of \(F\).
      *
-     * @param F the <i>PrimeField</i> to which {@code this}
+     * @param field the <i>PrimeField</i> to which {@code this}
      *          <i>PrimeFieldElement</i> will belong.
      * @param k a BigInteger representing the value for {@code this}
      *          <i>PrimeFieldElement</i>.
      * @see PrimeField
      */
-    public PrimeFieldElement(final PrimeField F, final BigInteger k) {
-        this.F = F;
-        if (k.compareTo(F.getSize()) >= 0
+    public PrimeFieldElement(final PrimeField field, final BigInteger k) {
+        this.field = field;
+        if (k.compareTo(field.getSize()) >= 0
                 || k.compareTo(BigInteger.ZERO) < 0) {
-            this.k = k.mod(F.getSize());
+            this.k = k.mod(field.getSize());
         } else {
             this.k = k;
         }
@@ -64,13 +64,13 @@ public class PrimeFieldElement implements RingElement {
      * @param q the <i>PrimeFieldElement</i> to be copied.
      */
     public PrimeFieldElement(final PrimeFieldElement q) {
-        F = q.getGroup();
+        field = q.getGroup();
         k = q.getValue();
     }
 
-    protected PrimeFieldElement(final PrimeField F, final BigInteger k,
+    protected PrimeFieldElement(final PrimeField field, final BigInteger k,
                                 final boolean safe) {
-        this.F = F;
+        this.field = field;
         this.k = k;
     }
 
@@ -84,7 +84,7 @@ public class PrimeFieldElement implements RingElement {
             throws IncorrectRingElementException {
         if (belongsToSameGroup(q)) {
             BigInteger val = k.add(q.getIntValue());
-            return new PrimeFieldElement(F, val);
+            return new PrimeFieldElement(field, val);
         } else {
             throw new IncorrectRingElementException(
                     "RingElement q is not a "
@@ -97,7 +97,7 @@ public class PrimeFieldElement implements RingElement {
             throws IncorrectRingElementException {
         if (belongsToSameGroup(q)) {
             BigInteger val = k.subtract(q.getIntValue());
-            return new PrimeFieldElement(F, val);
+            return new PrimeFieldElement(field, val);
         } else {
             throw new IncorrectRingElementException(
                     "RingElement q is not a "
@@ -110,8 +110,8 @@ public class PrimeFieldElement implements RingElement {
             throws IncorrectRingElementException {
         if (belongsToSameGroup(q)) {
             BigInteger val = k.multiply(q.getIntValue());
-            val = val.mod(F.getSize());
-            return new PrimeFieldElement(F, val, true);
+            val = val.mod(field.getSize());
+            return new PrimeFieldElement(field, val, true);
         } else {
             throw new IncorrectRingElementException(
                     "RingElement q is not a "
@@ -121,7 +121,7 @@ public class PrimeFieldElement implements RingElement {
 
     public PrimeFieldElement multiply(final BigInteger q) {
         BigInteger val = k.multiply(q);
-        return new PrimeFieldElement(F, val);
+        return new PrimeFieldElement(field, val);
     }
 
     @Override
@@ -129,9 +129,9 @@ public class PrimeFieldElement implements RingElement {
             throws IncorrectRingElementException {
         if (belongsToSameGroup(q)) {
             BigInteger val =
-                    k.multiply((q.getIntValue()).modInverse(F.getSize()));
-            val = val.mod(F.getSize());
-            return new PrimeFieldElement(F, val, true);
+                    k.multiply((q.getIntValue()).modInverse(field.getSize()));
+            val = val.mod(field.getSize());
+            return new PrimeFieldElement(field, val, true);
         } else {
             throw new IncorrectRingElementException(
                     "RingElement q is not a "
@@ -141,20 +141,20 @@ public class PrimeFieldElement implements RingElement {
 
     @Override
     public PrimeFieldElement opposite() {
-        return new PrimeFieldElement(F, F.getSize().subtract(k), true);
+        return new PrimeFieldElement(field, field.getSize().subtract(k), true);
     }
 
     @Override
     public PrimeFieldElement inverse() {
-        BigInteger val = k.modInverse(F.getSize());
-        return new PrimeFieldElement(F, val, true);
+        BigInteger val = k.modInverse(field.getSize());
+        return new PrimeFieldElement(field, val, true);
     }
 
     @Override
     public PrimeFieldElement pow(final BigInteger k) {
         // System.out.println("exponent = " + k.toString());
-        BigInteger val = this.k.modPow(k, F.getSize());
-        return new PrimeFieldElement(F, val, true);
+        BigInteger val = this.k.modPow(k, field.getSize());
+        return new PrimeFieldElement(field, val, true);
     }
 
     @Override
@@ -163,7 +163,7 @@ public class PrimeFieldElement implements RingElement {
         ArrayList<RingElement> elems = new ArrayList<RingElement>();
 
         try {
-            if (jacobiSymbol(k, F.getSize()) == -1) {
+            if (jacobiSymbol(k, field.getSize()) == -1) {
                 return elems;
             }
         } catch (IncorrectModuleException ime) {
@@ -171,14 +171,14 @@ public class PrimeFieldElement implements RingElement {
         }
 
         BigInteger b =
-                new BigInteger(F.getSize().bitLength(), new Random());
+                new BigInteger(field.getSize().bitLength(), new Random());
         while (b.compareTo(BigInteger.ZERO) == 0) {
-            b = new BigInteger(F.getSize().bitLength(), new Random());
+            b = new BigInteger(field.getSize().bitLength(), new Random());
         }
-        b = b.mod(F.getSize());
+        b = b.mod(field.getSize());
 
         try {
-            while (jacobiSymbol(b, F.getSize()) != -1) {
+            while (jacobiSymbol(b, field.getSize()) != -1) {
                 b = b.add(BigInteger.ONE);
             }
         } catch (IncorrectModuleException ime) {
@@ -187,34 +187,34 @@ public class PrimeFieldElement implements RingElement {
 
         BigInteger e = BigInteger.ZERO;
         BigInteger TWO = new BigInteger("2");
-        BigInteger mod1 = F.getSize().subtract(BigInteger.ONE);
+        BigInteger mod1 = field.getSize().subtract(BigInteger.ONE);
         while (mod1.mod(TWO).compareTo(BigInteger.ZERO) == 0) {
             mod1 = mod1.divide(TWO);
             e = e.add(BigInteger.ONE);
         }
 
-        BigInteger inverse = k.modInverse(F.getSize());
-        BigInteger c = b.modPow(mod1, F.getSize());
+        BigInteger inverse = k.modInverse(field.getSize());
+        BigInteger c = b.modPow(mod1, field.getSize());
         BigInteger r =
                 k.modPow(mod1.add(BigInteger.ONE).divide(new BigInteger("2")),
-                        F.getSize());
+                        field.getSize());
 
         for (int i = 1; i < e.intValue(); i++) {
             BigInteger exp =
                     BigInteger.valueOf(2).pow(e.intValue() - i - 1);
             BigInteger d =
-                    (r.pow(2)).multiply(inverse).modPow(exp, F.getSize());
+                    (r.pow(2)).multiply(inverse).modPow(exp, field.getSize());
 
-            if (d.mod(F.getSize()).compareTo(
-                    new BigInteger("-1").mod(F.getSize())) == 0) {
+            if (d.mod(field.getSize()).compareTo(
+                    new BigInteger("-1").mod(field.getSize())) == 0) {
                 r = r.multiply(c);
-                r.mod(F.getSize());
+                r.mod(field.getSize());
             }
-            c = c.modPow(TWO, F.getSize());
+            c = c.modPow(TWO, field.getSize());
         }
 
-        elems.add(new PrimeFieldElement(F, r));
-        elems.add(new PrimeFieldElement(F, r.negate()));
+        elems.add(new PrimeFieldElement(field, r));
+        elems.add(new PrimeFieldElement(field, r.negate()));
         return elems;
     }
 
@@ -228,13 +228,13 @@ public class PrimeFieldElement implements RingElement {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PrimeFieldElement that = (PrimeFieldElement) o;
-        return Objects.equals(F, that.F) &&
+        return Objects.equals(field, that.field) &&
                 Objects.equals(k, that.k);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(F, k);
+        return Objects.hash(field, k);
     }
 
     /**
@@ -310,7 +310,7 @@ public class PrimeFieldElement implements RingElement {
      */
     @Override
     public boolean belongsToSameGroup(final GroupElement q) {
-        return F.equals(q.getGroup());
+        return field.equals(q.getGroup());
     }
 
     /**
@@ -318,7 +318,7 @@ public class PrimeFieldElement implements RingElement {
      */
     @Override
     public PrimeField getGroup() {
-        return F;
+        return field;
     }
 
     /**
@@ -332,5 +332,15 @@ public class PrimeFieldElement implements RingElement {
     @Override
     public byte[] toBytes() throws UnsupportedOperationException {
         return getIntValue().toByteArray();
+    }
+
+    public boolean isQuadraticNonResidue() {
+        PrimeFieldElement i = field.getAdditiveIdentity();
+        for (i = i.add(field.getMultiplicativeIdentity()); i.equals(field.getAdditiveIdentity()); i.add(field.getMultiplicativeIdentity())) {
+            if (i.multiply(i).equals(this)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

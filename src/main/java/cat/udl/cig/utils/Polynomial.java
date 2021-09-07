@@ -7,12 +7,13 @@
 package cat.udl.cig.utils;
 
 import java.math.BigInteger;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.structures.ExtensionField;
+import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 
 /**
@@ -95,17 +96,17 @@ public class Polynomial {
     /**
      * Returns the i-th coefficient of {@code this} <i>Polynomial</i>.
      *
-     * @param i
+     * @param termDegree
      *            the index of the coefficient.
      * @return a <i>PrimeFieldElement</i>, the i-th coefficient of {@code this}
      *         <i>Polynomial</i>, {@code this.coefficients.get(i)}.
      * @see PrimeFieldElement
      */
-    public PrimeFieldElement getCoefficient(final int i) {
-        if (i < 0 || i > degree) {
+    public PrimeFieldElement getCoefficient(final int termDegree) {
+        if (termDegree < 0 || termDegree > degree) {
             return null;
         }
-        return coefficients.get(i);
+        return coefficients.get(termDegree);
     }
 
     /**
@@ -557,7 +558,6 @@ public class Polynomial {
         if (degree < 0) {
             return;
         }
-
         while (degree > 0
                 && coefficients.get(degree).getValue()
                 .compareTo(BigInteger.ZERO) == 0) {
@@ -606,5 +606,33 @@ public class Polynomial {
             return coefficients.get(0).getGroup().getSize()
                     .equals(q.coefficients.get(0).getGroup().getSize());
         }
+    }
+
+    public static class PolynomialBuilder {
+
+        private final HashMap<Integer, PrimeFieldElement> coefficients;
+
+        public PolynomialBuilder() {
+            coefficients = new HashMap<>();
+        }
+
+        public PolynomialBuilder addTerm(Integer degree, PrimeFieldElement coefficient) {
+            coefficients.put(degree, coefficient);
+            return this;
+        }
+
+        public Polynomial build() {
+            Optional<Integer> polynomialDegree = this.coefficients.keySet().stream().max((a, b) -> a - b);
+            if (polynomialDegree.isEmpty())
+                return new Polynomial();
+            PrimeField field = coefficients.get(polynomialDegree.get()).getGroup();
+            PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get()];
+            Arrays.fill(elements, field.getAdditiveIdentity());
+            for (Map.Entry<Integer, PrimeFieldElement> entry : this.coefficients.entrySet()) {
+                elements[entry.getKey()] = entry.getValue();
+            }
+            return new Polynomial(new ArrayList<>(Arrays.asList(elements)));
+        }
+
     }
 }

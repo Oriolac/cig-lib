@@ -22,9 +22,10 @@ public class ECPointBuilder implements GroupElementBuilder {
         return this.EC.getRing().buildElement();
     }
 
-    public void setXAndLift(@Nonnull final RingElement ringElement) {
+    public ECPointBuilder setXAndLift(@Nonnull final RingElement ringElement) {
         Optional<? extends GeneralECPoint> point = EC.liftX(ringElement);
         point.ifPresent(generalECPoint -> this.point = generalECPoint);
+        return this;
     }
 
     @Override

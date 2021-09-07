@@ -3,7 +3,6 @@ package cat.udl.cig.structures;
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.NotImplementedException;
 import cat.udl.cig.structures.builder.ExtensionFieldElementBuilder;
-import cat.udl.cig.structures.builder.GroupElementBuilder;
 import cat.udl.cig.utils.Polynomial;
 
 import java.math.BigInteger;
@@ -39,11 +38,11 @@ public class ExtensionField implements Ring {
     private final Polynomial reducingPolynomial; /* Irreducible polynomial */
 
     /**
-     * Creates an <i>ExtensionField</i> with characteristic \(p = m\), exponent
-     * \(n = e\) and \(\text{reducingPolynomial} = \text{reducingPoly}\). This
+     * Creates an <i>ExtensionField</i> with characteristic \(p = p\), exponent
+     * \(n = n\) and \(\text{reducingPolynomial} = \text{reducingPoly}\). This
      * constructor does not check if the parameters are correct. That is, if
-     * \(m\) is a positive and a prime number, \(e\) is greater than 0 and the
-     * degree of the reducingPoly is exactly \(e\).
+     * \(p\) is a positive and a prime number, \(n\) is greater than 0 and the
+     * degree of the reducingPoly is exactly \(n\).
      *
      * @param p            the characteristic of {@code this} newly created
      *                     <i>ExtensionField</i>. It must be positive and a prime number.
@@ -53,7 +52,6 @@ public class ExtensionField implements Ring {
      *                     <i>ExtensionField</i>. It must be an irreducible polynomial of
      *                     degree \(e\).
      */
-
     public ExtensionField(final BigInteger p, final int n,
                           final Polynomial reducingPoly) {
         // TODO: CHECK IF THE POLYNOMIAL IS IRREDUCIBLE!
@@ -68,6 +66,26 @@ public class ExtensionField implements Ring {
         } else {
             throw new ConstructionException();
         }
+    }
+
+    public static ExtensionField ExtensionFieldP2(BigInteger p) {
+        return new ExtensionField(p, 2, searchIrreduciblePolynomial(p));
+    }
+
+    private static Polynomial searchIrreduciblePolynomial(BigInteger p) {
+        PrimeField field = new PrimeField(p);
+        Optional<PrimeFieldElement> one = field.buildElement().setValue(BigInteger.ONE).buildElement();
+        if (one.isEmpty())
+            throw new ConstructionException();
+        Polynomial.PolynomialBuilder polynomialBuilder = new Polynomial.PolynomialBuilder().addTerm(2, one.get());
+        for (int i = 0; i < p.intValue() - 1; p = p.add(BigInteger.ONE)) {
+            Polynomial polynomial = polynomialBuilder.addTerm(0, new PrimeFieldElement(field, BigInteger.valueOf(i))).build();
+            PrimeFieldElement independentTerm = polynomial.getCoefficient(0);
+            if (independentTerm.isQuadraticNonResidue()) {
+                return polynomial;
+            }
+        }
+        throw new ConstructionException("Cannot find any irreducble polynomial");
     }
 
     /**

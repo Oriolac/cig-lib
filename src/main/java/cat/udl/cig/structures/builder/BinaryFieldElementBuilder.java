@@ -16,8 +16,9 @@ public class BinaryFieldElementBuilder implements RingElementBuilder {
         this.field = field;
     }
 
-    public void setBitSet(BitSet k) {
+    public BinaryFieldElementBuilder setBitSet(BitSet k) {
         this.bitset = k;
+        return this;
     }
 
     @Override

@@ -16,8 +16,9 @@ public class PrimeFieldElementBuilder implements RingElementBuilder {
         this.field = field;
     }
 
-    public void setValue(@Nonnull BigInteger value) {
+    public PrimeFieldElementBuilder setValue(@Nonnull BigInteger value) {
         this.value = value;
+        return this;
     }
 
     @Override

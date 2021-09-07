@@ -16,8 +16,9 @@ public class IntegerPrimeOrderElementBuilder implements RingElementBuilder{
         this.field = field;
     }
 
-    public void setValue(BigInteger value) {
+    public IntegerPrimeOrderElementBuilder setValue(BigInteger value) {
         this.value = value;
+        return this;
     }
 
     @Override

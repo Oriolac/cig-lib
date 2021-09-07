@@ -24,11 +24,12 @@ public class PairGroupElementBuilder implements GroupElementBuilder {
         this.elementA = elementA;
     }
 
-    public void setElementB(GroupElement elementB) {
+    public PairGroupElementBuilder setElementB(GroupElement elementB) {
         if (!pairGroup.isFromSetB(elementB)){
             throw new ConstructionException("Element is not from set A.");
         }
         this.elementB = elementB;
+        return this;
     }
 
     @Override

@@ -16,8 +16,9 @@ public class ExtensionFieldElementBuilder implements RingElementBuilder {
         this.field = field;
     }
 
-    public void setPolynomial(Polynomial polynomial) {
+    public ExtensionFieldElementBuilder setPolynomial(Polynomial polynomial) {
         this.polynomial = polynomial;
+        return this;
     }
 
     @Override
