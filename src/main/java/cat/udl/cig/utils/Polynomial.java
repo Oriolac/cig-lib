@@ -566,20 +566,6 @@ public class Polynomial {
         }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Polynomial that = (Polynomial) o;
-        return degree == that.degree &&
-                Objects.equals(coefficients, that.coefficients);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(coefficients, degree);
-    }
-
     /**
      * Checks if {@code this} <i>Polynomial</i> is the Zero one. That is,
      * {@code this.coefficients.get(0) = 0} and {@code this.degree = 0}.
@@ -606,6 +592,30 @@ public class Polynomial {
             return coefficients.get(0).getGroup().getSize()
                     .equals(q.coefficients.get(0).getGroup().getSize());
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Polynomial)) return false;
+
+        Polynomial that = (Polynomial) o;
+
+        if (degree != that.degree) return false;
+        if (coefficients.size() != that.coefficients.size()) return false;
+        for (int i = 0; i < coefficients.size(); i++) {
+            if (!coefficients.get(i).equals(that.coefficients.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = coefficients.hashCode();
+        result = 31 * result + degree;
+        return result;
     }
 
     public static class PolynomialBuilder {
@@ -635,4 +645,6 @@ public class Polynomial {
         }
 
     }
+
+
 }

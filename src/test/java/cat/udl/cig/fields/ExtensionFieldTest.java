@@ -73,7 +73,13 @@ class ExtensionFieldTest extends RingTemplateTest {
 
     @Test
     public void irreduciblePolynomialCreationP2Test() {
-        ExtensionField field = ExtensionField.ExtensionFieldP2(BigInteger.valueOf(11));
-        System.out.println(field.getReducingPolynomial());
+        BigInteger p = BigInteger.valueOf(11);
+        PrimeField primeField = new PrimeField(p);
+        ExtensionField field = ExtensionField.ExtensionFieldP2(p);
+        Polynomial expected = new Polynomial.PolynomialBuilder()
+                .addTerm(2, new PrimeFieldElement(primeField, BigInteger.ONE))
+                .addTerm(0, new PrimeFieldElement(primeField, BigInteger.TWO))
+                .build();
+        assertEquals(expected, field.getReducingPolynomial());
     }
 }
