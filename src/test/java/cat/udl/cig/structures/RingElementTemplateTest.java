@@ -3,12 +3,28 @@ package cat.udl.cig.structures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public abstract class ElementTemplateTest {
+public abstract class RingElementTemplateTest {
 
     private Ring ring;
+    private RingElement op1;
+    private RingElement op2;
+    private RingElement resultAddition;
 
     @BeforeEach
-    abstract void setRing();
+    void setUp() {
+        ring = returnRing();
+        op1 = returnOperand1();
+        op2 = returnOperand2();
+        resultAddition = returnResultAddition();
+    }
+
+    protected abstract Ring returnRing();
+
+    protected abstract RingElement returnOperand1();
+
+    protected abstract RingElement returnOperand2();
+
+    protected abstract RingElement returnResultAddition();
 
     @Test
     void testAdditionWithIdentity() {
