@@ -28,7 +28,7 @@ public class PrimeFieldElementBuilder implements RingElementBuilder {
     }
 
     @Override
-    public Optional<PrimeFieldElement> buildElement() {
+    public Optional<PrimeFieldElement> build() {
         if (value == null)
             return Optional.empty();
         return Optional.of(new PrimeFieldElement(field, value));

@@ -6,21 +6,21 @@
 
 package cat.udl.cig.utils;
 
-import java.math.BigInteger;
-import java.util.*;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.stream.Collectors;
-
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.structures.ExtensionField;
+import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
+
+import java.math.BigInteger;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 
 /**
  * Models a polynomial which coefficients are <i>PrimeFieldElement</i>.
  *
- * @see PrimeFieldElement
  * @author M.Àngels Cerveró
+ * @see PrimeFieldElement
  */
 public class Polynomial {
     /**
@@ -51,9 +51,8 @@ public class Polynomial {
      * <i>Polynomial</i> is keeped empty (
      * {@code this.coefficients.isEmpty() = true} and {@code this.degree = -1}).
      *
-     * @param coefficients
-     *            an ArrayList that contains the coefficients for {@code this}
-     *            new <i>Polynomial</i>.
+     * @param coefficients an ArrayList that contains the coefficients for {@code this}
+     *                     new <i>Polynomial</i>.
      * @see PrimeFieldElement
      */
     public Polynomial(final ArrayList<PrimeFieldElement> coefficients) {
@@ -72,8 +71,7 @@ public class Polynomial {
      * Creates a copy of the <i>Polynomial</i> {@code poly}. This constructor
      * makes a deep copy of {@code poly}.
      *
-     * @param poly
-     *            the <i>Polynomial</i> to be copied.
+     * @param poly the <i>Polynomial</i> to be copied.
      */
     public Polynomial(final Polynomial poly) {
         if (poly.degree >= 0) {
@@ -87,7 +85,7 @@ public class Polynomial {
      * Returns the degree of {@code this} <i>Polynomial</i>.
      *
      * @return an int representing the degree of {@code this} <i>Polynomial</i>,
-     *         {@code this.degree}.
+     * {@code this.degree}.
      */
     public int getDegree() {
         return degree;
@@ -96,10 +94,9 @@ public class Polynomial {
     /**
      * Returns the i-th coefficient of {@code this} <i>Polynomial</i>.
      *
-     * @param termDegree
-     *            the index of the coefficient.
+     * @param termDegree the index of the coefficient.
      * @return a <i>PrimeFieldElement</i>, the i-th coefficient of {@code this}
-     *         <i>Polynomial</i>, {@code this.coefficients.get(i)}.
+     * <i>Polynomial</i>, {@code this.coefficients.get(i)}.
      * @see PrimeFieldElement
      */
     public PrimeFieldElement getCoefficient(final int termDegree) {
@@ -113,8 +110,7 @@ public class Polynomial {
      * Computes the operation \(p + q\), where {@code p} is the {@code this}
      * <i>Polynomial</i>.
      *
-     * @param q
-     *            the <i>Polynomial</i> we want to add to {@code this}.
+     * @param q the <i>Polynomial</i> we want to add to {@code this}.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p + q\).
      */
     public Polynomial add(final Polynomial q) {
@@ -131,12 +127,12 @@ public class Polynomial {
         try {
             for (int i = 0; i <= p1.degree; i++) {
                 r.coefficients.add(p1.coefficients.get(i).add(
-                    p2.coefficients.get(i)));
+                        p2.coefficients.get(i)));
             }
 
             for (int i = p1.degree + 1; i <= p2.degree; i++) {
                 r.coefficients.add(new PrimeFieldElement(p2.coefficients
-                    .get(i)));
+                        .get(i)));
             }
 
             r.degree = p2.degree;
@@ -151,8 +147,7 @@ public class Polynomial {
      * Computes the operation \(p - q\), where {@code p} is the {@code this}
      * <i>Polynomial</i>.
      *
-     * @param q
-     *            the <i>Polynomial</i> we want to subtract to {@code this}.
+     * @param q the <i>Polynomial</i> we want to subtract to {@code this}.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p - q\).
      */
     public Polynomial subtract(final Polynomial q) {
@@ -182,12 +177,10 @@ public class Polynomial {
      * the same <i>Ring</i> as \(p\), then, this method returns an empty
      * <i>Polynomial</i>.
      *
-     * @param q
-     *            the <i>Polynomial</i> we want to multiply {@code this}.
-     * @param modulus
-     *            the reducing polynomial (modulus) of the multiplication.
+     * @param q       the <i>Polynomial</i> we want to multiply {@code this}.
+     * @param modulus the reducing polynomial (modulus) of the multiplication.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p \cdot q (\mod
-     *         modulus)\).
+     * modulus)\).
      */
     public Polynomial multiply(final Polynomial q, final Polynomial modulus) {
         if (!belongToSameBaseRing(q) || !belongToSameBaseRing(modulus)) {
@@ -203,12 +196,10 @@ public class Polynomial {
      * the same <i>Ring</i> as \(p\), then, this method returns an empty
      * <i>Polynomial</i>.
      *
-     * @param q
-     *            the <i>Polynomial</i> we want to divide {@code this}.
-     * @param modulus
-     *            the reducing polynomial (modulus) of the division.
+     * @param q       the <i>Polynomial</i> we want to divide {@code this}.
+     * @param modulus the reducing polynomial (modulus) of the division.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p / q (\mod
-     *         modulus)\).
+     * modulus)\).
      */
     public Polynomial divide(final Polynomial q, final Polynomial modulus) {
         if (!belongToSameBaseRing(q) || !belongToSameBaseRing(modulus)) {
@@ -222,10 +213,9 @@ public class Polynomial {
      * <i>Polynomial</i>. If \(modulus\) do not belong to the same <i>Ring</i>
      * as \(p\), then, this method returns an empty <i>Polynomial</i>.
      *
-     * @param modulus
-     *            the reducing polynomial (modulus) of the inversion.
+     * @param modulus the reducing polynomial (modulus) of the inversion.
      * @return a new <i>Polynomial</i> \(r\), where \(r = 1 / p (\mod
-     *         modulus)\).
+     * modulus)\).
      */
     /*
      * function inverse(a, p) t := 0; newt := 1; r := p; newr := a; while newr ≠
@@ -248,11 +238,11 @@ public class Polynomial {
         Polynomial newr = this;
 
         tcoefficients.add(new PrimeFieldElement(coefficients.get(0)
-            .getGroup(), BigInteger.ZERO));
+                .getGroup(), BigInteger.ZERO));
         t = new Polynomial(tcoefficients);
 
         ntcoefficients.add(new PrimeFieldElement(coefficients.get(0)
-            .getGroup(), BigInteger.ONE));
+                .getGroup(), BigInteger.ONE));
         newt = new Polynomial(ntcoefficients);
 
         Polynomial quotient, tmp;
@@ -284,13 +274,11 @@ public class Polynomial {
      * Computes the operation \(p^{k} (\mod modulus)\), where {@code p} is
      * {@code this} <i>Polynomial</i>.
      *
-     * @param k
-     *            a BigInteger representing the exponent we want to apply to
-     *            {@code this}.
-     * @param modulus
-     *            the reducing polynomial (modulus) of this method.
+     * @param k       a BigInteger representing the exponent we want to apply to
+     *                {@code this}.
+     * @param modulus the reducing polynomial (modulus) of this method.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p^{k} (\mod
-     *         modulus)\).
+     * modulus)\).
      */
     public Polynomial pow(BigInteger k, final Polynomial modulus) {
         // k es pot reduir mòdul (p ^ n - 1)
@@ -300,7 +288,7 @@ public class Polynomial {
         ArrayList<PrimeFieldElement> rcoefficients =
                 new ArrayList<PrimeFieldElement>();
         rcoefficients.add(new PrimeFieldElement(coefficients.get(0)
-            .getGroup(), BigInteger.ONE));
+                .getGroup(), BigInteger.ONE));
         Polynomial r = new Polynomial(rcoefficients);
         Polynomial tmp = this;
 
@@ -320,11 +308,10 @@ public class Polynomial {
      * Computes the operation \(\sqrt{p} (\mod modulus)\), where {@code p} is
      * {@code this} <i>Polynomial</i>.
      *
-     * @param modulus
-     *            the reducing polynomial (modulus) of this method.
+     * @param modulus the reducing polynomial (modulus) of this method.
      * @return a <i>Polynomial</i> \(r\), where \(r = \sqrt{p}\) and
-     *         {@code r.getGroup() = this.getGroup()}, or an empty
-     *         <i>Polynomial</i> if {@code this} is not a quadratic residue.
+     * {@code r.getGroup() = this.getGroup()}, or an empty
+     * <i>Polynomial</i> if {@code this} is not a quadratic residue.
      */
     public Polynomial squareRoot(final Polynomial modulus) {
         // TODO: in need to be checkd. The computations are too slow!
@@ -332,7 +319,7 @@ public class Polynomial {
         final BigInteger TWO = BigInteger.valueOf(2);
         if (isSquare(modulus)) {
             BigInteger p =
-                modulus.coefficients.get(0).getGroup().getSize();
+                    modulus.coefficients.get(0).getGroup().getSize();
             int n = modulus.degree;
             BigInteger q = p.pow(n);
             ExtensionField F = new ExtensionField(p, n, modulus);
@@ -355,7 +342,7 @@ public class Polynomial {
             ArrayList<PrimeFieldElement> hcoefficients =
                     new ArrayList<PrimeFieldElement>();
             hcoefficients.add(new PrimeFieldElement(coefficients.get(0)
-                .getGroup(), BigInteger.ONE));
+                    .getGroup(), BigInteger.ONE));
             Polynomial h = new Polynomial(hcoefficients);
 
             Polynomial d;
@@ -392,8 +379,7 @@ public class Polynomial {
      * residue, that is, if it exists \(\sqrt(p)\), where \(p\) is {@code this}
      * <i>Polynomial</i>.
      *
-     * @param modulus
-     *            the reducing polynomial (modulus) of this method.
+     * @param modulus the reducing polynomial (modulus) of this method.
      * @return {@code true} if \(\sqrt(p)\) exists and {@code false} otherwise.
      */
     private boolean isSquare(final Polynomial modulus) {
@@ -411,8 +397,7 @@ public class Polynomial {
      * Auxiliar method to compute the Euclidean Multiplication \(p \cdot q\),
      * where {@code p} is {@code this} <i>Polynomial</i>.
      *
-     * @param q
-     *            the <i>Polynomial</i> we want to multiply {@code this}.
+     * @param q the <i>Polynomial</i> we want to multiply {@code this}.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p \cdot q\).
      */
     public Polynomial euclideanMultiplication(final Polynomial q) {
@@ -421,26 +406,22 @@ public class Polynomial {
             r = new Polynomial();
 
             r.degree = degree + q.degree;
+            PrimeField field = coefficients.get(0).getGroup();
             for (int i = 0; i <= r.degree; i++) {
-                r.coefficients.add(new PrimeFieldElement(coefficients.get(
-                    0).getGroup(), BigInteger.ZERO));
+                r.coefficients.add(new PrimeFieldElement(field, BigInteger.ZERO));
             }
 
             // Multiply polynomials
             for (int i = 0; i <= degree; i++) {
                 for (int j = 0; j <= q.degree; j++) {
-                    PrimeFieldElement mult =
-                            coefficients.get(i)
-                            .multiply(q.coefficients.get(j));
-                    r.coefficients.set(i + j, r.coefficients.get(i + j)
-                        .add(mult));
+                    PrimeFieldElement mult = coefficients.get(i).multiply(q.coefficients.get(j));
+                    r.coefficients.set(i + j, r.coefficients.get(i + j).add(mult));
                 }
             }
             r.checkDegree();
         } catch (IncorrectRingElementException e) {
             r = new Polynomial();
         }
-
         return r;
     }
 
@@ -448,12 +429,11 @@ public class Polynomial {
      * Auxiliar method to compute the Euclidean Division \(p / q\), where
      * {@code p} is {@code this} <i>Polynomial</i>.
      *
-     * @param q
-     *            the <i>Polynomial</i> we want to multiply {@code this}.
+     * @param q the <i>Polynomial</i> we want to multiply {@code this}.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p \cdot q\).
      */
     public SimpleEntry<Polynomial, Polynomial> euclideanDivision(
-        final Polynomial q) {
+            final Polynomial q) {
         Polynomial quotient = new Polynomial();
         Polynomial remainder = new Polynomial();
         SimpleEntry<Polynomial, Polynomial> result;
@@ -475,7 +455,7 @@ public class Polynomial {
             }
             quotient.degree = 0;
             quotient.coefficients.add(new PrimeFieldElement(coefficients
-                .get(0).getGroup(), BigInteger.ZERO));
+                    .get(0).getGroup(), BigInteger.ZERO));
             result =
                     new SimpleEntry<Polynomial, Polynomial>(quotient,
                             remainder);
@@ -484,7 +464,7 @@ public class Polynomial {
             quotient.degree = degree - q.degree;
             for (int i = 0; i <= quotient.degree; i++) {
                 quotient.coefficients.add(new PrimeFieldElement(
-                    coefficients.get(0).getGroup(), BigInteger.ZERO));
+                        coefficients.get(0).getGroup(), BigInteger.ZERO));
             }
 
             try {
@@ -495,18 +475,18 @@ public class Polynomial {
                     curQuotient.coefficients.clear();
                     for (int i = 0; i <= curQuotient.degree; i++) {
                         curQuotient.coefficients
-                        .add(new PrimeFieldElement(coefficients.get(0)
-                            .getGroup(), BigInteger.ZERO));
+                                .add(new PrimeFieldElement(coefficients.get(0)
+                                        .getGroup(), BigInteger.ZERO));
                     }
                     quotient.coefficients.set(curQuotient.degree,
-                        remainder.coefficients.get(remainder.degree)
-                        .divide(q.coefficients.get(q.degree)));
+                            remainder.coefficients.get(remainder.degree)
+                                    .divide(q.coefficients.get(q.degree)));
                     curQuotient.coefficients.set(curQuotient.degree,
-                        quotient.coefficients.get(curQuotient.degree));
+                            quotient.coefficients.get(curQuotient.degree));
 
                     remainder =
                             remainder.subtract(q
-                                .euclideanMultiplication(curQuotient));
+                                    .euclideanMultiplication(curQuotient));
                 }
 
                 quotient.checkDegree();
@@ -580,10 +560,9 @@ public class Polynomial {
      * Checks if \(p\) and \(q\), where \(p\) is {@code this} <i>Polynomial</i>,
      * belong to the same <i>Ring</i>.
      *
-     * @param q
-     *            the <i>Polynomial</i> we want to check.
+     * @param q the <i>Polynomial</i> we want to check.
      * @return {@code true} if \(p\) and \(q\) belong to the same <i>Ring</i>
-     *         and{@code false} otherwise.
+     * and{@code false} otherwise.
      */
     private boolean belongToSameBaseRing(final Polynomial q) {
         if (degree == -1 || q.degree == -1) {

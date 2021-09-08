@@ -29,7 +29,7 @@ public class ECPointBuilder implements GroupElementBuilder {
     }
 
     @Override
-    public Optional<? extends GeneralECPoint> buildElement() {
+    public Optional<? extends GeneralECPoint> build() {
         if (point == null)
             return Optional.empty();
         return Optional.of(point);

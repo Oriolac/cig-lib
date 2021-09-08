@@ -22,7 +22,7 @@ public class BinaryFieldElementBuilder implements RingElementBuilder {
     }
 
     @Override
-    public Optional<? extends BinaryFieldElement> buildElement() {
+    public Optional<? extends BinaryFieldElement> build() {
         if (bitset == null)
             return Optional.empty();
         return Optional.of(new BinaryFieldElement(field, bitset));

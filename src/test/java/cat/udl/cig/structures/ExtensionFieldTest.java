@@ -79,7 +79,7 @@ class ExtensionFieldTest extends RingTemplateTest {
         assertEquals(p.pow(2), field.getSize());
         Polynomial expected = new Polynomial.PolynomialBuilder()
                 .addTerm(2, new PrimeFieldElement(primeField, BigInteger.ONE))
-                .addTerm(0, new PrimeFieldElement(primeField, BigInteger.TWO))
+                .addTerm(0, new PrimeFieldElement(primeField, BigInteger.ONE))
                 .build();
         assertEquals(expected, field.getReducingPolynomial());
     }
@@ -92,10 +92,13 @@ class ExtensionFieldTest extends RingTemplateTest {
             BigInteger p = BigInteger.valueOf(number);
             ExtensionField field = ExtensionField.ExtensionFieldP2(p);
             assertNotNull(field.getReducingPolynomial());
-            Optional<PrimeFieldElement> optElement = primeField.buildElement().setValue(BigInteger.ONE).buildElement();
+            Optional<PrimeFieldElement> optElement = primeField.buildElement().setValue(BigInteger.ONE).build();
             assertTrue(optElement.isPresent());
             assertEquals(optElement.get(), field.getReducingPolynomial().getCoefficient(2));
             System.out.println("P: " + number + "; Polynomial: " + field.getReducingPolynomial());
+            if (BigInteger.valueOf(number).mod(BigInteger.valueOf(4)).equals(BigInteger.valueOf(3))) {
+                assertEquals(field.getReducingPolynomial().getCoefficient(0), primeField.getMultiplicativeIdentity());
+            }
         }
     }
 
@@ -104,7 +107,7 @@ class ExtensionFieldTest extends RingTemplateTest {
         BigInteger prime = new BigInteger("26745071");
         ExtensionField field = ExtensionField.ExtensionFieldP2(prime);
         PrimeField primeField = new PrimeField(prime);
-        Optional<PrimeFieldElement> optElement = primeField.buildElement().setValue(BigInteger.ONE).buildElement();
+        Optional<PrimeFieldElement> optElement = primeField.buildElement().setValue(BigInteger.ONE).build();
         assertTrue(optElement.isPresent());
         assertEquals(optElement.get(), field.getReducingPolynomial().getCoefficient(2));
         System.out.println("Polynomial: " + field.getReducingPolynomial());
