@@ -7,6 +7,6 @@ import java.util.Optional;
 
 public interface RingElementBuilder extends GroupElementBuilder {
 
-    Optional<? extends RingElement> buildElement();
+    Optional<? extends RingElement> build();
 
 }

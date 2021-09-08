@@ -1,12 +1,12 @@
 package cat.udl.cig.structures;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PrimeFieldElementTest extends RingElementTemplateTest {
 
@@ -29,38 +29,39 @@ class PrimeFieldElementTest extends RingElementTemplateTest {
 
     @Override
     protected Ring returnRing() {
-        return new PrimeField(BigInteger.valueOf(11));
+        field = new PrimeField(BigInteger.valueOf(11));
+        return field;
     }
 
     @Override
     protected RingElement returnOperand1() {
-        return ((PrimeField) returnRing()).buildElement().setValue(10L).buildElement().orElseThrow();
+        return field.buildElement().setValue(10L).build().orElseThrow();
     }
 
     @Override
     protected RingElement returnOperand2() {
-        return ((PrimeField) returnRing()).buildElement().setValue(7L).buildElement().orElseThrow();
+        return field.buildElement().setValue(7L).build().orElseThrow();
     }
 
     @Override
     protected RingElement returnResultAddition() {
-        return ((PrimeField) returnRing()).buildElement().setValue(6L).buildElement().orElseThrow();
+        return field.buildElement().setValue(6L).build().orElseThrow();
 
     }
 
     @Override
     protected RingElement returnResultSubtraction() {
-        return ((PrimeField) returnRing()).buildElement().setValue(3L).buildElement().orElseThrow();
+        return field.buildElement().setValue(3L).build().orElseThrow();
     }
 
     @Override
     protected RingElement returnExpectedOpposite1() {
-        return ((PrimeField) returnRing()).buildElement().setValue(7L).buildElement().orElseThrow();
+        return field.buildElement().setValue(1L).build().orElseThrow();
     }
 
     @Override
     protected RingElement returnExpectedInverse1() {
-        return ((PrimeField) returnRing()).buildElement().setValue(8L).buildElement().orElseThrow();
+        return field.buildElement().setValue(10L).build().orElseThrow();
     }
 
     @Override
@@ -70,21 +71,26 @@ class PrimeFieldElementTest extends RingElementTemplateTest {
 
     @Override
     protected RingElement returnExpectedPower() {
-        return ((PrimeField) returnRing()).buildElement().setValue(5L).buildElement().orElseThrow();
+        return field.buildElement().setValue(10L).build().orElseThrow();
     }
 
     @Override
     protected ArrayList<RingElement> returnSquaresRootOfOp1() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
     protected RingElement expectedResultMultiplication() {
-        return null;
+        return field.buildElement().setValue(4L).build().orElseThrow();
     }
 
     @Override
     protected RingElement expectedResultDivision() {
-        return null;
+        return field.buildElement().setValue(3L).build().orElseThrow();
+    }
+
+    @Test
+    void isQuadraticNonResidueTest() {
+        assertTrue(field.buildElement().setValue(10).build().orElseThrow().isQuadraticNonResidue());
     }
 }

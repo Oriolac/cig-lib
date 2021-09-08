@@ -22,7 +22,7 @@ public class ExtensionFieldElementBuilder implements RingElementBuilder {
     }
 
     @Override
-    public Optional<? extends ExtensionFieldElement> buildElement() {
+    public Optional<? extends ExtensionFieldElement> build() {
         if (polynomial == null)
             return Optional.empty();
         return Optional.of(new ExtensionFieldElement(field, polynomial));

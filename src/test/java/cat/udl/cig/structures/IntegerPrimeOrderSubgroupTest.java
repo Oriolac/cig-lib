@@ -12,11 +12,11 @@ public class IntegerPrimeOrderSubgroupTest extends GroupTemplateTest{
         IntegerPrimeOrderSubgroup group = new IntegerPrimeOrderSubgroup(BigInteger.valueOf(11L), BigInteger.valueOf(11L - 1), BigInteger.valueOf(3L));
         this.group = group.getField();
 
-        Optional<? extends PrimeFieldElement> ringElementOptionalA = group.buildElement().setValue(BigInteger.valueOf(5L)).buildElement();
+        Optional<? extends PrimeFieldElement> ringElementOptionalA = group.buildElement().setValue(BigInteger.valueOf(5L)).build();
         if (ringElementOptionalA.isEmpty())
             fail();
         operandA = ringElementOptionalA.get();
-        Optional<? extends PrimeFieldElement> ringElementOptionalB = group.buildElement().setValue(BigInteger.valueOf(3L)).buildElement();
+        Optional<? extends PrimeFieldElement> ringElementOptionalB = group.buildElement().setValue(BigInteger.valueOf(3L)).build();
         if (ringElementOptionalB.isEmpty())
             fail();
         operandB = ringElementOptionalB.get();

@@ -34,7 +34,7 @@ public class PairGroupElementBuilder implements RingElementBuilder {
     }
 
     @Override
-    public Optional<? extends RingElement> buildElement() {
+    public Optional<? extends RingElement> build() {
         if (this.elementA == null || this.elementB == null)
             return Optional.empty();
         return Optional.of(new PairGroupElement(elementA, elementB));

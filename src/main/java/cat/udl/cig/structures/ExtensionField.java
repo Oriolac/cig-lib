@@ -74,14 +74,14 @@ public class ExtensionField implements Ring {
 
     private static Polynomial searchIrreduciblePolynomial(BigInteger p) {
         PrimeField field = new PrimeField(p);
-        Optional<PrimeFieldElement> one = field.buildElement().setValue(BigInteger.ONE).buildElement();
+        Optional<PrimeFieldElement> one = field.buildElement().setValue(BigInteger.ONE).build();
         if (one.isEmpty())
             throw new ConstructionException();
         Polynomial.PolynomialBuilder polynomialBuilder = new Polynomial.PolynomialBuilder().addTerm(2, one.get());
         for (BigInteger i = BigInteger.ONE; !i.equals(p.subtract(BigInteger.ONE)); i = i.add(BigInteger.ONE)) {
             Polynomial polynomial = polynomialBuilder.addTerm(0, new PrimeFieldElement(field, i)).build();
             PrimeFieldElement independentTerm = polynomial.getCoefficient(0);
-            if (independentTerm.isQuadraticNonResidue()) {
+            if (independentTerm.opposite().isQuadraticNonResidue()) {
                 return polynomial;
             }
         }

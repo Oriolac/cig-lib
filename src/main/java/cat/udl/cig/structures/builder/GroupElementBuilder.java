@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface GroupElementBuilder {
 
-    Optional<? extends GroupElement> buildElement();
+    Optional<? extends GroupElement> build();
 
 }

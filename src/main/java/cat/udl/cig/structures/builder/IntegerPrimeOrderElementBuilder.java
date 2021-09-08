@@ -25,7 +25,7 @@ public class IntegerPrimeOrderElementBuilder implements RingElementBuilder{
     }
 
     @Override
-    public Optional<? extends PrimeFieldElement> buildElement() {
+    public Optional<? extends PrimeFieldElement> build() {
         if(value != null) {
             if (value.modPow(integerPrimeOrderSubgroup.getSize(), field.getSize())
                     .equals(BigInteger.ONE)) {
