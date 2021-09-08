@@ -13,6 +13,8 @@ abstract class GeneralECTest {
     GeneralEC generalEC;
     GeneralECPoint point1;
     GeneralECPoint point2;
+    RingElement xCoordinateFromPoint1;
+    RingElement yCoordinateFromPoint1;
     Ring ring;
 
     @BeforeEach
@@ -21,7 +23,8 @@ abstract class GeneralECTest {
         ring = returnRingOfEC();
         point1 = returnGeneralECPoint1();
         point2 = returnGeneralECPoint2();
-
+        xCoordinateFromPoint1 = point1.x;
+        yCoordinateFromPoint1 = point1.y;
     }
 
     protected abstract GeneralEC returnGeneralEC();
