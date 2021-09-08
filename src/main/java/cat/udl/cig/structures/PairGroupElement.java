@@ -1,5 +1,6 @@
 package cat.udl.cig.structures;
 
+import cat.udl.cig.exceptions.IncorrectModuleException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.exceptions.NotImplementedException;
 import cat.udl.cig.structures.PairGroup;
@@ -8,6 +9,7 @@ import cat.udl.cig.structures.GroupElement;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class PairGroupElement implements RingElement {
 
@@ -81,7 +83,16 @@ public class PairGroupElement implements RingElement {
 
     @Override
     public ArrayList<RingElement> squareRoot() throws IncorrectRingElementException {
-        return null;
+        ArrayList<RingElement> listA = groupElementA.squareRoot();
+        ArrayList<RingElement> listB = groupElementB.squareRoot();
+        ArrayList<RingElement> result = new ArrayList<>();
+
+        if (listA.size() != listB.size()) return null;
+
+        for (int i = 0; i < listA.size(); i++) {
+            result.add(new PairGroupElement(listA.get(i), listB.get(i)));
+        }
+        return result;
     }
 
     @Override
@@ -127,5 +138,14 @@ public class PairGroupElement implements RingElement {
     @Override
     public int hashCode() {
         return Objects.hash(pairGroup, groupElementA, groupElementB);
+    }
+
+    @Override
+    public String toString() {
+        return "PairGroupElement{" +
+                "pairGroup=" + pairGroup +
+                ", groupElementA=" + groupElementA +
+                ", groupElementB=" + groupElementB +
+                '}';
     }
 }

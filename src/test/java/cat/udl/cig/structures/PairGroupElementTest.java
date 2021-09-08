@@ -3,7 +3,7 @@ package cat.udl.cig.structures;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-public class PairGroupElementTest extends RingElementTemplateTest{
+public class PairGroupElementTest extends RingElementTemplateTest {
 
     PrimeField groupA = new PrimeField(BigInteger.valueOf(17L));
     PrimeField groupB = new PrimeField(BigInteger.valueOf(11L));
@@ -37,13 +37,23 @@ public class PairGroupElementTest extends RingElementTemplateTest{
     @Override
     protected RingElement returnResultSubtraction() {
         RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(4L));
-        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(2L));
+        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(4L));
         return new PairGroupElement(op1, op2);
     }
 
     @Override
     protected RingElement returnExpectedOpposite1() {
-        return new PrimeFieldElement(groupA, BigInteger.valueOf(-13L));
+        RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(4L));
+        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(2L));
+        return new PairGroupElement(op1, op2);
+    }
+
+    @Override
+    protected RingElement returnExpectedInverse1() {
+        RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(4L));
+        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(5L));
+        return new PairGroupElement(op1, op2);
+
     }
 
     @Override
@@ -53,23 +63,32 @@ public class PairGroupElementTest extends RingElementTemplateTest{
 
     @Override
     protected RingElement returnExpectedPower() {
-        return null;
+        RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(4L));
+        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(3L));
+        return new PairGroupElement(op1, op2);
     }
 
     @Override
     protected ArrayList<RingElement> returnSquaresRootOfOp1() {
-        return null;
+        RingElement sqrt1A = new PrimeFieldElement(groupA, BigInteger.valueOf(8L));
+        RingElement sqrt1B = new PrimeFieldElement(groupB, BigInteger.valueOf(3L));
+        RingElement sqrt2A = new PrimeFieldElement(groupA, BigInteger.valueOf(9L));
+        RingElement sqrt2B = new PrimeFieldElement(groupB, BigInteger.valueOf(8L));
+
+        return new ArrayList<RingElement>(){{add(new PairGroupElement(sqrt1A, sqrt1B)); add(new PairGroupElement(sqrt2A, sqrt2B));}};
     }
 
     @Override
     protected RingElement expectedResultMultiplication() {
-        RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(6L));
-        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(6L));
+        RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(15L));
+        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.ONE);
         return new PairGroupElement(op1, op2);
     }
 
     @Override
     protected RingElement expectedResultDivision() {
-        return null;
+        RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(9L));
+        RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(4L));
+        return new PairGroupElement(op1, op2);
     }
 }

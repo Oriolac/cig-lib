@@ -5,6 +5,7 @@ import cat.udl.cig.structures.builder.RingElementBuilder;
 
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
+import java.util.Objects;
 import java.util.Optional;
 
 public class PairGroup implements Ring {
@@ -82,5 +83,26 @@ public class PairGroup implements Ring {
 
     public boolean isFromSetB(@Nonnull GroupElement elementB) {
         return this.b.equals(elementB.getGroup());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PairGroup pairGroup = (PairGroup) o;
+        return Objects.equals(a, pairGroup.a) && Objects.equals(b, pairGroup.b);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(a, b);
+    }
+
+    @Override
+    public String toString() {
+        return "PairGroup{" +
+                "a=" + a +
+                ", b=" + b +
+                '}';
     }
 }
