@@ -15,6 +15,7 @@ public abstract class RingElementTemplateTest {
     private RingElement op2;
     private BigInteger power;
     private RingElement expectedOpposite1;
+    private RingElement expectedInverse1;
     private RingElement expectedAddition;
     private RingElement expectedSubstraction;
     private RingElement expectedMultiplication;
@@ -29,6 +30,7 @@ public abstract class RingElementTemplateTest {
         op2 = returnOperand2();
         power = returnPower();
         expectedOpposite1 = returnExpectedOpposite1();
+        expectedInverse1 = returnExpectedInverse1();
         expectedAddition = returnResultAddition();
         expectedSubstraction = returnResultSubtraction();
         expectedPower = returnExpectedPower();
@@ -48,6 +50,8 @@ public abstract class RingElementTemplateTest {
     protected abstract RingElement returnResultSubtraction();
 
     protected abstract RingElement returnExpectedOpposite1();
+
+    protected abstract RingElement returnExpectedInverse1();
 
     protected abstract BigInteger returnPower();
 
@@ -94,7 +98,11 @@ public abstract class RingElementTemplateTest {
     void testMultiplicationTwoOps() {
         RingElement result = op1.multiply(op2);
         assertEquals(expectedMultiplication, result);
-
+    }
+    
+    @Test
+    void testInverse() {
+        assertEquals(expectedInverse1, op1.inverse());
     }
 
     @Test
