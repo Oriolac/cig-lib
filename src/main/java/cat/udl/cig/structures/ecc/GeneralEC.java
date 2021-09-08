@@ -75,7 +75,7 @@ public class GeneralEC implements EC {
                 ring.getSize().equals(BigInteger.valueOf(3))) {
             throw new ConstructionException("The ring must not be 2 or 3");
         }
-        if (ring.containsElement(A) || ring.containsElement(B)) {
+        if (!ring.containsElement(A) || !ring.containsElement(B)) {
             throw new ConstructionException("The coefficients does not belong to the same group.");
         }
         this.ring = ring;
