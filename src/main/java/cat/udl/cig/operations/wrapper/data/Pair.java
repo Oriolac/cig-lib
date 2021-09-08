@@ -1,5 +1,7 @@
 package cat.udl.cig.operations.wrapper.data;
 
+import java.util.Iterator;
+
 public class Pair<E, K> {
 
     private final E e;

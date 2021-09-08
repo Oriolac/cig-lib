@@ -1,4 +1,4 @@
-package cat.udl.cig.operations.wrapper;
+package cat.udl.cig.utils.discretelogarithm;
 
 import cat.udl.cig.structures.GroupElement;
 

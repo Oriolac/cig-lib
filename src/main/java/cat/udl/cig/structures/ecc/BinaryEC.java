@@ -1,25 +1,22 @@
 package cat.udl.cig.structures.ecc;
 
+import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.exceptions.IncorrectRingElementException;
+import cat.udl.cig.structures.*;
+import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
+
+import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.Optional;
-
-import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.structures.BinaryField;
-import cat.udl.cig.structures.BinaryFieldElement;
-import cat.udl.cig.structures.GroupElement;
-import cat.udl.cig.structures.RingElement;
-import cat.udl.cig.structures.Group;
-import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} + xy = x^{3} + ax^2
  * + b\) if it's non-supersingular, or \(y^{2} + cy = x^{3} + ax + b\) if it's
  * supersingular over a Binary Field.
  *
- * @see BinaryField
  * @author Ricard Garra
+ * @see BinaryField
  */
 public class BinaryEC extends GeneralEC {
 
@@ -27,6 +24,7 @@ public class BinaryEC extends GeneralEC {
      * Auxiliar constant.
      */
     private final static BigInteger TWO = BigInteger.valueOf(2);
+    private BinaryFieldElement C;
 
     /**
      * A boolean to indicate if {@code this} <i>BinaryEC</i> is super singular
@@ -40,12 +38,12 @@ public class BinaryEC extends GeneralEC {
      * Creates a copy of the <i>BinaryEC</i> \(E\). This constructor makes a
      * deep copy of \(E\).
      *
-     * @param E
-     *            the <i>BinaryEC</i> to be copied.
+     * @param E the <i>BinaryEC</i> to be copied.
      */
     public BinaryEC(final BinaryEC E) {
         super(E);
         isSuperSingular = E.isSuperSingular;
+        this.C = E.C;
     }
 
     /**
@@ -55,47 +53,47 @@ public class BinaryEC extends GeneralEC {
      * {@code cardFactors}. The coefficients are <i>BinaryFieldElements</i> and
      * they must belong to the <i>BinaryField</i> \(K\).
      *
-     * @param K
-     *            the <i>BinaryField</i> over which {@code this} <i>BinaryEC</i>
-     *            is defined.
-     * @param coefficients
-     *            an ArrayList that contains the coefficients of {@code this}
-     *            <i>BinaryEC</i>.
-     * @param cardFactors
-     *            an ArrayList that contains the factors of the cardinality of
-     *            {@code this} <i>BinaryEC</i>.
+     * @param K            the <i>BinaryField</i> over which {@code this} <i>BinaryEC</i>
+     *                     is defined.
+     * @param coefficients an ArrayList that contains the coefficients of {@code this}
+     *                     <i>BinaryEC</i>.
+     * @param cardFactors  an ArrayList that contains the factors of the cardinality of
+     *                     {@code this} <i>BinaryEC</i>.
      * @see BinaryField
      * @see BinaryFieldElement
      */
-    public BinaryEC(final BinaryField K,
-            final BinaryFieldElement[] coefficients,
-            final ArrayList<BigInteger> cardFactors) {
-        super(K, coefficients, cardFactors, IsACorrectCurve(K,
-            coefficients, cardFactors));
-        if (k != null) {
-            BinaryFieldElement elem = coefficients[0];
-            BigInteger aux = elem.getGroup().getSize();
-            aux = aux.add(BigInteger.ONE);
-            BigInteger t = aux.subtract(getSize());
-            isSuperSingular = t.mod(TWO).equals(BigInteger.ZERO);
-
-            if ((isSuperSingular && coefficients.length != 3)
-                    || (!isSuperSingular && coefficients.length != 2)) {
-                // this.k = null;
-                // this.coefficients = null;
-                // cardinality = null;
-                // this.cardFactors = null;
-                isSuperSingular = false;
-                // generator = null;
-            }
+    public BinaryEC(@Nonnull final BinaryField K,
+                    @Nonnull final BinaryFieldElement[] coefficients,
+                    @Nonnull final ArrayList<BigInteger> cardFactors) {
+        super(K, coefficients[0], coefficients[1], cardFactors);
+        if (!IsACorrectCurve(K,
+                coefficients, cardFactors)) {
+            throw new ConstructionException("Is not a correct curve.");
+        }
+        BinaryFieldElement elem = coefficients[0];
+        BigInteger aux = elem.getGroup().getSize();
+        aux = aux.add(BigInteger.ONE);
+        BigInteger t = aux.subtract(getSize());
+        isSuperSingular = t.mod(TWO).equals(BigInteger.ZERO);
+        if (coefficients.length == 3) {
+            this.C = coefficients[2];
+        }
+        if ((isSuperSingular && C == null)
+                || (!isSuperSingular && C != null)) {
+            throw new ConstructionException("Is supersingular and it has not C coefficient or it is not supersingular but it has C.");
         }
     }
 
+    public BinaryEC(@Nonnull final BinaryField K,
+                    @Nonnull final BinaryFieldElement A, @Nonnull final BinaryFieldElement B, @Nonnull final BinaryFieldElement C,
+                    @Nonnull final ArrayList<BigInteger> cardFactors) {
+        this(K, new BinaryFieldElement[]{A, B, C}, cardFactors);
+    }
+
     private static boolean IsACorrectCurve(final BinaryField K,
-            final BinaryFieldElement[] coefficients,
-            final ArrayList<BigInteger> cardFactors) {
+                                           final BinaryFieldElement[] coefficients,
+                                           final ArrayList<BigInteger> cardFactors) {
         if (K != null) {
-            // BinaryFieldElement elem = coefficients[0];
             BigInteger aux = coefficients[0].getGroup().getSize();
             aux = aux.add(BigInteger.ONE);
             BigInteger aux2 = BigInteger.ONE;
@@ -105,15 +103,11 @@ public class BinaryEC extends GeneralEC {
             BigInteger t = aux.subtract(aux2);
             boolean isSuperSingularaux =
                     t.mod(TWO).equals(BigInteger.ZERO);
-
-            if ((isSuperSingularaux && coefficients.length != 3)
-                    || (!isSuperSingularaux && coefficients.length != 2)) {
-                return false;
-            }
+            return (!isSuperSingularaux || coefficients.length == 3)
+                    && (isSuperSingularaux || coefficients.length == 2);
         } else {
             return false;
         }
-        return true;
     }
 
     /**
@@ -162,12 +156,11 @@ public class BinaryEC extends GeneralEC {
      * super singular <i>Elliptic Curve</i> and null otherwise.
      *
      * @return a <i>BinaryFieldElement</i> representing the \(c\) coefficient
-     *         when {@code this} <i>BinaryEC</i> is a super singular <i>Elliptic
-     *         Curve</i> and null, otherwise.
+     * when {@code this} <i>BinaryEC</i> is a super singular <i>Elliptic
+     * Curve</i> and null, otherwise.
      */
     public BinaryFieldElement getC() {
-        return (BinaryFieldElement) (isSuperSingular ? coefficients[2]
-                : null);
+        return C;
     }
 
     @Override
@@ -183,7 +176,7 @@ public class BinaryEC extends GeneralEC {
      * Returns if {@code this} <i>BinaryEC</i> is super singular.
      *
      * @return {@code true} if {@code this} <i>BinaryEC</i> is super singular
-     *         and {@code false}, otherwise.
+     * and {@code false}, otherwise.
      */
     public boolean isSuperSingularEC() {
         return isSuperSingular;
@@ -217,16 +210,14 @@ public class BinaryEC extends GeneralEC {
      * Auxiliar method to check if point \(P = (x, y)\) belongs to {@code this}
      * <i>BinaryEC</i> \(E\).
      *
-     * @param x
-     *            a BinaryFieldElement representing the first coordinate of the
-     *            point \(P\).
-     * @param y
-     *            a BinaryFieldElement representing the second coordinate of the
-     *            point \(P\).
+     * @param x a BinaryFieldElement representing the first coordinate of the
+     *          point \(P\).
+     * @param y a BinaryFieldElement representing the second coordinate of the
+     *          point \(P\).
      * @return {@code true} if \(P = (x, y) \in E(K)\); {@code false} otherwise.
      */
     private boolean isOnCurveAux(final BinaryFieldElement x,
-            final BinaryFieldElement y) {
+                                 final BinaryFieldElement y) {
         if (x == null || y == null) {
             return false;
         }
@@ -295,13 +286,13 @@ public class BinaryEC extends GeneralEC {
                 // final solution is y=h*c
                 P =
                         new BinaryECPoint(this, x, h.multiply(getC()),
-                            BigInteger.ONE); // we let the constructor find the
+                                BigInteger.ONE); // we let the constructor find the
                 // order
             } else {
                 // final solution is y=h*x
                 P =
                         new BinaryECPoint(this, x, h.multiply(x),
-                            BigInteger.ONE);
+                                BigInteger.ONE);
             }
             // sanity check
             return isOnCurve(P) ? Optional.of(P) : Optional.empty();
@@ -321,8 +312,8 @@ public class BinaryEC extends GeneralEC {
         if (isSuperSingular) {
             content =
                     "Elliptic Curve: y\u00B2 + " + getC().toString()
-                    + "y = x\u00B3 + (" + getA().toString() + ")x + ("
-                    + getB().toString() + ")";
+                            + "y = x\u00B3 + (" + getA().toString() + ")x + ("
+                            + getB().toString() + ")";
         } else {
             content =
                     "Elliptic Curve: y\u00B2 + xy = x\u00B3 + ("
@@ -342,12 +333,12 @@ public class BinaryEC extends GeneralEC {
     }
 
     /**
-     * @see Group#toElement(Object)
      * @return
+     * @see Group#toElement(Object)
      */
     @Override
     public Optional<? extends BinaryECPoint> toElement(final Object input) {
-        Optional<? extends RingElement> xinput =  k.toElement(input);
+        Optional<? extends RingElement> xinput = ring.toElement(input);
         if (xinput.isPresent()) {
             return (Optional<? extends BinaryECPoint>) liftX(xinput.get());
         }
@@ -356,45 +347,12 @@ public class BinaryEC extends GeneralEC {
 
     /**
      * @see Group#multiply(GroupElement,
-     *      GroupElement)
+     * GroupElement)
      */
     @Override
     public BinaryECPoint multiply(final GroupElement x,
-            final GroupElement y) {
+                                  final GroupElement y) {
         return (BinaryECPoint) x.multiply(y);
-    }
-
-    /**
-     * @see Group#pow(GroupElement,
-     *      BigInteger)
-     */
-    @Override
-    public BinaryECPoint pow(final GroupElement x, final BigInteger pow) {
-        return (BinaryECPoint) x.pow(pow);
-    }
-
-    /**
-     * @see EC#getRing()
-     */
-    @Override
-    public BinaryField getRing() {
-        return (BinaryField) k;
-    }
-
-    /**
-     * @see EC#getA()
-     */
-    @Override
-    public BinaryFieldElement getA() {
-        return (BinaryFieldElement) coefficients[0];
-    }
-
-    /**
-     * @see EC#getB()
-     */
-    @Override
-    public BinaryFieldElement getB() {
-        return (BinaryFieldElement) coefficients[1];
     }
 
     /**
@@ -403,14 +361,10 @@ public class BinaryEC extends GeneralEC {
     @Override
     public BinaryECPoint getRandomElement() {
         BinaryFieldElement x;
-        boolean incorrecte = true;
         Optional<? extends BinaryECPoint> P = Optional.empty();
-        while (incorrecte) {
-            x = (BinaryFieldElement) k.getRandomElement();
+        while (P.isEmpty() || !isOnCurve(P.get())) {
+            x = (BinaryFieldElement) ring.getRandomElement();
             P = liftX(x);
-            if (P.isPresent() && isOnCurve(P.get())) {
-                incorrecte = false;
-            }
         }
         return P.get();
     }
@@ -426,6 +380,9 @@ public class BinaryEC extends GeneralEC {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), isSuperSingular);
+        int result = super.hashCode();
+        result = 31 * result + (C != null ? C.hashCode() : 0);
+        result = 31 * result + (isSuperSingular ? 1 : 0);
+        return result;
     }
 }

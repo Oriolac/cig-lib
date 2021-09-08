@@ -27,15 +27,17 @@ public class GeneralEC implements EC {
      *
      * @see Ring
      */
-    protected final Ring k;
+    protected final Ring ring;
 
     /**
-     * Enter belonging to the Ring {@link #k} defining the <i>Elliptic Curve</i>
+     * Enter belonging to the Ring {@link #ring} defining the <i>Elliptic Curve</i>
      * \(E\).
      *
      * @see RingElement
      */
-    protected final RingElement[] coefficients;
+
+    private final RingElement A;
+    private final RingElement B;
 
     // protected ECPoint generator;
 
@@ -59,86 +61,29 @@ public class GeneralEC implements EC {
      * Creates a <i>GeneralEC</i> over the <i>GeneralField</i> \(K\) or empty if
      * \(a\) and \(b\) are not elements of \(K\).
      *
-     * @param iK           the <i>GeneralField</i> over which the <i>GeneralEC</i> is
+     * @param ring         the <i>GeneralField</i> over which the <i>GeneralEC</i> is
      *                     described.
-     * @param coefficients an ArrayList with the coefficients of the curve. They must
-     *                     belong to the <i>GeneralField</i> \(K\).
+     * @param A            y² = x³ + Ax + B
+     * @param B            y² = x³ + Ax + B
      * @param cardFactors  prime factors composing the cardinality of the group law \(E\).
      * @see PrimeField
      * @see PrimeFieldElement
      */
-    public GeneralEC(@Nonnull final Ring iK, @Nonnull final RingElement[] coefficients,
+    public GeneralEC(@Nonnull final Ring ring, @Nonnull final RingElement A, @Nonnull final RingElement B,
                      @Nonnull final ArrayList<BigInteger> cardFactors) {
-        if (coefficients.length != 2
-                || iK.getSize().equals(BigInteger.valueOf(2)) ||
-                iK.getSize().equals(BigInteger.valueOf(3))) {
-            throw new ConstructionException("Coefficients must be 2 and the ring must not be 2 or 3");
+        if (ring.getSize().equals(BigInteger.valueOf(2)) ||
+                ring.getSize().equals(BigInteger.valueOf(3))) {
+            throw new ConstructionException("The ring must not be 2 or 3");
         }
-        GroupElement elem;
-        elem = iK.getMultiplicativeIdentity();
-        for (RingElement coefficient : coefficients) {
-            if (!coefficient.belongsToSameGroup(elem)) {
-                throw new ConstructionException("The coefficients does not belong to the same group.");
-            }
+        if (ring.containsElement(A) || ring.containsElement(B)) {
+            throw new ConstructionException("The coefficients does not belong to the same group.");
         }
-
-        k = iK;
-        this.coefficients = coefficients;
+        this.ring = ring;
+        this.A = A;
+        this.B = B;
         this.cardFactors = new ArrayList<>(cardFactors);
         Collections.sort(this.cardFactors);
         orders = possiblePointOrder();
-        infintiyPoint = new GeneralECPoint(this);
-    }
-
-    /**
-     * Creates a <i>GeneralEC</i> over the <i>GeneralField</i> \(K\) or empty if
-     * \(a\) and \(b\) are not elements of \(K\).
-     *
-     * @param K            the <i>GeneralField</i> over which the <i>GeneralEC</i> is
-     *                     described.
-     * @param coefficients an ArrayList with the coefficients of the curve. They must
-     *                     belong to the <i>GeneralField</i> \(K\).
-     * @param cardFactors  prime factors composing the cadinality of the group law \(E\).
-     * @see Ring
-     * @see RingElement
-     */
-    protected GeneralEC(final Ring K, final RingElement[] coefficients,
-                        final ArrayList<BigInteger> cardFactors,
-                        final boolean conditions) {
-        // TODO: @sergi -> Clean code with throws of ConstructorExceptions.
-        boolean correctInput =
-                !(coefficients.length != 2
-                        || K.getSize().equals(BigInteger.valueOf(2)) || K
-                        .getSize().equals(BigInteger.valueOf(3)));
-        correctInput = correctInput && conditions;
-        GroupElement elem = null;
-        if (K != null) {
-            elem = K.getMultiplicativeIdentity();
-        } else {
-            correctInput = false;
-        }
-        for (int i = 0; i < coefficients.length && correctInput; i++) {
-            if (!coefficients[i].belongsToSameGroup(elem)) {
-                correctInput = false;
-            }
-        }
-        if (correctInput) {
-            k = K;
-            this.coefficients = coefficients;
-            if (cardFactors == null) {
-                this.cardFactors = null;
-            } else {
-                this.cardFactors = new ArrayList<>(cardFactors);
-                Collections.sort(this.cardFactors);
-                orders = possiblePointOrder();
-            }
-        } else {
-            k = null;
-            this.coefficients = null;
-            this.cardFactors = null;
-            orders = null;
-        }
-
         infintiyPoint = new GeneralECPoint(this);
     }
 
@@ -149,10 +94,11 @@ public class GeneralEC implements EC {
      * @param E the <i>GeneralEC</i> to be copied.
      */
     public GeneralEC(final GeneralEC E) {
-        k = E.k;
-        coefficients = E.coefficients;
+        ring = E.ring;
         cardFactors = E.cardFactors;
         orders = E.orders;
+        this.A = E.A;
+        this.B = E.B;
         infintiyPoint = new GeneralECPoint(this);
     }
 
@@ -169,7 +115,7 @@ public class GeneralEC implements EC {
 
     @Override
     public boolean isOnCurve(final RingElement ix, final RingElement iy) {
-        return ix.getGroup().equals(k) && !ix.getGroup().equals(iy.getGroup()) && isOnCurveAux(ix, iy);
+        return ix.getGroup().equals(ring) && !ix.getGroup().equals(iy.getGroup()) && isOnCurveAux(ix, iy);
 
     }
 
@@ -256,7 +202,7 @@ public class GeneralEC implements EC {
     @Override
     public String toString() {
         String content;
-        if (k instanceof ExtensionField) {
+        if (ring instanceof ExtensionField) {
             content =
                     "Elliptic Curve: y\u00B2 = x\u00B3 + ("
                             + getA().toString() + ")x + (" + getB().toString()
@@ -290,12 +236,12 @@ public class GeneralEC implements EC {
     }
 
     /**
-     * @see Group#(Object)
      * @return
+     * @see Group#(Object)
      */
     @Override
     public Optional<? extends GroupElement> toElement(final Object k) {
-        Optional<? extends RingElement> xinput = this.k.toElement(k);
+        Optional<? extends RingElement> xinput = this.ring.toElement(k);
         if (xinput.isPresent())
             return liftX(xinput.get());
         return Optional.empty();
@@ -344,7 +290,7 @@ public class GeneralEC implements EC {
      */
     @Override
     public Ring getRing() {
-        return k;
+        return ring;
     }
 
     /**
@@ -352,7 +298,7 @@ public class GeneralEC implements EC {
      */
     @Override
     public RingElement getA() {
-        return coefficients[0];
+        return A;
     }
 
     /**
@@ -360,7 +306,7 @@ public class GeneralEC implements EC {
      */
     @Override
     public RingElement getB() {
-        return coefficients[1];
+        return B;
     }
 
     /**
@@ -380,7 +326,7 @@ public class GeneralEC implements EC {
         boolean incorrecte = true;
         Optional<? extends GeneralECPoint> P = Optional.empty();
         while (incorrecte) {
-            x = k.getRandomElement();
+            x = ring.getRandomElement();
             P = liftX(x);
             if (P.isPresent() && isOnCurve(P.get())) {
                 incorrecte = false;
@@ -413,26 +359,30 @@ public class GeneralEC implements EC {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GeneralEC generalEC = (GeneralEC) o;
-        return Objects.equals(k, generalEC.k) &&
-                Arrays.equals(coefficients, generalEC.coefficients) &&
+        return Objects.equals(ring, generalEC.ring) &&
+                Objects.equals(A, generalEC.A) && Objects.equals(B, generalEC.B) &&
                 Objects.equals(cardFactors, generalEC.cardFactors) &&
                 Objects.equals(orders, generalEC.orders);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(k, cardFactors, orders);
-        result = 31 * result + Arrays.hashCode(coefficients);
+        int result = ring.hashCode();
+        result = 31 * result + A.hashCode();
+        result = 31 * result + B.hashCode();
+        result = 31 * result + cardFactors.hashCode();
+        result = 31 * result + orders.hashCode();
+        result = 31 * result + infintiyPoint.hashCode();
         return result;
     }
 
-    /*public GeneralECPoint getBigPrimeOrderGenerator() {
+    public GeneralECPoint getBigPrimeOrderGenerator() {
         GeneralECPoint P = getRandomElement();
         while (!P.pow(cardFactors.get(cardFactors.size() - 1)).isInfinity) {
             P = getRandomElement();
         }
         P.setOrder(cardFactors.get(cardFactors.size() - 1));
         return P;
-    }*/
+    }
 
 }
