@@ -25,6 +25,7 @@ abstract class GeneralECTest {
     private RingElement yCoordinateFromPoint2;
     private BigInteger expectedOrderPoint1;
     private Ring ring;
+    private BigInteger power;
     private RingElement xBadCoordinate;
     private GeneralECPoint expectedResultPlusOperation;
     private GeneralECPoint expectedResultMultByZeroNonScalarOperation;
@@ -43,6 +44,7 @@ abstract class GeneralECTest {
         yCoordinateFromPoint2 = point2.y;
         expectedResultPlusOperation = returnExpectedResultPlusOperation();
         expectedResultMultByZeroNonScalarOperation = returnsExpectedElementMultByNonZeroScalar();
+        power = returnPower();
         expectedOrderPoint1 = returnExpectedOrderOfPoint1();
     }
 
@@ -61,6 +63,8 @@ abstract class GeneralECTest {
     protected abstract GeneralECPoint returnsExpectedElementMultByNonZeroScalar();
 
     protected abstract BigInteger returnExpectedOrderOfPoint1();
+
+    protected abstract BigInteger returnPower();
 
     @Test
     void testElementPlusInfinityEqualsElement() {
@@ -90,7 +94,6 @@ abstract class GeneralECTest {
 
     @Test
     void testElementMultByNonZeroScalar() {
-        BigInteger power = BigInteger.valueOf(3L);
         GeneralECPoint mult = generalEC.pow(point1, power);
         assertEquals(this.expectedResultMultByZeroNonScalarOperation, mult);
     }

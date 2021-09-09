@@ -80,7 +80,44 @@ public class ExtensionFieldECTest extends GeneralECTest {
     }
 
     @Override
+    protected GeneralECPoint returnExpectedResultPlusOperation() {
+        Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
+        ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(1, primeField.buildElement().setValue(1290).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(895).build().orElseThrow())
+                        .build())
+                .build().orElseThrow();
+        ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(1, primeField.buildElement().setValue(2142).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(1628).build().orElseThrow())
+                        .build())
+                .build().orElseThrow();
+        return new GeneralECPoint(curve, x, y);
+    }
+
+    @Override
+    protected GeneralECPoint returnsExpectedElementMultByNonZeroScalar() {
+        Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
+        ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(1, primeField.buildElement().setValue(1023).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(281).build().orElseThrow())
+                        .build())
+                .build().orElseThrow();
+        ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(1, primeField.buildElement().setValue(2190).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(1184).build().orElseThrow())
+                        .build())
+                .build().orElseThrow();
+        return new GeneralECPoint(curve, x, y);
+    }
+
+    @Override
     protected BigInteger returnExpectedOrderOfPoint1() {
         return BigInteger.valueOf(2450506L);
+    }
+
+    @Override
+    protected BigInteger returnPower() {
+        return BigInteger.valueOf(3);
     }
 }
