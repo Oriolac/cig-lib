@@ -31,6 +31,8 @@ public class ExtensionField implements Ring {
      */
     private final int n; /* Exponent */
 
+    private final PrimeField field;
+    
     /**
      * A Polynomial that encapsulates the reducing polynomial of this
      * <i>ExtensionField</i>.
@@ -66,6 +68,7 @@ public class ExtensionField implements Ring {
         } else {
             throw new ConstructionException();
         }
+        field = new PrimeField(p);
     }
 
     public static ExtensionField ExtensionFieldP2(BigInteger p) {
@@ -104,6 +107,7 @@ public class ExtensionField implements Ring {
         /*
          * } else { n = 0; reducingPolynomial = null; }
          */
+        field = F.field;
     }
 
     /**
@@ -257,6 +261,24 @@ public class ExtensionField implements Ring {
     @Override
     public Optional<? extends ExtensionFieldElement> fromBytes(byte[] bytes) {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public ExtensionFieldElement ZERO() {
+        Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
+        return this.buildElement().setPolynomial(pBuilder.addTerm(0, field.ZERO()).build()).build().orElseThrow();
+    }
+
+    @Override
+    public ExtensionFieldElement ONE() {
+        Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
+        return this.buildElement().setPolynomial(pBuilder.addTerm(0, field.ONE()).build()).build().orElseThrow();
+    }
+
+    @Override
+    public ExtensionFieldElement THREE() {
+        Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
+        return this.buildElement().setPolynomial(pBuilder.addTerm(0, field.THREE()).build()).build().orElseThrow();
     }
 
     /**

@@ -148,4 +148,19 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
                 ", generator=" + generator +
                 '}';
     }
+
+    @Override
+    public GroupElement ZERO() {
+        return field.ZERO();
+    }
+
+    @Override
+    public GroupElement ONE() {
+        return field.ONE();
+    }
+
+    @Override
+    public GroupElement THREE() {
+        return field.THREE();
+    }
 }

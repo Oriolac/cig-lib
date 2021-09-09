@@ -1,13 +1,15 @@
 package cat.udl.cig.structures.ecc;
 
+import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.structures.Group;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.Ring;
+import cat.udl.cig.structures.RingElement;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
-
-import cat.udl.cig.structures.Group;
-import cat.udl.cig.structures.RingElement;
-import cat.udl.cig.structures.GroupElement;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
@@ -238,8 +240,7 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity) {
             return E.getMultiplicativeIdentity();
         }
-        BigInteger[] point =
-                computeDoublePoint(x.getIntValue(), y.getIntValue());
+        RingElement[] point = computeDoublePoint();
         Optional<GeneralECPoint> generalECPoint = fromCoordinates(point[0], point[1]);
         if (generalECPoint.isEmpty()) {
             throw new IllegalStateException();
@@ -247,49 +248,43 @@ public class GeneralECPoint implements ECPoint {
         return generalECPoint.get();
     }
 
-    private Optional<GeneralECPoint> fromCoordinates(BigInteger xCoord, BigInteger yCoord) {
-        Optional<? extends RingElement> optXCoord = E.getRing().toElement(xCoord);
-        Optional<? extends RingElement> optYCoord = E.getRing().toElement(yCoord);
-        if (optXCoord.isPresent() && optYCoord.isPresent()) {
-            return Optional.of(new GeneralECPoint(E, optXCoord.get(), optYCoord.get(), order, false, true));
-        }
+    private Optional<GeneralECPoint> fromCoordinates(RingElement xCoord, RingElement yCoord) {
+        GeneralECPoint point = new GeneralECPoint(E, xCoord, yCoord, order, false, true);
+        if (this.E.isOnCurve(point))
+            return Optional.of(point);
         return Optional.empty();
     }
 
-    private BigInteger[] computeDoublePoint(final BigInteger Bx,
-                                            final BigInteger By) {
-        final BigInteger THREE = BigInteger.valueOf(3);
-        BigInteger[] result = new BigInteger[2];
-        BigInteger num;
-        final BigInteger denom;
-        final BigInteger modulo = x.getGroup().getSize();
-
-        num = Bx.multiply(Bx.multiply(THREE)).mod(modulo);
-        num = num.add((BigInteger) E.getA().getValue()).mod(modulo);
-        denom = By.add(By).modInverse(modulo);
-
-        result[1] = num.multiply(denom).mod(modulo);
-        result[0] = result[1].multiply(result[1]).mod(modulo);
-        result[0] = result[0].subtract(Bx).subtract(Bx).mod(modulo);
-
-        result[1] = result[1].multiply(Bx.subtract(result[0])).mod(modulo);
-        result[1] = result[1].subtract(By).mod(modulo);
+    private RingElement[] computeDoublePoint() {
+        RingElement[] result = new RingElement[2];
+        final RingElement lambda = computeLambdaAdditionSamePoint();
+        result[0] = lambda.multiply(lambda);
+        result[0] = result[0].subtract(this.x).subtract(this.x);
+        result[1] = result[1].multiply(this.x.subtract(result[0]));
+        result[1] = result[1].subtract(this.y);
         return result;
 
+    }
+
+    private RingElement computeLambdaAdditionSamePoint() {
+        final RingElement THREE = this.x.getGroup().THREE();
+        RingElement numerador = THREE.multiply(x.pow(BigInteger.TWO)).add(E.getA());
+        RingElement denominador = this.y.add(this.y);
+        return numerador.multiply(denominador.inverse());
     }
 
     @Override
     public GeneralECPoint multiply(final GroupElement iQ)
             throws ArithmeticException {
+        if (!(iQ instanceof GeneralECPoint))
+            throw new IllegalArgumentException("The point is not a GeneralECPoint.");
         GeneralECPoint Q = (GeneralECPoint) iQ;
-        if (!E.equals(Q.E)) {
+        if (!E.equals(Q.E))
             throw new ArithmeticException(
                     "Trying to add points from different Elliptic Curves");
-        }
-
         if (Q.isInfinity()) {
             return this;
-        } else if (isInfinity()) {
+        } else if (this.isInfinity()) {
             return Q;
         } else if (x.equals(Q.x)) {
             if (y.equals(Q.y)) {
@@ -298,33 +293,35 @@ public class GeneralECPoint implements ECPoint {
                 return E.getMultiplicativeIdentity();
             }
         } else {
-            BigInteger[] point =
-                    computePointAddition(Q.x.getIntValue(), Q.y.getIntValue());
-            return fromCoordinates(point[0], point[1]).orElse(null);
-
-            //return computePointAddition(Q);
+            return computeDifferentPointAddition(Q);
         }
     }
 
-    private BigInteger[] computePointAddition(final BigInteger Bx,
-                                              final BigInteger By) {
-        final BigInteger[] result = new BigInteger[2];
-        final BigInteger Mx = x.getIntValue();
-        final BigInteger My = y.getIntValue();
-        final BigInteger num, denom;
-        final BigInteger modulo = x.getGroup().getSize();
+    private GeneralECPoint computeDifferentPointAddition(GeneralECPoint q) {
+        return computeDifferentPointAddition(q.x, q.y);
+    }
 
-        num = By.subtract(My).mod(modulo);
-        denom = Bx.subtract(Mx).modInverse(modulo);
+    private GeneralECPoint computeDifferentPointAddition(final RingElement Bx,
+                                                         final RingElement By) {
+        RingElement[] result = new RingElement[2];
+        final RingElement Mx = x;
+        final RingElement My = y;
+        final RingElement lambda;
+        lambda = computeLambdaAdditionDifferentPoint(Bx, By, Mx, My);
+        result[0] = lambda.multiply(lambda);
+        result[0] = result[0].subtract(Mx).subtract(Bx);
+        result[1] = lambda.multiply(Mx.subtract(result[0]));
+        result[1] = result[1].subtract(My);
+        return fromCoordinates(result[0], result[1])
+                .orElseThrow(() -> new ConstructionException("Cannot create the new point. It does not belong in the current EC."));
+    }
 
-        result[1] = num.multiply(denom).mod(modulo);
-        result[0] = result[1].multiply(result[1]).mod(modulo);
-        result[0] = result[0].subtract(Mx).subtract(Bx).mod(modulo);
-
-        result[1] = result[1].multiply(Mx.subtract(result[0])).mod(modulo);
-        result[1] = result[1].subtract(My).mod(modulo);
-        return result;
-
+    private RingElement computeLambdaAdditionDifferentPoint(RingElement Bx, RingElement By, RingElement Mx, RingElement My) {
+        final RingElement num;
+        final RingElement denom;
+        num = By.subtract(My);
+        denom = Bx.subtract(Mx);
+        return num.multiply(denom);
     }
 
 
@@ -384,37 +381,37 @@ public class GeneralECPoint implements ECPoint {
         if (order != null && k.compareTo(order) >= 0) {
             k = k.mod(order);
         }
-        BigInteger[] me = toProjective(this);
-        BigInteger[] minusP = toProjective(inverse());
-        BigInteger[] Q =
-                {BigInteger.ZERO, BigInteger.ONE, BigInteger.ZERO};
+        RingElement[] me = toProjective(this);
+        Ring ring = me[0].getGroup();
+        RingElement[] minusP = toProjective(inverse());
+        RingElement[] Q =
+                {ring.ZERO(), ring.ONE(), ring.ZERO()};
         ArrayList<Integer> kbits = NAF(k);
         for (int i = kbits.size() - 1; i >= 0; i--) {
             Q = ProjectiveDouble(Q);
             if (kbits.get(i) > 0) {
-                Q = ProjectiveAdd(Q, me);
+                Q = projectiveAdd(Q, me);
             }
             if (kbits.get(i) < 0) {
-
-                Q = ProjectiveAdd(Q, minusP);
+                Q = projectiveAdd(Q, minusP);
             }
         }
         return toECPoint(Q).orElse(null);
     }
 
-    private BigInteger[] toProjective(final GeneralECPoint P) {
-        BigInteger[] result = new BigInteger[3];
-        result[0] = P.getX().getIntValue();
-        result[1] = P.getY().getIntValue();
-        result[2] = BigInteger.ONE;
+    private RingElement[] toProjective(final GeneralECPoint P) {
+        RingElement[] result = new RingElement[3];
+        result[0] = P.getX();
+        result[1] = P.getY();
+        result[2] = P.getX().getGroup().ONE();
         return result;
     }
 
-    private Optional<GeneralECPoint> toECPoint(final BigInteger[] point) {
-        if (point[2].equals(BigInteger.ZERO)) {
+    private Optional<GeneralECPoint> toECPoint(final RingElement[] point) {
+        if (point[2].equals(point[2].getGroup().ZERO())) {
             return Optional.of(E.getMultiplicativeIdentity());
         }
-        final BigInteger aux = point[2].modInverse(E.getRing().getSize());
+        final RingElement aux = point[2].inverse();
         //final PrimeFieldElement X =
         //    (PrimeFieldElement) E.getRing().toElement(
         //            aux.multiply(point[0]));
@@ -424,14 +421,15 @@ public class GeneralECPoint implements ECPoint {
         return fromCoordinates(aux.multiply(point[0]), aux.multiply(point[1]));
     }
 
-    private BigInteger[] ProjectiveAdd(final BigInteger[] point1,
-                                       final BigInteger[] point2) {
-        final BigInteger[] infPoint =
-                {BigInteger.ZERO, BigInteger.ONE, BigInteger.ZERO};
-        if (point2[2].equals(BigInteger.ZERO)) {
+    private RingElement[] projectiveAdd(final RingElement[] point1,
+                                        final RingElement[] point2) {
+        Ring ring = point1[2].getGroup();
+        final RingElement[] infPoint =
+                {ring.ZERO(), ring.ONE(), ring.ZERO()};
+        if (point2[2].equals(ring.ZERO())) {
             return point1;
         }
-        if (point1[2].equals(BigInteger.ZERO)) {
+        if (point1[2].equals(ring.ZERO())) {
             return point2;
         }
         if (point1[0].equals(point2[0])) {
@@ -442,182 +440,150 @@ public class GeneralECPoint implements ECPoint {
             }
         }
 
-        if (point2[2].equals(BigInteger.ONE)) {
-            if (point1[2].equals(BigInteger.ONE)) {
+        if (point2[2].equals(ring.ONE())) {
+            if (point1[2].equals(ring.ONE())) {
                 return projectiveAddZs1(point1, point2);
             } else {
                 return projectiveAddZ21(point1, point2);
             }
         }
-        return projectiveAdd(point1, point2);
+        return projectiveAddDifferentPoints(point1, point2);
     }
 
-    private BigInteger[] projectiveAddZs1(final BigInteger[] point1,
-                                          final BigInteger[] point2) {
-        final BigInteger TWO = BigInteger.valueOf(2);
-        final BigInteger[] result = new BigInteger[3];
-        final BigInteger u, uu, v, vv, vvv, R, A;
-        final BigInteger modulo = x.getGroup().getSize();
+    private RingElement[] projectiveAddZs1(final RingElement[] point1,
+                                           final RingElement[] point2) {
+        Ring ring = point1[0].getGroup();
+        final RingElement TWO = ring.ONE().add(ring.ONE());
+        final RingElement[] result = new RingElement[3];
+        final RingElement u, uu, v, vv, vvv, R, A;
 
-        u = point2[1].subtract(point1[1]).mod(modulo);
-        uu = u.multiply(u).mod(modulo);
-        v = point2[0].subtract(point1[0]).mod(modulo);
-        vv = v.multiply(v).mod(modulo);
-        vvv = vv.multiply(v).mod(modulo);
-        R = vv.multiply(point1[0]).mod(modulo);
+        u = point2[1].subtract(point1[1]);
+        uu = u.multiply(u);
+        v = point2[0].subtract(point1[0]);
+        vv = v.multiply(v);
+        vvv = vv.multiply(v);
+        R = vv.multiply(point1[0]);
         A =
-                uu.subtract(vvv).subtract(TWO.multiply(R).mod(modulo))
-                        .mod(modulo);
+                uu.subtract(vvv).subtract(TWO.multiply(R));
 
-        result[0] = v.multiply(A).mod(modulo);
-        result[1] =
-                u.multiply(R.subtract(A).mod(modulo)).mod(modulo)
-                        .subtract(vvv.multiply(point1[1]).mod(modulo)).mod(modulo);
+        result[0] = v.multiply(A);
+        result[1] = u.multiply(R.subtract(A)).subtract(vvv.multiply(point1[1]));
         result[2] = vvv;
         return result;
     }
 
-    private BigInteger[] projectiveAddZ21(final BigInteger[] point1,
-                                          final BigInteger[] point2) {
-        final BigInteger TWO = BigInteger.valueOf(2);
-        final BigInteger[] result = new BigInteger[3];
-        final BigInteger u, uu, v, vv, vvv, R, A;
-        final BigInteger modulo = x.getGroup().getSize();
+    private RingElement[] projectiveAddZ21(final RingElement[] point1,
+                                           final RingElement[] point2) {
+        Ring ring = point1[0].getGroup();
+        final RingElement TWO = ring.ONE().add(ring.ONE());
+        final RingElement[] result = new RingElement[3];
+        final RingElement u, uu, v, vv, vvv, R, A;
 
-        u =
-                point2[1].multiply(point1[2]).mod(modulo).subtract(point1[1])
-                        .mod(modulo);
-        uu = u.multiply(u).mod(modulo);
-        v =
-                point2[0].multiply(point1[2]).mod(modulo).subtract(point1[0])
-                        .mod(modulo);
-        vv = v.multiply(v).mod(modulo);
-        vvv = vv.multiply(v).mod(modulo);
-        R = vv.multiply(point1[0]).mod(modulo);
-        A =
-                uu.multiply(point1[2]).mod(modulo).subtract(vvv)
-                        .subtract(TWO.multiply(R).mod(modulo)).mod(modulo);
+        u = point2[1].multiply(point1[2]).subtract(point1[1]);
+        uu = u.multiply(u);
+        v = point2[0].multiply(point1[2]).subtract(point1[0]);
+        vv = v.multiply(v);
+        vvv = vv.multiply(v);
+        R = vv.multiply(point1[0]);
+        A = uu.multiply(point1[2]).subtract(vvv)
+                .subtract(TWO.multiply(R));
 
-        result[0] = v.multiply(A).mod(modulo);
+        result[0] = v.multiply(A);
         result[1] =
-                u.multiply(R.subtract(A).mod(modulo)).mod(modulo)
-                        .subtract(vvv.multiply(point1[1]).mod(modulo)).mod(modulo);
-        result[2] = vvv.multiply(point1[2]).mod(modulo);
+                u.multiply(R.subtract(A))
+                        .subtract(vvv.multiply(point1[1]));
+        result[2] = vvv.multiply(point1[2]);
 
         return result;
     }
 
-    private BigInteger[] projectiveAdd(final BigInteger[] point1,
-                                       final BigInteger[] point2) {
-        final BigInteger TWO = BigInteger.valueOf(2);
-        final BigInteger FOUR = BigInteger.valueOf(4);
-        final BigInteger[] result = new BigInteger[3];
-        final BigInteger U1, U2, S1, S2, ZZ, T, TT, M, R, F, L, LL, G, W;
-        final BigInteger modulo = x.getGroup().getSize();
+    private RingElement[] projectiveAddDifferentPoints(final RingElement[] point1,
+                                                       final RingElement[] point2) {
+        Ring ring = point1[0].getGroup();
+        final RingElement TWO = ring.ONE().add(ring.ONE());
+        final RingElement FOUR = ring.THREE().add(ring.ONE());
+        final RingElement[] result = new RingElement[3];
+        final RingElement U1, U2, S1, S2, ZZ, T, TT, M, R, F, L, LL, G, W;
 
-        U1 = point1[0].multiply(point2[2]).mod(modulo);// U1 = X1*Z2
-        U2 = point2[0].multiply(point1[2]).mod(modulo);// U2 = X2*Z1
-        S1 = point1[1].multiply(point2[2]).mod(modulo);// S1 = Y1*Z2
-        S2 = point2[1].multiply(point1[2]).mod(modulo);// S2 = Y2*Z1
-        ZZ = point1[2].multiply(point2[2]).mod(modulo);// ZZ = Z1*Z2
-        T = U1.add(U2).mod(modulo);// T = U1+U2
-        TT = T.multiply(T).mod(modulo);// TT = T^2
-        M = S1.add(S2).mod(modulo);// M = S1+S2
-        R =
-                TT.subtract(U1.multiply(U2).mod(modulo))
-                        .add(
-                                E.getA().getIntValue()
-                                        .multiply(ZZ.multiply(ZZ).mod(modulo)).mod(modulo))
-                        .mod(modulo);// R = TT-U1*U2+a*ZZ2
-        F = ZZ.multiply(M).mod(modulo);// F = ZZ*M
-        L = M.multiply(F).mod(modulo);// L = M*F
-        LL = L.multiply(L).mod(modulo);// LL = L2
-        final BigInteger temp = T.add(L);
+        U1 = point1[0].multiply(point2[2]);// U1 = X1*Z2
+        U2 = point2[0].multiply(point1[2]);// U2 = X2*Z1
+        S1 = point1[1].multiply(point2[2]);// S1 = Y1*Z2
+        S2 = point2[1].multiply(point1[2]);// S2 = Y2*Z1
+        ZZ = point1[2].multiply(point2[2]);// ZZ = Z1*Z2
+        T = U1.add(U2);// T = U1+U2
+        TT = T.multiply(T);// TT = T^2
+        M = S1.add(S2);// M = S1+S2
+        R = TT.subtract(U1.multiply(U2))
+                .add(E.getA().multiply(ZZ.multiply(ZZ)));// R = TT-U1*U2+a*ZZ2
+        F = ZZ.multiply(M);// F = ZZ*M
+        L = M.multiply(F);// L = M*F
+        LL = L.multiply(L);// LL = L2
+        final RingElement temp = T.add(L);
         G =
-                temp.multiply(temp).mod(modulo).subtract(TT).subtract(LL)
-                        .mod(modulo);// G = (T+L)^2-TT-LL
+                temp.multiply(temp).subtract(TT).subtract(LL);// G = (T+L)^2-TT-LL
         W =
-                R.multiply(R).mod(modulo).multiply(TWO).subtract(G)
-                        .mod(modulo);// W = 2*R^2-G
-        result[0] = TWO.multiply(F).mod(modulo).multiply(W).mod(modulo); // X3 =
+                R.multiply(R).multiply(TWO).subtract(G);// W = 2*R^2-G
+        result[0] = TWO.multiply(F).multiply(W); // X3 =
         // 2*F*W
         result[1] =
-                R.multiply(G.subtract(TWO.multiply(W).mod(modulo)).mod(modulo))
-                        .mod(modulo).subtract(TWO.multiply(LL).mod(modulo))
-                        .mod(modulo);// Y3 = R*(G-2*W)-2*LL
-        result[2] = FOUR.multiply(F.pow(3).mod(modulo)).mod(modulo);// Z3 =
-        // 4*F*F2
-
+                R.multiply(G.subtract(TWO.multiply(W))).subtract(TWO.multiply(LL));// Y3 = R*(G-2*W)-2*LL
+        result[2] = FOUR.multiply(F.pow(BigInteger.valueOf(3)));// Z3 = 4*F*F2
         return result;
     }
 
-    private BigInteger[] ProjectiveDouble(final BigInteger[] point) {
-        if (point[2].equals(BigInteger.ZERO)) {
+    private RingElement[] ProjectiveDouble(final RingElement[] point) {
+        Ring ring = point[2].getGroup();
+        if (point[2].equals(ring.ZERO())) {
             return point;
         }
 
-        if (point[2].equals(BigInteger.ONE)) {
+        if (point[2].equals(ring.ONE())) {
             return projectiveDoubleZ1(point);
         } else {
             return projectiveDouble(point);
         }
     }
 
-    private BigInteger[] projectiveDoubleZ1(final BigInteger[] point) {
-        final BigInteger THREE = BigInteger.valueOf(3);
-        final BigInteger FOUR = BigInteger.valueOf(4);
-        final BigInteger[] result = new BigInteger[3];
-        final BigInteger XX, w, YY, R, RR, B, h;
-        final BigInteger modulo = x.getGroup().getSize();
+    private RingElement[] projectiveDoubleZ1(final RingElement[] point) {
+        Ring ring = point[0].getGroup();
+        final RingElement THREE = ring.THREE();
+        final RingElement FOUR = ring.THREE().add(ring.ONE());
+        final RingElement[] result = new RingElement[3];
+        final RingElement XX, w, YY, R, RR, B, h;
 
-        XX = point[0].multiply(point[0]).mod(modulo);
-        w = E.getA().getIntValue().add(THREE.multiply(XX)).mod(modulo);
-        YY = point[1].multiply(point[1]).mod(modulo);
-        R = YY.add(YY).mod(modulo);
-        RR = R.multiply(R).mod(modulo);
-        B =
-                point[0].add(R).pow(2).mod(modulo).subtract(XX).subtract(RR)
-                        .mod(modulo);
-        h = w.multiply(w).mod(modulo).subtract(B).subtract(B).mod(modulo);
-        result[0] = h.add(h).multiply(point[1]).mod(modulo);
-        result[1] =
-                w.multiply(B.subtract(h).mod(modulo)).mod(modulo).subtract(RR)
-                        .subtract(RR).mod(modulo);
-        result[2] =
-                FOUR.multiply(point[1]).mod(modulo).multiply(R).mod(modulo);
+        XX = point[0].multiply(point[0]);
+        w = E.getA().add(THREE.multiply(XX));
+        YY = point[1].multiply(point[1]);
+        R = YY.add(YY);
+        RR = R.multiply(R);
+        B = point[0].add(R).pow(BigInteger.TWO).subtract(XX).subtract(RR);
+        h = w.multiply(w).subtract(B).subtract(B);
+        result[0] = h.add(h).multiply(point[1]);
+        result[1] = w.multiply(B.subtract(h)).subtract(RR).subtract(RR);
+        result[2] = FOUR.multiply(point[1]).multiply(R);
         return result;
     }
 
-    private BigInteger[] projectiveDouble(final BigInteger[] point) {
-        final BigInteger TWO = BigInteger.valueOf(2);
-        final BigInteger THREE = BigInteger.valueOf(3);
-        final BigInteger XX, ZZ, w, s, R, RR, B, h;
-        final BigInteger[] result = new BigInteger[3];
-        final BigInteger modulo = x.getGroup().getSize();
+    private RingElement[] projectiveDouble(final RingElement[] point) {
+        Ring ring = point[0].getGroup();
+        final RingElement TWO = ring.ONE().add(ring.ONE());
+        final RingElement THREE = ring.THREE();
+        final RingElement XX, ZZ, w, s, R, RR, B, h;
+        final RingElement[] result = new RingElement[3];
 
-        XX = point[0].multiply(point[0]).mod(modulo);
-        ZZ = point[2].multiply(point[2]).mod(modulo);
-        w =
-                E.getA().getIntValue().multiply(ZZ).mod(modulo)
-                        .add(THREE.multiply(XX)).mod(modulo);
-        s =
-                TWO.multiply(point[1]).mod(modulo).multiply(point[2])
-                        .mod(modulo);
-        // ss = s.pow(2).mod(modulo);
-        R = point[1].multiply(s).mod(modulo);
-        RR = R.multiply(R).mod(modulo);
-        B =
-                point[0].add(R).pow(2).mod(modulo).subtract(XX).subtract(RR)
-                        .mod(modulo);
-        h =
-                w.multiply(w).mod(modulo).subtract(TWO.multiply(B))
-                        .mod(modulo);
-
-        result[0] = h.multiply(s).mod(modulo);
-        result[1] =
-                w.multiply(B.subtract(h).mod(modulo)).mod(modulo).subtract(RR)
-                        .subtract(RR).mod(modulo);
-        result[2] = s.pow(3).mod(modulo);
+        XX = point[0].multiply(point[0]);
+        ZZ = point[2].multiply(point[2]);
+        w = E.getA().multiply(ZZ)
+                .add(THREE.multiply(XX));
+        s = TWO.multiply(point[1]).multiply(point[2]);
+        R = point[1].multiply(s);
+        RR = R.multiply(R);
+        B = point[0].add(R).pow(BigInteger.TWO).subtract(XX).subtract(RR);
+        h = w.multiply(w).subtract(TWO.multiply(B));
+        result[0] = h.multiply(s);
+        result[1] = w.multiply(B.subtract(h)).subtract(RR)
+                .subtract(RR);
+        result[2] = s.pow(BigInteger.valueOf(3));
         return result;
     }
 
