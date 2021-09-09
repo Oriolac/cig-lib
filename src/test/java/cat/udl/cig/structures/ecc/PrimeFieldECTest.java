@@ -34,6 +34,16 @@ public class PrimeFieldECTest extends GeneralECTest {
     }
 
     @Override
+    protected GeneralECPoint returnExpectedResultPlusOperation() {
+        return null;
+    }
+
+    @Override
+    protected GeneralECPoint returnsExpectedElementMultByNonZeroScalar() {
+        return null;
+    }
+
+    @Override
     protected BigInteger returnExpectedOrderOfPoint1() {
         return null;
     }
