@@ -7,6 +7,7 @@ import cat.udl.cig.structures.ecc.GeneralEC;
 import cat.udl.cig.structures.ecc.GeneralECPoint;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class ECPointBuilder implements GroupElementBuilder {
@@ -23,8 +24,11 @@ public class ECPointBuilder implements GroupElementBuilder {
     }
 
     public ECPointBuilder setXAndLift(@Nonnull final RingElement ringElement) {
-        Optional<? extends GeneralECPoint> point = EC.liftX(ringElement);
-        point.ifPresent(generalECPoint -> this.point = generalECPoint);
+        // TODO: It only gets the first point
+        ArrayList<? extends GeneralECPoint> points = EC.liftX(ringElement);
+        if (points.size()>=1) {
+            this.point = points.get(0);
+        }
         return this;
     }
 

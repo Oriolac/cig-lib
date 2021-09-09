@@ -6,7 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -110,16 +112,18 @@ abstract class GeneralECTest {
     }
 
     private void testCorrectLiftX(GeneralECPoint point1) {
-        Optional<? extends GeneralECPoint> point = generalEC.liftX(point1.x);
-        assertTrue(point.isPresent());
-        assertEquals(point.get(), point1);
-        assertTrue(ring.containsElement(point.get().x));
-        assertTrue(ring.containsElement(point.get().y));
+        ArrayList<? extends GeneralECPoint> points = generalEC.liftX(point1.x);
+        assertTrue(points.size() > 0);
+        assertTrue(points.contains(point1));
+        GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point1)).collect(Collectors.toList()).get(0);
+        assertEquals(actualPoint, point1);
+        assertTrue(ring.containsElement(actualPoint.x));
+        assertTrue(ring.containsElement(actualPoint.y));
     }
 
     @Test
     void testIncorrectLiftX() {
-        Optional<? extends GeneralECPoint> point = generalEC.liftX(xBadCoordinate);
+        ArrayList<? extends GeneralECPoint> point = generalEC.liftX(xBadCoordinate);
         assertTrue(point.isEmpty());
     }
 
@@ -132,10 +136,13 @@ abstract class GeneralECTest {
     private void testIsOnCurveAndContainsElement(GeneralECPoint point1) {
         generalEC.isOnCurve(point1);
         generalEC.containsElement(point1);
-        GeneralECPoint point = new GeneralEC(generalEC).liftX(point1.x).orElseThrow();
-        assertEquals(point1, point);
+        ArrayList<? extends GeneralECPoint> points = new GeneralEC(generalEC).liftX(point1.x);
+        assertFalse(points.isEmpty());
+        assertTrue(points.contains(point1));
+        GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point1)).collect(Collectors.toList()).get(0);
+        assertEquals(point1, actualPoint);
         assertTrue(generalEC.containsElement(point1));
-        assertTrue(generalEC.containsElement(point));
+        points.forEach(p -> assertTrue(generalEC.containsElement(p)));
     }
 
     @Test
@@ -147,10 +154,11 @@ abstract class GeneralECTest {
 
     @Test
     void testAreCoordinatesOfAPointFromSameField() {
-        Optional<? extends GeneralECPoint> point = generalEC.liftX(point1.x);
-        assertTrue(point.isPresent());
-        assertTrue(ring.containsElement(point.get().x));
-        assertTrue(ring.containsElement(point.get().y));
-        assertTrue(point.get().x.belongsToSameGroup(point.get().y));
+        ArrayList<? extends GeneralECPoint> points = generalEC.liftX(point1.x);
+        assertTrue(points.size() > 0);
+        GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point1)).collect(Collectors.toList()).get(0);
+        assertTrue(ring.containsElement(actualPoint.x));
+        assertTrue(ring.containsElement(actualPoint.y));
+        assertTrue(actualPoint.x.belongsToSameGroup(actualPoint.y));
     }
 }
