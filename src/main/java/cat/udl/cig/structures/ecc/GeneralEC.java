@@ -9,6 +9,7 @@ import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} = x^{3} + ax + b\)
@@ -174,7 +175,7 @@ public class GeneralEC implements EC {
     }
 
     @Override
-    public Optional<? extends GeneralECPoint> liftX(final RingElement ix) {
+    public ArrayList<? extends GeneralECPoint> liftX(final RingElement ix) {
 
         try {
             PrimeFieldElement x = (PrimeFieldElement) ix;
@@ -188,14 +189,11 @@ public class GeneralEC implements EC {
             y = y.add(getB());
             sqRoots = y.squareRoot();
             if (sqRoots.isEmpty()) {
-                return Optional.empty();
+                return new ArrayList<>();
             }
-            y = (PrimeFieldElement) sqRoots.get(0);
-
-            P = new GeneralECPoint(this, x, y);
-            return isOnCurve(P) ? Optional.of(P) : Optional.empty();
+            return sqRoots.stream().map(newY -> new GeneralECPoint(this, x, newY)).filter(this::isOnCurve).collect(Collectors.toCollection(ArrayList::new));
         } catch (IncorrectRingElementException ex) {
-            return Optional.empty();
+            return new ArrayList<>();
         }
     }
 
@@ -240,10 +238,13 @@ public class GeneralEC implements EC {
      * @see Group#(Object)
      */
     @Override
-    public Optional<? extends GroupElement> toElement(final Object k) {
+    public Optional<? extends GeneralECPoint> toElement(final Object k) {
         Optional<? extends RingElement> xinput = this.ring.toElement(k);
-        if (xinput.isPresent())
-            return liftX(xinput.get());
+        if (xinput.isPresent()) {
+            ArrayList<? extends GeneralECPoint> points =  liftX(xinput.get());
+            if (points.size() > 0)
+                return Optional.of(points.get(0));
+        }
         return Optional.empty();
     }
 
@@ -324,15 +325,15 @@ public class GeneralEC implements EC {
     public GeneralECPoint getRandomElement() {
         RingElement x;
         boolean incorrecte = true;
-        Optional<? extends GeneralECPoint> P = Optional.empty();
+        ArrayList<? extends GeneralECPoint> P = new ArrayList<>();
         while (incorrecte) {
             x = ring.getRandomElement();
             P = liftX(x);
-            if (P.isPresent() && isOnCurve(P.get())) {
+            if (!P.isEmpty() && isOnCurve(P.get(0))) {
                 incorrecte = false;
             }
         }
-        return P.get();
+        return P.get(0);
     }
 
     /**

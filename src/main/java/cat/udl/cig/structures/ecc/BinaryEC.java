@@ -8,6 +8,7 @@ import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
 import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -253,7 +254,7 @@ public class BinaryEC extends GeneralEC {
      * if it exists. Returns null otherwise
      */
     @Override
-    public Optional<? extends BinaryECPoint> liftX(final RingElement x1) {
+    public ArrayList<? extends BinaryECPoint> liftX(final RingElement x1) {
         BinaryFieldElement x = (BinaryFieldElement) x1;
         BinaryFieldElement d;
         // we will need to solve a quadratic equation of the form y^2 + y + d =
@@ -279,7 +280,7 @@ public class BinaryEC extends GeneralEC {
             // finds the solution to an equation of the form h^2 + h + d = 0,
             BinaryFieldElement h = QuadraticEquations.solveQuadratic(d);
             if (h == null) {
-                return Optional.empty();
+                return new ArrayList<>();
             }
             BinaryECPoint P;
             if (isSuperSingular) {
@@ -295,10 +296,10 @@ public class BinaryEC extends GeneralEC {
                                 BigInteger.ONE);
             }
             // sanity check
-            return isOnCurve(P) ? Optional.of(P) : Optional.empty();
+            return isOnCurve(P) ? new ArrayList<>(List.of(P)) : new ArrayList<>();
             // return P;
         } catch (IncorrectRingElementException ex) {
-            return Optional.empty();
+            return new ArrayList<>();
         }
     }
 
@@ -340,7 +341,10 @@ public class BinaryEC extends GeneralEC {
     public Optional<? extends BinaryECPoint> toElement(final Object input) {
         Optional<? extends RingElement> xinput = ring.toElement(input);
         if (xinput.isPresent()) {
-            return (Optional<? extends BinaryECPoint>) liftX(xinput.get());
+            ArrayList<? extends BinaryECPoint> binaryECPoints = liftX(xinput.get());
+            if (binaryECPoints.size() >= 1) {
+                return Optional.of(binaryECPoints.get(0));
+            }
         }
         return Optional.empty();
     }
@@ -361,12 +365,12 @@ public class BinaryEC extends GeneralEC {
     @Override
     public BinaryECPoint getRandomElement() {
         BinaryFieldElement x;
-        Optional<? extends BinaryECPoint> P = Optional.empty();
-        while (P.isEmpty() || !isOnCurve(P.get())) {
+        ArrayList<? extends BinaryECPoint> P = new ArrayList<>();
+        while (P.isEmpty() || !isOnCurve(P.get(0))) {
             x = (BinaryFieldElement) ring.getRandomElement();
             P = liftX(x);
         }
-        return P.get();
+        return P.get(0);
     }
 
     @Override

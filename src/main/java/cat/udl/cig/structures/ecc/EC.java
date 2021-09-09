@@ -2,7 +2,6 @@ package cat.udl.cig.structures.ecc;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Optional;
 
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.Ring;
@@ -132,6 +131,6 @@ public interface EC extends Group {
      *         \(x\).
      * @see ECPoint
      */
-    Optional<? extends ECPoint> liftX(RingElement x);
+    ArrayList<? extends GeneralECPoint> liftX(RingElement x);
 
 }
