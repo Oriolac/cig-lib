@@ -175,11 +175,10 @@ public class GeneralEC implements EC {
     }
 
     @Override
-    public ArrayList<? extends GeneralECPoint> liftX(final RingElement ix) {
+    public ArrayList<? extends GeneralECPoint> liftX(final RingElement x) {
 
         try {
-            PrimeFieldElement x = (PrimeFieldElement) ix;
-            PrimeFieldElement y;
+            RingElement y;
             GeneralECPoint P;
             ArrayList<RingElement> sqRoots;
             // y^2 = x^3 + ax + b

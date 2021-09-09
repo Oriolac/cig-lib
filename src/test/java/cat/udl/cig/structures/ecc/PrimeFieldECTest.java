@@ -71,4 +71,9 @@ public class PrimeFieldECTest extends GeneralECTest {
     protected BigInteger returnExpectedOrderOfPoint1() {
         return BigInteger.valueOf(1093);
     }
+
+    @Override
+    protected BigInteger returnPower() {
+        return BigInteger.valueOf(3);
+    }
 }

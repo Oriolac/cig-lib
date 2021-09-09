@@ -89,4 +89,9 @@ public class LargePrimeFieldECTest extends GeneralECTest {
         return n;
     }
 
+    @Override
+    protected BigInteger returnPower() {
+        return BigInteger.valueOf(3);
+    }
+
 }
