@@ -8,6 +8,7 @@ import cat.udl.cig.structures.RingElement;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -304,23 +305,21 @@ public class GeneralECPoint implements ECPoint {
     private GeneralECPoint computeDifferentPointAddition(final RingElement Bx,
                                                          final RingElement By) {
         RingElement[] result = new RingElement[2];
-        final RingElement Mx = x;
-        final RingElement My = y;
         final RingElement lambda;
-        lambda = computeLambdaAdditionDifferentPoint(Bx, By, Mx, My);
+        lambda = computeLambdaAdditionDifferentPoint(Bx, By);
         result[0] = lambda.multiply(lambda);
-        result[0] = result[0].subtract(Mx).subtract(Bx);
-        result[1] = lambda.multiply(Mx.subtract(result[0]));
-        result[1] = result[1].subtract(My);
+        result[0] = result[0].subtract(this.x).subtract(Bx);
+        result[1] = lambda.multiply(this.x.subtract(result[0]));
+        result[1] = result[1].subtract(this.y);
         return fromCoordinates(result[0], result[1])
                 .orElseThrow(() -> new ConstructionException("Cannot create the new point. It does not belong in the current EC."));
     }
 
-    private RingElement computeLambdaAdditionDifferentPoint(RingElement Bx, RingElement By, RingElement Mx, RingElement My) {
+    private RingElement computeLambdaAdditionDifferentPoint(RingElement Bx, RingElement By) {
         final RingElement num;
         final RingElement denom;
-        num = By.subtract(My);
-        denom = Bx.subtract(Mx);
+        num = By.subtract(this.y);
+        denom = Bx.subtract(this.x).inverse();
         return num.multiply(denom);
     }
 
