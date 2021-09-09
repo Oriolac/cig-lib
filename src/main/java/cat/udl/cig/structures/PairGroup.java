@@ -105,4 +105,19 @@ public class PairGroup implements Ring {
                 ", b=" + b +
                 '}';
     }
+
+    @Override
+    public RingElement ZERO() {
+        return new PairGroupElement(this.a.ZERO(), this.b.ZERO());
+    }
+
+    @Override
+    public RingElement ONE() {
+        return new PairGroupElement(this.a.ONE(), this.b.ONE());
+    }
+
+    @Override
+    public RingElement THREE() {
+        return new PairGroupElement(this.a.THREE(), this.b.THREE());
+    }
 }

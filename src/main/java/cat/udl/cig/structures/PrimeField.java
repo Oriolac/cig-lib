@@ -154,4 +154,19 @@ public class PrimeField implements Ring {
         BigInteger bigInteger = new BigInteger(bytes);
         return this.toElement(bigInteger);
     }
+
+    @Override
+    public PrimeFieldElement ZERO() {
+        return new PrimeFieldElement(this, BigInteger.ZERO);
+    }
+
+    @Override
+    public PrimeFieldElement ONE() {
+        return new PrimeFieldElement(this, BigInteger.ONE);
+    }
+
+    @Override
+    public PrimeFieldElement THREE() {
+        return new PrimeFieldElement(this, BigInteger.valueOf(3L));
+    }
 }

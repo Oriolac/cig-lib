@@ -392,4 +392,18 @@ public class GeneralEC implements EC {
         return P;
     }
 
+    @Override
+    public GroupElement ZERO() {
+        return getMultiplicativeIdentity();
+    }
+
+    @Override
+    public GroupElement ONE() {
+        throw new ConstructionException();
+    }
+
+    @Override
+    public GroupElement THREE() {
+        throw new ConstructionException();
+    }
 }

@@ -142,4 +142,19 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
     public int hashCode() {
         return Objects.hash(EC, cardinality, generator);
     }
+
+    @Override
+    public GroupElement ZERO() {
+        return getMultiplicativeIdentity();
+    }
+
+    @Override
+    public GroupElement ONE() {
+        return getGenerator();
+    }
+
+    @Override
+    public GroupElement THREE() {
+        return getGenerator().pow(BigInteger.valueOf(3));
+    }
 }

@@ -1,22 +1,21 @@
 package cat.udl.cig.structures;
 
+import cat.udl.cig.exceptions.NotImplementedException;
+import cat.udl.cig.structures.builder.BinaryFieldElementBuilder;
+import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
+import cat.udl.cig.utils.bfarithmetic.Irreducibility;
+
 import java.math.BigInteger;
 import java.util.BitSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
-import cat.udl.cig.exceptions.NotImplementedException;
-import cat.udl.cig.structures.builder.BinaryFieldElementBuilder;
-import cat.udl.cig.structures.builder.GroupElementBuilder;
-import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
-import cat.udl.cig.utils.bfarithmetic.Irreducibility;
-
 /**
  * Models an <i>Binary Field</i> \(\mathbb{F}_{2^{n}}\).
  *
- * @see Ring
  * @author Ricard Garra
+ * @see Ring
  */
 public class BinaryField implements Ring {
     /**
@@ -36,9 +35,8 @@ public class BinaryField implements Ring {
      * check if the parameter is correct. That is, if reducingPolynomial is an
      * irreducible polynomial.
      *
-     * @param reducingPolynomial
-     *            the reducing polynomail of {@code this} newly created
-     *            <i>BinaryField</i>. It must be an irreducible polynomial.
+     * @param reducingPolynomial the reducing polynomail of {@code this} newly created
+     *                           <i>BinaryField</i>. It must be an irreducible polynomial.
      */
     public BinaryField(final BitSet reducingPolynomial) {
         this(reducingPolynomial, false);
@@ -54,11 +52,9 @@ public class BinaryField implements Ring {
      * uninitialized. Being uninitialized means that {@code n = 0} and
      * {@code this.reducingPolynomial = null}.
      *
-     * @param reducingPolynomial
-     *            the reducing polynomail of {@code this} newly created
-     *            <i>BinaryField</i>. It must be an irreducible polynomial.
-     * @param check
-     *            indicates if correctness of the parameters must be checked.
+     * @param reducingPolynomial the reducing polynomail of {@code this} newly created
+     *                           <i>BinaryField</i>. It must be an irreducible polynomial.
+     * @param check              indicates if correctness of the parameters must be checked.
      */
     public BinaryField(final BitSet reducingPolynomial, final boolean check) {
         if (check && !Irreducibility.isIrreducible(reducingPolynomial)) {
@@ -76,8 +72,7 @@ public class BinaryField implements Ring {
      * correct reducing polynomial. So, the constructor does not check the
      * correctness of the attributes fo \(F\).
      *
-     * @param F
-     *            the <i>BinaryField</i> to be copied.
+     * @param F the <i>BinaryField</i> to be copied.
      */
     public BinaryField(final BinaryField F) {
         n = F.n;
@@ -114,13 +109,13 @@ public class BinaryField implements Ring {
     @Override
     public BinaryFieldElement getMultiplicativeIdentity() {
         return new BinaryFieldElement(this,
-            BitSetManipulation.longToBitSet(1));
+                BitSetManipulation.longToBitSet(1));
     }
 
     /**
      * Returns the exponent (dimension) \(n\) of this <i>BinaryField</i>.
      *
-     * @return (\n\), the exponent of this <i>BinaryField</i>.
+     * @return (\ n \), the exponent of this <i>BinaryField</i>.
      */
     public int getDimension() {
         return n;
@@ -130,7 +125,7 @@ public class BinaryField implements Ring {
      * Returns the reducing polynomial of this <i>BinaryField</i>.
      *
      * @return reducingPolynomial, the reducing polynomial of this
-     *         <i>BinaryField</i>.
+     * <i>BinaryField</i>.
      */
     public BitSet getReducingPolynomial() {
         return reducingPolynomial;
@@ -187,21 +182,21 @@ public class BinaryField implements Ring {
 
     /**
      * @see Group#multiply(GroupElement,
-     *      GroupElement)
+     * GroupElement)
      */
     @Override
     public BinaryFieldElement multiply(final GroupElement x,
-            final GroupElement y) {
+                                       final GroupElement y) {
         return (BinaryFieldElement) x.multiply(y);
     }
 
     /**
      * @see Group#pow(GroupElement,
-     *      BigInteger)
+     * BigInteger)
      */
     @Override
     public BinaryFieldElement pow(final GroupElement x,
-            final BigInteger pow) {
+                                  final BigInteger pow) {
         return (BinaryFieldElement) x.pow(pow);
     }
 
@@ -215,11 +210,26 @@ public class BinaryField implements Ring {
         throw new NotImplementedException();
     }
 
+    @Override
+    public BinaryFieldElement ZERO() {
+        return this.getAdditiveIdentity();
+    }
+
+    @Override
+    public BinaryFieldElement ONE() {
+        return this.getMultiplicativeIdentity();
+    }
+
+    @Override
+    public BinaryFieldElement THREE() {
+        return this.getMultiplicativeIdentity().add(this.getMultiplicativeIdentity()).add(this.getMultiplicativeIdentity());
+    }
+
     /**
      * @see Group#getRandomExponent()
      */
     @Override
     public BigInteger getRandomExponent() {
-       throw new NotImplementedException();
+        throw new NotImplementedException();
     }
 }

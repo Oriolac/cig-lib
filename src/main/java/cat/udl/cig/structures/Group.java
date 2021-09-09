@@ -18,7 +18,7 @@ import java.util.Optional;
 /**
  *
  */
-public interface Group {
+public interface Group extends GroupElementFactory {
 
     /**
      * Returns the number of elements of the <i>Group</i>.
