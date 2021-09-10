@@ -164,6 +164,13 @@ abstract class GeneralECTest {
     }
 
     @Test
+    void testTwoPointsOrderAddition() {
+        BigInteger orderPoint = generalEC.computeOrder(expectedResultPlusOperation);
+        assertNotNull(orderPoint);
+        assertEquals(this.expectedOrderPoint1, orderPoint);
+    }
+
+    @Test
     void testAreCoordinatesOfAPointFromSameField() {
         ArrayList<? extends GeneralECPoint> points = generalEC.liftX(point1.x);
         assertTrue(points.size() > 0);

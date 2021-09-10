@@ -340,6 +340,13 @@ public class GeneralEC implements EC {
      */
     @Override
     public BigInteger computeOrder(final ECPoint P) {
+        Optional<BigInteger> optionalOrder = validOrder(P);
+        if (optionalOrder.isPresent())
+            return optionalOrder.get();
+        return null;
+    }
+
+    public Optional<BigInteger> validOrder(final ECPoint P) {
         BigInteger ord;
         Iterator<?> it;
         for (SortedSet<BigInteger> order : orders) {
@@ -347,11 +354,11 @@ public class GeneralEC implements EC {
             while (it.hasNext()) {
                 ord = (BigInteger) it.next();
                 if (P.pow(ord).isInfinity()) {
-                    return ord;
+                    return Optional.of(ord);
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     @Override
