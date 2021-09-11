@@ -1,6 +1,7 @@
 package cat.udl.cig.utils.discretelogarithm;
 
 import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.RingElement;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class HashedAlgorithm implements LogarithmAlgorithm {
         return this.alpha;
     }
 
-    public static void loadHashedInstance(GroupElement alpha, BigInteger order, BigInteger times) {
+    public static void loadHashedInstance(RingElement alpha, BigInteger order, BigInteger times) {
         hashedInstance = new HashedAlgorithm(alpha, order, times);
     }
 

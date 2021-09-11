@@ -1,8 +1,8 @@
 package cat.udl.cig.utils.discretelogarithm;
 
-import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.operations.wrapper.data.Pair;
+import cat.udl.cig.structures.GroupElement;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;

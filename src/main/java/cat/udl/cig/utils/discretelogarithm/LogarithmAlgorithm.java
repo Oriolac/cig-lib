@@ -1,6 +1,7 @@
 package cat.udl.cig.utils.discretelogarithm;
 
 import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.RingElement;
 
 import java.math.BigInteger;
 import java.util.Optional;

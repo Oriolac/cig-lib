@@ -285,15 +285,13 @@ public class BinaryEC extends GeneralEC {
             BinaryECPoint P;
             if (isSuperSingular) {
                 // final solution is y=h*c
-                P =
-                        new BinaryECPoint(this, x, h.multiply(getC()),
-                                BigInteger.ONE); // we let the constructor find the
+                P = new BinaryECPoint(this, x, h.multiply(getC()),
+                        BigInteger.ONE); // we let the constructor find the
                 // order
             } else {
                 // final solution is y=h*x
-                P =
-                        new BinaryECPoint(this, x, h.multiply(x),
-                                BigInteger.ONE);
+                P = new BinaryECPoint(this, x, h.multiply(x),
+                        BigInteger.ONE);
             }
             // sanity check
             return isOnCurve(P) ? new ArrayList<>(List.of(P)) : new ArrayList<>();

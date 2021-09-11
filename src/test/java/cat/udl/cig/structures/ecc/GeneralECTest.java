@@ -2,9 +2,11 @@ package cat.udl.cig.structures.ecc;
 
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
+import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.text.html.Option;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -99,6 +101,24 @@ abstract class GeneralECTest {
     }
 
     @Test
+    void multToSizePoint1() {
+        GeneralECPoint result = generalEC.pow(point1, generalEC.getSize());
+        assertEquals(generalEC.getMultiplicativeIdentity(), result);
+    }
+
+    @Test
+    void multToSizePoint2() {
+        GeneralECPoint result = generalEC.pow(point2, generalEC.getSize());
+        assertEquals(generalEC.getMultiplicativeIdentity(), result);
+    }
+
+    @Test
+    void arePointsFromSameGroup() {
+        Optional<BigInteger> power = new BruteForce(point1).algorithm(point2);
+        assertTrue(power.isPresent());
+    }
+
+    @Test
     void testIsElementOnCurve() {
         boolean elem1 = generalEC.isOnCurve(point1);
         boolean elem2 = generalEC.isOnCurve(point2);
@@ -164,8 +184,8 @@ abstract class GeneralECTest {
     }
 
     @Test
-    void testTwoPointsOrderAddition() {
-        BigInteger orderPoint = generalEC.computeOrder(expectedResultPlusOperation);
+    void testPoint2OrderAddition() {
+        BigInteger orderPoint = generalEC.computeOrder(point2);
         assertNotNull(orderPoint);
         assertEquals(this.expectedOrderPoint1, orderPoint);
     }

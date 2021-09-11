@@ -137,13 +137,6 @@ public class BinaryECPoint extends GeneralECPoint {
         initializeInverseC();
     }
 
-    public BinaryECPoint(final BinaryEC E, final BinaryFieldElement x,
-            final BinaryFieldElement y, final BigInteger order,
-            final boolean isInfinity) {
-        super(E, x, y, order, isInfinity);
-        initializeInverseC();
-    }
-
     @Override
     public ECPoint clone() {
         return new BinaryECPoint(this);
@@ -324,26 +317,6 @@ public class BinaryECPoint extends GeneralECPoint {
         }
         return Q;
 
-    }
-
-    @Override
-    protected ArrayList<Integer> NAF(BigInteger k) {
-        ArrayList<Integer> kbits = new ArrayList<Integer>();
-        final BigInteger TWO = BigInteger.valueOf(2);
-        final BigInteger FOUR = BigInteger.valueOf(4);
-        BigInteger aux;
-        while (k.bitLength() > 0) {
-            if (k.testBit(0)) {
-                aux = (TWO.subtract(k.mod(FOUR)));
-                kbits.add(aux.intValue());
-                k = k.subtract(aux);
-            } else {
-                kbits.add(0);
-            }
-            k = k.shiftRight(1);
-
-        }
-        return kbits;
     }
 
     /**

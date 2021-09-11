@@ -5,10 +5,16 @@ import cat.udl.cig.structures.PrimeFieldElement;
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
 import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
+import cat.udl.cig.utils.discretelogarithm.BruteForce;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PrimeFieldECTest extends GeneralECTest {
 
@@ -46,14 +52,14 @@ public class PrimeFieldECTest extends GeneralECTest {
 
     @Override
     protected GeneralECPoint returnGeneralECPoint2() {
-        return new GeneralECPoint(curve, builder.setValue(352).build().orElseThrow(), builder.setValue(1640).build().orElseThrow());
+        return returnGeneralECPoint1().pow(BigInteger.TWO);
     }
 
     @Override
     protected GeneralECPoint returnExpectedResultPlusOperation() {
-        String point1Str = "994";
+        String point1Str = "297";
         BigInteger x = new BigInteger(point1Str);
-        String point2Str = "1928";
+        String point2Str = "968";
         BigInteger y = new BigInteger(point2Str);
         return new GeneralECPoint(curve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
@@ -75,5 +81,21 @@ public class PrimeFieldECTest extends GeneralECTest {
     @Override
     protected BigInteger returnPower() {
         return BigInteger.valueOf(3);
+    }
+
+    @Test
+    void testTwoPointsOrderAddition() {
+        GeneralEC generalEC = returnGeneralEC();
+        ECPoint plusOp = returnExpectedResultPlusOperation();
+        BigInteger expectedOrderPoint1 = returnExpectedOrderOfPoint1();
+        BigInteger orderPoint = generalEC.computeOrder(plusOp);
+        assertNotNull(orderPoint);
+        assertEquals(expectedOrderPoint1, orderPoint);
+        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(orderPoint));
+        Optional<BigInteger> power = new BruteForce(plusOp).algorithm(generalEC.getMultiplicativeIdentity());
+        assertTrue(power.isPresent());
+        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()));
+        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get().add(BigInteger.TWO)));
+        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()).multiply(plusOp).multiply(plusOp));
     }
 }

@@ -341,9 +341,11 @@ public class GeneralEC implements EC {
     @Override
     public BigInteger computeOrder(final ECPoint P) {
         Optional<BigInteger> optionalOrder = validOrder(P);
-        if (optionalOrder.isPresent())
-            return optionalOrder.get();
-        return null;
+        return optionalOrder.orElse(null);
+    }
+
+    public Optional<BigInteger> validOrder(final RingElement x, final RingElement y) {
+        return validOrder(new GeneralECPoint(this, x, y));
     }
 
     public Optional<BigInteger> validOrder(final ECPoint P) {
@@ -383,14 +385,14 @@ public class GeneralEC implements EC {
         return result;
     }
 
-    public GeneralECPoint getBigPrimeOrderGenerator() {
+/*    public GeneralECPoint getBigPrimeOrderGenerator() {
         GeneralECPoint P = getRandomElement();
         while (!P.pow(cardFactors.get(cardFactors.size() - 1)).isInfinity) {
             P = getRandomElement();
         }
         P.setOrder(cardFactors.get(cardFactors.size() - 1));
         return P;
-    }
+    }*/
 
     @Override
     public GroupElement ZERO() {

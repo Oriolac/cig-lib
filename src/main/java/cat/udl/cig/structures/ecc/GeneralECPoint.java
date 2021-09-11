@@ -8,7 +8,6 @@ import cat.udl.cig.structures.RingElement;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -67,6 +66,10 @@ public class GeneralECPoint implements ECPoint {
         order = BigInteger.ONE;
     }
 
+    static public GeneralECPoint infinityPoint(final GeneralEC E1) {
+        return new GeneralECPoint(E1);
+    }
+
     /**
      * Creates a copy of the <i>GeneralECPoint</i> \(P\). This constructor makes
      * a deep copy of \(P\).
@@ -100,20 +103,13 @@ public class GeneralECPoint implements ECPoint {
     public GeneralECPoint(final GeneralEC E, final RingElement ix,
                           final RingElement iy, final BigInteger iOrder) {
         this.E = E;
-        RingElement elem = E.getRing().getMultiplicativeIdentity();
-        if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem)) {
-            x = ix;
-            y = iy;
-            isInfinity = false;
-            order = iOrder;
-        } else {
-            // Infinity point (0:1:0)
-            //System.out.println("Mal generador 2");
-            x = E.getRing().getAdditiveIdentity();
-            y = E.getRing().getMultiplicativeIdentity();
-            isInfinity = true;
-            order = BigInteger.ONE;
+        if (!E.getRing().containsElement(ix) || !E.getRing().containsElement(iy)) {
+            throw new ConstructionException("The point is not constructed on the correct ring ecc.");
         }
+        x = ix;
+        y = iy;
+        isInfinity = false;
+        order = iOrder;
     }
 
     protected GeneralECPoint(final GeneralEC iE, final RingElement ix,
@@ -158,27 +154,6 @@ public class GeneralECPoint implements ECPoint {
             order = null;
         } else { // Infinity point (0:1:0)
             //System.out.println("Mal generador");
-            x = E.getRing().getAdditiveIdentity();
-            y = E.getRing().getMultiplicativeIdentity();
-            isInfinity = true;
-            order = BigInteger.ONE;
-        }
-    }
-
-    public GeneralECPoint(final GeneralEC iE, final RingElement ix,
-                          final RingElement iy, final BigInteger iorder,
-                          final boolean iIsInfinity) {
-        E = iE;
-        RingElement elem = E.getRing().getMultiplicativeIdentity();
-        if (!iIsInfinity && ix.belongsToSameGroup(elem)
-                && iy.belongsToSameGroup(elem)) {
-            x = ix;
-            y = iy;
-            isInfinity = false;
-            order = iorder;
-        } else {
-            // Infinity point (0:1:0)
-            //System.out.println("Mal generador 2");
             x = E.getRing().getAdditiveIdentity();
             y = E.getRing().getMultiplicativeIdentity();
             isInfinity = true;
@@ -261,7 +236,7 @@ public class GeneralECPoint implements ECPoint {
         final RingElement lambda = computeLambdaAdditionSamePoint();
         result[0] = lambda.multiply(lambda);
         result[0] = result[0].subtract(this.x).subtract(this.x);
-        result[1] = result[1].multiply(this.x.subtract(result[0]));
+        result[1] = lambda.multiply(this.x.subtract(result[0]));
         result[1] = result[1].subtract(this.y);
         return result;
 
@@ -377,7 +352,7 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity()) {
             return this;
         }
-        if (order != null && k.compareTo(order) >= 0) {
+        if (order != null && k.compareTo(order) > 0) {
             k = k.mod(order);
         }
         RingElement[] me = toProjective(this);
@@ -504,28 +479,27 @@ public class GeneralECPoint implements ECPoint {
         final RingElement[] result = new RingElement[3];
         final RingElement U1, U2, S1, S2, ZZ, T, TT, M, R, F, L, LL, G, W;
 
-        U1 = point1[0].multiply(point2[2]);// U1 = X1*Z2
-        U2 = point2[0].multiply(point1[2]);// U2 = X2*Z1
-        S1 = point1[1].multiply(point2[2]);// S1 = Y1*Z2
-        S2 = point2[1].multiply(point1[2]);// S2 = Y2*Z1
-        ZZ = point1[2].multiply(point2[2]);// ZZ = Z1*Z2
-        T = U1.add(U2);// T = U1+U2
-        TT = T.multiply(T);// TT = T^2
-        M = S1.add(S2);// M = S1+S2
+        U1 = point1[0].multiply(point2[2]); // U1 = X1*Z2
+        U2 = point2[0].multiply(point1[2]); // U2 = X2*Z1
+        S1 = point1[1].multiply(point2[2]); // S1 = Y1*Z2
+        S2 = point2[1].multiply(point1[2]); // S2 = Y2*Z1
+        ZZ = point1[2].multiply(point2[2]); // ZZ = Z1*Z2
+        T = U1.add(U2); // T = U1+U2
+        TT = T.multiply(T); // TT = T^2
+        M = S1.add(S2); // M = S1+S2
         R = TT.subtract(U1.multiply(U2))
-                .add(E.getA().multiply(ZZ.multiply(ZZ)));// R = TT-U1*U2+a*ZZ2
-        F = ZZ.multiply(M);// F = ZZ*M
-        L = M.multiply(F);// L = M*F
-        LL = L.multiply(L);// LL = L2
+                .add(E.getA().multiply(ZZ.multiply(ZZ))); // R = TT-U1*U2+a*ZZ2
+        F = ZZ.multiply(M); // F = ZZ*M
+        L = M.multiply(F); // L = M*F
+        LL = L.multiply(L); // LL = L2
         final RingElement temp = T.add(L);
         G =
                 temp.multiply(temp).subtract(TT).subtract(LL);// G = (T+L)^2-TT-LL
         W =
                 R.multiply(R).multiply(TWO).subtract(G);// W = 2*R^2-G
-        result[0] = TWO.multiply(F).multiply(W); // X3 =
-        // 2*F*W
+        result[0] = TWO.multiply(F).multiply(W); // X3 = 2*F*W
         result[1] =
-                R.multiply(G.subtract(TWO.multiply(W))).subtract(TWO.multiply(LL));// Y3 = R*(G-2*W)-2*LL
+                R.multiply(G.subtract(TWO.multiply(W))).subtract(TWO.multiply(LL)); // Y3 = R*(G-2*W)-2*LL
         result[2] = FOUR.multiply(F.pow(BigInteger.valueOf(3)));// Z3 = 4*F*F2
         return result;
     }
@@ -588,6 +562,10 @@ public class GeneralECPoint implements ECPoint {
 
     protected ArrayList<Integer> NAF(BigInteger k) {
         ArrayList<Integer> kBits = new ArrayList<>();
+        return getIntegers(k, kBits);
+    }
+
+    static ArrayList<Integer> getIntegers(BigInteger k, ArrayList<Integer> kBits) {
         final BigInteger TWO = BigInteger.valueOf(2);
         final BigInteger FOUR = BigInteger.valueOf(4);
         BigInteger aux;
@@ -643,10 +621,6 @@ public class GeneralECPoint implements ECPoint {
     @Override
     public boolean isInfinity() {
         return isInfinity;
-    }
-
-    protected void setOrder(final BigInteger ord1) {
-        order = ord1;
     }
 
     @Override
