@@ -4,12 +4,11 @@ import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.structures.*;
 import cat.udl.cig.utils.bfarithmetic.QuadraticEquations;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Models an <i>Elliptic Curve</i> \(E\) of the form \(y^{2} + xy = x^{3} + ax^2
@@ -63,9 +62,9 @@ public class BinaryEC extends GeneralEC {
      * @see BinaryField
      * @see BinaryFieldElement
      */
-    public BinaryEC(@Nonnull final BinaryField K,
-                    @Nonnull final BinaryFieldElement[] coefficients,
-                    @Nonnull final ArrayList<BigInteger> cardFactors) {
+    public BinaryEC(@NotNull final BinaryField K,
+                    @NotNull final BinaryFieldElement[] coefficients,
+                    @NotNull final ArrayList<BigInteger> cardFactors) {
         super(K, coefficients[0], coefficients[1], cardFactors);
         if (!IsACorrectCurve(K,
                 coefficients, cardFactors)) {
@@ -85,9 +84,9 @@ public class BinaryEC extends GeneralEC {
         }
     }
 
-    public BinaryEC(@Nonnull final BinaryField K,
-                    @Nonnull final BinaryFieldElement A, @Nonnull final BinaryFieldElement B, @Nonnull final BinaryFieldElement C,
-                    @Nonnull final ArrayList<BigInteger> cardFactors) {
+    public BinaryEC(@NotNull final BinaryField K,
+                    @NotNull final BinaryFieldElement A, @NotNull final BinaryFieldElement B, @NotNull final BinaryFieldElement C,
+                    @NotNull final ArrayList<BigInteger> cardFactors) {
         this(K, new BinaryFieldElement[]{A, B, C}, cardFactors);
     }
 
@@ -186,7 +185,7 @@ public class BinaryEC extends GeneralEC {
     @Override
     public boolean isOnCurve(final ECPoint iP) {
         BinaryECPoint P = (BinaryECPoint) iP;
-        if (!P.E.equals(this)) {
+        if (!P.curve.equals(this)) {
             return false;
         }
         BinaryFieldElement x = P.getX();
@@ -328,23 +327,7 @@ public class BinaryEC extends GeneralEC {
      */
     @Override
     public BigInteger getSize() {
-        return cardFactors.stream().reduce(BigInteger::multiply).get().multiply(BigInteger.ONE);
-    }
-
-    /**
-     * @return
-     * @see Group#toElement(Object)
-     */
-    @Override
-    public Optional<? extends BinaryECPoint> toElement(final Object input) {
-        Optional<? extends RingElement> xinput = ring.toElement(input);
-        if (xinput.isPresent()) {
-            ArrayList<? extends BinaryECPoint> binaryECPoints = liftX(xinput.get());
-            if (binaryECPoints.size() >= 1) {
-                return Optional.of(binaryECPoints.get(0));
-            }
-        }
-        return Optional.empty();
+        return sizeOfSubgroups.stream().reduce(BigInteger::multiply).orElseThrow().multiply(BigInteger.ONE);
     }
 
     /**

@@ -6,7 +6,6 @@ import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.text.html.Option;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -27,10 +26,11 @@ abstract class GeneralECTest {
     private RingElement yCoordinateFromPoint2;
     private BigInteger expectedOrderPoint1;
     private Ring ring;
-    private BigInteger power;
+    private BigInteger powerThree;
     private RingElement xBadCoordinate;
     private GeneralECPoint expectedResultPlusOperation;
     private GeneralECPoint expectedResultMultByZeroNonScalarOperation;
+    private BigInteger powerTwo;
 
 
     @BeforeEach
@@ -46,7 +46,8 @@ abstract class GeneralECTest {
         yCoordinateFromPoint2 = point2.y;
         expectedResultPlusOperation = returnExpectedResultPlusOperation();
         expectedResultMultByZeroNonScalarOperation = returnsExpectedElementMultByNonZeroScalar();
-        power = returnPower();
+        powerThree = BigInteger.valueOf(3);
+        powerTwo = BigInteger.valueOf(2);
         expectedOrderPoint1 = returnExpectedOrderOfPoint1();
     }
 
@@ -65,8 +66,6 @@ abstract class GeneralECTest {
     protected abstract GeneralECPoint returnsExpectedElementMultByNonZeroScalar();
 
     protected abstract BigInteger returnExpectedOrderOfPoint1();
-
-    protected abstract BigInteger returnPower();
 
     @Test
     void testElementPlusInfinityEqualsElement() {
@@ -96,7 +95,7 @@ abstract class GeneralECTest {
 
     @Test
     void testElementMultByNonZeroScalar() {
-        GeneralECPoint mult = generalEC.pow(point1, power);
+        GeneralECPoint mult = generalEC.pow(point1, powerThree);
         assertEquals(this.expectedResultMultByZeroNonScalarOperation, mult);
     }
 
@@ -178,16 +177,12 @@ abstract class GeneralECTest {
 
     @Test
     void testComputesOrder() {
-        BigInteger orderPoint1 = generalEC.computeOrder(point1);
-        assertNotNull(orderPoint1);
-        assertEquals(this.expectedOrderPoint1, orderPoint1);
+        assertTrue(generalEC.validOrder(point1).isPresent());
     }
 
     @Test
     void testPoint2OrderAddition() {
-        BigInteger orderPoint = generalEC.computeOrder(point2);
-        assertNotNull(orderPoint);
-        assertEquals(this.expectedOrderPoint1, orderPoint);
+        assertTrue(generalEC.validOrder(point2).isPresent());
     }
 
     @Test
@@ -199,4 +194,13 @@ abstract class GeneralECTest {
         assertTrue(ring.containsElement(actualPoint.y));
         assertTrue(actualPoint.x.belongsToSameGroup(actualPoint.y));
     }
+
+    @Test
+    void testDoubleIsSameThatTwoAdd() {
+        GeneralECPoint doublePoint = point1.multiply(point1);
+        assertEquals(doublePoint, point1.pow(BigInteger.TWO));
+    }
+
+
+
 }

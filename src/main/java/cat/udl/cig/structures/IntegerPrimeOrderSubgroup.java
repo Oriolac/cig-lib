@@ -74,23 +74,6 @@ public class IntegerPrimeOrderSubgroup implements MultiplicativeSubgroup {
         return new IntegerPrimeOrderElementBuilder(this, this.field);
     }
 
-    /**
-     * @see Ring#toElement(Object)
-     * @return
-     */
-    @Override
-    public Optional<? extends GroupElement> toElement(final Object k) {
-        if(k instanceof BigInteger) {
-            BigInteger input = (BigInteger) k;
-            if (input.modPow(getSize(), field.getSize())
-                    .equals(BigInteger.ONE)) {
-                return Optional.of(new PrimeFieldElement(field, input));
-            }
-        } else {
-            throw new ParametersException();
-        }
-        return Optional.empty();
-    }
 
     /**
      * @see Group#getMultiplicativeIdentity()

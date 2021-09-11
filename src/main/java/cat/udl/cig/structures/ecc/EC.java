@@ -94,17 +94,6 @@ public interface EC extends Group {
     boolean isOnCurve(ECPoint P);
 
     /**
-     * Computes the order \(\text{ord}(P)\) of {@code this} <i>ECPoint</i>
-     * \(P\).
-     *
-     * @param P
-     *            the <i>ECPoint</i> to be checked.
-     * @return BigInteger containing the order of <i>ECPoint</i> \(P\).
-     */
-
-    BigInteger computeOrder(final ECPoint P);
-
-    /**
      * Checks if point \(P = (x, y)\) belongs to {@code this} <i>Elliptic
      * Curve</i> \(E\).
      *

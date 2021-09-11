@@ -4,8 +4,9 @@ import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.structures.*;
 import cat.udl.cig.structures.builder.GroupElementBuilder;
+import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
@@ -46,7 +47,7 @@ public class GeneralEC implements EC {
      * The prime factors of the cardinality of the group law \(E(k)\). They must
      * be of the class BigInteger. The list is sorted in ascendent order.
      */
-    protected final ArrayList<BigInteger> cardFactors;
+    protected final ArrayList<BigInteger> sizeOfSubgroups;
 
     /**
      * The possible orders for the points in this curve.
@@ -66,12 +67,12 @@ public class GeneralEC implements EC {
      *                     described.
      * @param A            y² = x³ + Ax + B
      * @param B            y² = x³ + Ax + B
-     * @param cardFactors  prime factors composing the cardinality of the group law \(E\).
+     * @param sizeOfSubgroups  prime factors composing the cardinality of the group law \(E\).
      * @see PrimeField
      * @see PrimeFieldElement
      */
-    public GeneralEC(@Nonnull final Ring ring, @Nonnull final RingElement A, @Nonnull final RingElement B,
-                     @Nonnull final ArrayList<BigInteger> cardFactors) {
+    public GeneralEC(@NotNull final Ring ring, @NotNull final RingElement A, @NotNull final RingElement B,
+                     @NotNull final ArrayList<BigInteger> sizeOfSubgroups) {
         if (ring.getSize().equals(BigInteger.valueOf(2)) ||
                 ring.getSize().equals(BigInteger.valueOf(3))) {
             throw new ConstructionException("The ring must not be 2 or 3");
@@ -82,8 +83,8 @@ public class GeneralEC implements EC {
         this.ring = ring;
         this.A = A;
         this.B = B;
-        this.cardFactors = new ArrayList<>(cardFactors);
-        Collections.sort(this.cardFactors);
+        this.sizeOfSubgroups = new ArrayList<>(sizeOfSubgroups);
+        Collections.sort(this.sizeOfSubgroups);
         orders = possiblePointOrder();
         infintiyPoint = new GeneralECPoint(this);
     }
@@ -96,7 +97,7 @@ public class GeneralEC implements EC {
      */
     public GeneralEC(final GeneralEC E) {
         ring = E.ring;
-        cardFactors = E.cardFactors;
+        sizeOfSubgroups = E.sizeOfSubgroups;
         orders = E.orders;
         this.A = E.A;
         this.B = E.B;
@@ -150,23 +151,23 @@ public class GeneralEC implements EC {
         ArrayList<SortedSet<BigInteger>> ordersAux =
                 new ArrayList<>(); // order = prime factor
         ordersAux.add(new TreeSet<>());
-        for (BigInteger cardFactor : cardFactors) {
+        for (BigInteger cardFactor : sizeOfSubgroups) {
             ordersAux.get(0).add(cardFactor);
         } // ALERTA! COMPROVAR QUE, REALMENT, CALCULO TOTES LES POSSIBILITATS!
         int lastIndx;
         Iterator<?> it;
         BigInteger ord;
         int iniFactorIndx;
-        while (ordersAux.size() != cardFactors.size()) {
+        while (ordersAux.size() != sizeOfSubgroups.size()) {
             lastIndx = ordersAux.size() - 1;
             iniFactorIndx = lastIndx + 1;
             ordersAux.add(new TreeSet<>());
             it = ordersAux.get(lastIndx).iterator();
             while (it.hasNext()) {
                 ord = (BigInteger) it.next();
-                for (int j = iniFactorIndx; j < cardFactors.size(); j++) {
+                for (int j = iniFactorIndx; j < sizeOfSubgroups.size(); j++) {
                     ordersAux.get(lastIndx + 1).add(
-                            ord.multiply(cardFactors.get(j)));
+                            ord.multiply(sizeOfSubgroups.get(j)));
                 }
                 iniFactorIndx++;
             }
@@ -221,30 +222,15 @@ public class GeneralEC implements EC {
     @Override
     public BigInteger getSize() {
         BigInteger result = BigInteger.ONE;
-        for (BigInteger cardFactor : cardFactors) {
+        for (BigInteger cardFactor : sizeOfSubgroups) {
             result = result.multiply(cardFactor);
         }
         return result;
     }
 
     @Override
-    public GroupElementBuilder buildElement() {
-        return null;
-    }
-
-    /**
-     * @return
-     * @see Group#(Object)
-     */
-    @Override
-    public Optional<? extends GeneralECPoint> toElement(final Object k) {
-        Optional<? extends RingElement> xinput = this.ring.toElement(k);
-        if (xinput.isPresent()) {
-            ArrayList<? extends GeneralECPoint> points =  liftX(xinput.get());
-            if (points.size() > 0)
-                return Optional.of(points.get(0));
-        }
-        return Optional.empty();
+    public ECPointBuilder buildElement() {
+        return new ECPointBuilder(this);
     }
 
     /**
@@ -253,10 +239,10 @@ public class GeneralEC implements EC {
     @Override
     public BigInteger getRandomExponent() {
         BigInteger result =
-                new BigInteger(cardFactors.get(cardFactors.size() - 1)
+                new BigInteger(sizeOfSubgroups.get(sizeOfSubgroups.size() - 1)
                         .bitLength(), new SecureRandom());
-        if (result.compareTo(cardFactors.get(cardFactors.size() - 1)) >= 0) {
-            return result.mod(cardFactors.get(cardFactors.size() - 1));
+        if (result.compareTo(sizeOfSubgroups.get(sizeOfSubgroups.size() - 1)) >= 0) {
+            return result.mod(sizeOfSubgroups.get(sizeOfSubgroups.size() - 1));
         }
         return result;
     }
@@ -314,7 +300,7 @@ public class GeneralEC implements EC {
      */
     @Override
     public ArrayList<BigInteger> getCardinalityFactors() {
-        return cardFactors;
+        return sizeOfSubgroups;
     }
 
     /**
@@ -335,13 +321,8 @@ public class GeneralEC implements EC {
         return P.get(0);
     }
 
-    /**
-     * @see EC#computeOrder(ECPoint)
-     */
-    @Override
-    public BigInteger computeOrder(final ECPoint P) {
-        Optional<BigInteger> optionalOrder = validOrder(P);
-        return optionalOrder.orElse(null);
+    public ECPrimeOrderSubgroup getSubgroup(GeneralECPoint P) {
+        return new ECPrimeOrderSubgroup(this, P);
     }
 
     public Optional<BigInteger> validOrder(final RingElement x, final RingElement y) {
@@ -370,7 +351,7 @@ public class GeneralEC implements EC {
         GeneralEC generalEC = (GeneralEC) o;
         return Objects.equals(ring, generalEC.ring) &&
                 Objects.equals(A, generalEC.A) && Objects.equals(B, generalEC.B) &&
-                Objects.equals(cardFactors, generalEC.cardFactors) &&
+                Objects.equals(sizeOfSubgroups, generalEC.sizeOfSubgroups) &&
                 Objects.equals(orders, generalEC.orders);
     }
 
@@ -379,7 +360,7 @@ public class GeneralEC implements EC {
         int result = ring.hashCode();
         result = 31 * result + A.hashCode();
         result = 31 * result + B.hashCode();
-        result = 31 * result + cardFactors.hashCode();
+        result = 31 * result + sizeOfSubgroups.hashCode();
         result = 31 * result + orders.hashCode();
         result = 31 * result + infintiyPoint.hashCode();
         return result;

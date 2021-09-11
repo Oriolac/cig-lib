@@ -132,4 +132,6 @@ public interface ECPoint extends GroupElement {
      */
     public boolean isInfinity();
 
+    public ECSubgroup getSubgroup();
+
 }

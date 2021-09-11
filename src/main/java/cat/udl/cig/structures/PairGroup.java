@@ -2,8 +2,8 @@ package cat.udl.cig.structures;
 
 import cat.udl.cig.structures.builder.PairGroupElementBuilder;
 import cat.udl.cig.structures.builder.RingElementBuilder;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
@@ -31,11 +31,6 @@ public class PairGroup implements Ring {
     @Override
     public RingElement getAdditiveIdentity() {
         return (RingElement) new PairGroupElement(this.a.getAdditiveIdentity(), this.b.getAdditiveIdentity());
-    }
-
-    @Override
-    public Optional<? extends RingElement> toElement(Object k) {
-        return Optional.empty();
     }
 
     @Override
@@ -73,15 +68,15 @@ public class PairGroup implements Ring {
         return Optional.empty();
     }
 
-    public boolean contains(@Nonnull PairGroupElement element) {
+    public boolean contains(@NotNull PairGroupElement element) {
         return this.equals(element.getGroup());
     }
 
-    public boolean isFromSetA(@Nonnull GroupElement elementA) {
+    public boolean isFromSetA(@NotNull GroupElement elementA) {
         return this.a.equals(elementA.getGroup());
     }
 
-    public boolean isFromSetB(@Nonnull GroupElement elementB) {
+    public boolean isFromSetB(@NotNull GroupElement elementB) {
         return this.b.equals(elementB.getGroup());
     }
 

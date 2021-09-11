@@ -31,19 +31,6 @@ public interface Group extends GroupElementFactory {
     public GroupElementBuilder buildElement();
 
     /**
-     * Converts a k to a <i>GroupElement</i> belonging to {@code this}
-     * <i>Group</i> \(K\).
-     *
-     * @param k
-     *            an object that could be converted into a <i>GroupElement</i>
-     *            of {@code this} <i>Group</i>.
-     * @return a new <i>GroupElement</i> \(r\), such that
-     *         {@code r value = k.mod(this.getSize())} and
-     *         {@code r.getGroup() = this}.
-     */
-    public Optional<? extends GroupElement> toElement(Object k);
-
-    /**
      * Returns a random element \(k\) of {@code this} <i>Ring</i>.
      *
      * @return a random element \(k\) that belongs to {@code this} <i>Group</i>.

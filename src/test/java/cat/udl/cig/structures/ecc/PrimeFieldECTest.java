@@ -8,6 +8,7 @@ import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
 import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.text.html.Option;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,18 +79,14 @@ public class PrimeFieldECTest extends GeneralECTest {
         return BigInteger.valueOf(1093);
     }
 
-    @Override
-    protected BigInteger returnPower() {
-        return BigInteger.valueOf(3);
-    }
-
     @Test
     void testTwoPointsOrderAddition() {
         GeneralEC generalEC = returnGeneralEC();
         ECPoint plusOp = returnExpectedResultPlusOperation();
         BigInteger expectedOrderPoint1 = returnExpectedOrderOfPoint1();
-        BigInteger orderPoint = generalEC.computeOrder(plusOp);
-        assertNotNull(orderPoint);
+        Optional<BigInteger> optOrderPoint = generalEC.validOrder(plusOp);
+        assertTrue(optOrderPoint.isPresent());
+        BigInteger orderPoint = optOrderPoint.get();
         assertEquals(expectedOrderPoint1, orderPoint);
         assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(orderPoint));
         Optional<BigInteger> power = new BruteForce(plusOp).algorithm(generalEC.getMultiplicativeIdentity());

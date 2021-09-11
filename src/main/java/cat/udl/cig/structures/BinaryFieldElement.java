@@ -7,8 +7,7 @@ import java.util.Objects;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Models a <i>Binary Field Element</i>. This <i>Binary Field Element</i> has a
@@ -49,7 +48,7 @@ public class BinaryFieldElement implements RingElement {
      *            <i>BinaryFieldElement</i>.
      * @see BinaryField
      */
-    public BinaryFieldElement(@Nonnull final BinaryField F,@Nonnull final BitSet k) {
+    public BinaryFieldElement(@NotNull final BinaryField F, @NotNull final BitSet k) {
         this.F = F;
         this.k = k.get(0, F.getDimension());
     }

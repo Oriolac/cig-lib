@@ -148,8 +148,8 @@ public class BinaryECPoint extends GeneralECPoint {
      * singular curve. Then, \(inverseC = \frac{1}{E.c}\).
      */
     private void initializeInverseC() {
-        if (((BinaryEC) E).isSuperSingularEC()) { // && E.isInitialized()) {
-            inverseC = ((BinaryEC) E).getC().inverse();
+        if (((BinaryEC) curve).isSuperSingularEC()) { // && E.isInitialized()) {
+            inverseC = ((BinaryEC) curve).getC().inverse();
         }
     }
 
@@ -162,7 +162,7 @@ public class BinaryECPoint extends GeneralECPoint {
             return this;
         }
 
-        if (((BinaryEC) E).isSuperSingularEC()) {
+        if (((BinaryEC) curve).isSuperSingularEC()) {
             return SSDoublePoint();
         }
         return NSSDoublePoint();
@@ -176,12 +176,12 @@ public class BinaryECPoint extends GeneralECPoint {
          */
         BinaryECPoint Q = (BinaryECPoint) iQ;
 
-        if (!E.equals(Q.E)) {
+        if (!curve.equals(Q.curve)) {
             throw new ArithmeticException(
                 "Trying to add points from different" + "Elliptic Curves");
         }
 
-        if (((BinaryEC) E).isSuperSingularEC()) {
+        if (((BinaryEC) curve).isSuperSingularEC()) {
             return SSAdd(Q);
         }
         return NSSAdd(Q);
@@ -195,15 +195,15 @@ public class BinaryECPoint extends GeneralECPoint {
 
         try {
             BinaryECPoint invP;
-            if (((BinaryEC) E).isSuperSingularEC()) {
+            if (((BinaryEC) curve).isSuperSingularEC()) {
                 invP =
                         new BinaryECPoint(
-                            (BinaryEC) E,
+                            (BinaryEC) curve,
                             (BinaryFieldElement) x,
-                            ((BinaryFieldElement) y).add(((BinaryEC) E).getC()));
+                            ((BinaryFieldElement) y).add(((BinaryEC) curve).getC()));
             } else {
                 invP =
-                    new BinaryECPoint((BinaryEC) E,
+                    new BinaryECPoint((BinaryEC) curve,
                         (BinaryFieldElement) x,
                         ((BinaryFieldElement) x).add(y));
             }
@@ -217,14 +217,14 @@ public class BinaryECPoint extends GeneralECPoint {
     @Override
     public boolean equals(final Object obj) {
         BinaryECPoint P = (BinaryECPoint) obj;
-        return (super.equals(obj) && ((BinaryEC) E).isSuperSingularEC() == ((BinaryEC) P.E)
+        return (super.equals(obj) && ((BinaryEC) curve).isSuperSingularEC() == ((BinaryEC) P.curve)
             .isSuperSingularEC());
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 29 * hash + (((BinaryEC) E).isSuperSingularEC() ? 1 : 0);
+        hash = 29 * hash + (((BinaryEC) curve).isSuperSingularEC() ? 1 : 0);
         return hash;
     }
 
@@ -243,9 +243,9 @@ public class BinaryECPoint extends GeneralECPoint {
     @Override
     public BinaryECPoint pow(final BigInteger k) {
         if (k.equals(BigInteger.ZERO) || isInfinity) {
-            return (BinaryECPoint) E.getMultiplicativeIdentity();
+            return (BinaryECPoint) curve.getMultiplicativeIdentity();
         }
-        if (((BinaryEC) E).isSuperSingularEC()) {
+        if (((BinaryEC) curve).isSuperSingularEC()) {
             return normalPow(k);
         }
 
@@ -255,17 +255,17 @@ public class BinaryECPoint extends GeneralECPoint {
             BinaryFieldElement xSquared =
                     ((BinaryFieldElement) x).square();
             BinaryFieldElement x2 =
-                xSquared.add(E.getB().divide(xSquared));
+                xSquared.add(curve.getB().divide(xSquared));
             BinaryFieldElement t;
             for (int i = k.bitLength() - 2; i >= 0; i--) {
                 t = x1.divide(x1.add(x2));
                 if (k.testBit(i)) {
                     x1 = (BinaryFieldElement) (x.add(t)).add(t.square());
                     xSquared = x2.square();
-                    x2 = xSquared.add(E.getB().divide(xSquared));
+                    x2 = xSquared.add(curve.getB().divide(xSquared));
                 } else {
                     xSquared = x1.square();
-                    x1 = xSquared.add(E.getB().divide(xSquared));
+                    x1 = xSquared.add(curve.getB().divide(xSquared));
                     x2 = (BinaryFieldElement) x.add(t).add(t.square());
                 }
             }
@@ -278,7 +278,7 @@ public class BinaryECPoint extends GeneralECPoint {
             y1 = y1.divide(x);
             y1 = y1.add(y);
 
-            return new BinaryECPoint((BinaryEC) E, x1, y1);
+            return new BinaryECPoint((BinaryEC) curve, x1, y1);
         } catch (IncorrectRingElementException ex) {
             Logger.getLogger(BinaryECPoint.class.getName()).log(
                 Level.SEVERE, null, ex);
@@ -304,7 +304,7 @@ public class BinaryECPoint extends GeneralECPoint {
             k = k.mod(order);
         }
         ArrayList<Integer> kbits = NAF(k);
-        BinaryECPoint Q = (BinaryECPoint) E.getMultiplicativeIdentity();
+        BinaryECPoint Q = (BinaryECPoint) curve.getMultiplicativeIdentity();
         final ECPoint minusP = inverse();
         for (int i = kbits.size() - 1; i >= 0; i--) {
             Q = Q.square();
@@ -337,18 +337,18 @@ public class BinaryECPoint extends GeneralECPoint {
         }
         try {
             Rx = ((BinaryFieldElement) x).square();
-            Rx = Rx.add(E.getA());
+            Rx = Rx.add(curve.getA());
             Rx = Rx.multiply(inverseC);
             Rx = Rx.square();
 
             Ry = ((BinaryFieldElement) x).square();
-            Ry = Ry.add(E.getA());
+            Ry = Ry.add(curve.getA());
             Ry = Ry.multiply(inverseC);
             Ry = Ry.multiply(x.add(Rx));
             Ry = Ry.add(y);
-            Ry = Ry.add(((BinaryEC) E).getC());
+            Ry = Ry.add(((BinaryEC) curve).getC());
 
-            BinaryECPoint R = new BinaryECPoint((BinaryEC) E, Rx, Ry);
+            BinaryECPoint R = new BinaryECPoint((BinaryEC) curve, Rx, Ry);
 
             return R;
         } catch (IncorrectRingElementException ex) {
@@ -372,7 +372,7 @@ public class BinaryECPoint extends GeneralECPoint {
         BinaryFieldElement l;
         if (x.equals(x.getGroup().getAdditiveIdentity())) {
             // if x == 0, it's double is the infinity point
-            return (BinaryECPoint) E.getMultiplicativeIdentity();
+            return (BinaryECPoint) curve.getMultiplicativeIdentity();
         }
         try {
             l = (BinaryFieldElement) y.divide(x);
@@ -381,13 +381,13 @@ public class BinaryECPoint extends GeneralECPoint {
             BinaryFieldElement xSquared =
                     ((BinaryFieldElement) x).square();
             Rx = xSquared;
-            Rx = Rx.add(E.getB().divide(Rx));
+            Rx = Rx.add(curve.getB().divide(Rx));
 
             Ry = xSquared;
             Ry = Ry.add(l.multiply(Rx));
             Ry = Ry.add(Rx);
 
-            BinaryECPoint R = new BinaryECPoint((BinaryEC) E, Rx, Ry);
+            BinaryECPoint R = new BinaryECPoint((BinaryEC) curve, Rx, Ry);
 
             return R;
         } catch (IncorrectRingElementException ex) {
@@ -412,7 +412,7 @@ public class BinaryECPoint extends GeneralECPoint {
         BinaryFieldElement Rx, Ry;
         BinaryFieldElement l;
 
-        if (!E.equals(Q.E)) {
+        if (!curve.equals(Q.curve)) {
             throw new ArithmeticException(
                 "Trying to add points from different" + "Elliptic Curves");
         }
@@ -424,7 +424,7 @@ public class BinaryECPoint extends GeneralECPoint {
             return Q;
         }
         if (equals(Q.inverse())) {
-            return (BinaryECPoint) E.getMultiplicativeIdentity(); /* Point at infinity */
+            return (BinaryECPoint) curve.getMultiplicativeIdentity(); /* Point at infinity */
         }
         if (equals(Q)) {
             return square();
@@ -437,13 +437,13 @@ public class BinaryECPoint extends GeneralECPoint {
             Rx = Rx.add(l);
             Rx = Rx.add(x);
             Rx = Rx.add(Q.x);
-            Rx = Rx.add(E.getA());
+            Rx = Rx.add(curve.getA());
 
             Ry = l.multiply(x.add(Rx));
             Ry = Ry.add(Rx);
             Ry = Ry.add(y);
 
-            BinaryECPoint R = new BinaryECPoint((BinaryEC) E, Rx, Ry);
+            BinaryECPoint R = new BinaryECPoint((BinaryEC) curve, Rx, Ry);
 
             return R;
         } catch (IncorrectRingElementException ex) {
@@ -467,7 +467,7 @@ public class BinaryECPoint extends GeneralECPoint {
         BinaryFieldElement Rx, Ry;
         BinaryFieldElement num, denom;
 
-        if (!E.equals(Q.E)) {
+        if (!curve.equals(Q.curve)) {
             throw new ArithmeticException(
                 "Trying to add points from different" + "Elliptic Curves");
         }
@@ -479,7 +479,7 @@ public class BinaryECPoint extends GeneralECPoint {
             return Q;
         }
         if (equals(Q.inverse())) {
-            return (BinaryECPoint) E.getMultiplicativeIdentity();
+            return (BinaryECPoint) curve.getMultiplicativeIdentity();
         }
         if (equals(Q)) {
             return square();
@@ -498,9 +498,9 @@ public class BinaryECPoint extends GeneralECPoint {
             Ry = numOverDenom;
             Ry = Ry.multiply(x.add(Rx));
             Ry = Ry.add(y);
-            Ry = Ry.add(((BinaryEC) E).getC());
+            Ry = Ry.add(((BinaryEC) curve).getC());
 
-            BinaryECPoint R = new BinaryECPoint((BinaryEC) E, Rx, Ry);
+            BinaryECPoint R = new BinaryECPoint((BinaryEC) curve, Rx, Ry);
 
             return R;
 
@@ -515,7 +515,7 @@ public class BinaryECPoint extends GeneralECPoint {
     @Override
     public boolean belongsToSameGroup(final GroupElement iq) {
         BinaryECPoint q = (BinaryECPoint) iq;
-        return E.equals(q.getCurve());
+        return curve.equals(q.getCurve());
     }
 
     /**
@@ -523,7 +523,7 @@ public class BinaryECPoint extends GeneralECPoint {
      */
     @Override
     public BinaryField getGroup() {
-        return (BinaryField) E.getRing();
+        return (BinaryField) curve.getRing();
     }
 
     /**
@@ -571,7 +571,7 @@ public class BinaryECPoint extends GeneralECPoint {
      */
     @Override
     public BinaryEC getCurve() {
-        return (BinaryEC) E;
+        return (BinaryEC) curve;
     }
 
     /**

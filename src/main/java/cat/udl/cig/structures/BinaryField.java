@@ -132,15 +132,6 @@ public class BinaryField implements Ring {
     }
 
     @Override
-    public Optional<? extends BinaryFieldElement> toElement(final Object k) {
-        if (!(k instanceof BitSet)) {
-            return Optional.empty();
-        }
-        BitSet result = (BitSet) k;
-        return Optional.of(new BinaryFieldElement(this, result));
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

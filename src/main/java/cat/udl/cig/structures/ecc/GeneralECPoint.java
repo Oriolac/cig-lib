@@ -5,6 +5,7 @@ import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class GeneralECPoint implements ECPoint {
      *
      * @see EC
      */
-    final protected GeneralEC E;
+    final protected GeneralEC curve;
 
     /**
      * The coordinates \((X:Y)\) of the point. \(X\) and \(Y\) belongs to the
@@ -50,6 +51,8 @@ public class GeneralECPoint implements ECPoint {
      */
     protected BigInteger order;
 
+    private ECPrimeOrderSubgroup ecPrimeOrderSubgroup;
+
     /**
      * Creates the <i>Infinity Point</i> \(P\) for the <i>GeneralEC</i> \(E\).
      * The <i>Infinity Point</i> has the coordinates \((0:1:0)\). If {@code E}
@@ -58,15 +61,15 @@ public class GeneralECPoint implements ECPoint {
      * @param E1 the <i>GeneralEC</i> to which \(P\) belongs.
      */
     public GeneralECPoint(final GeneralEC E1) {
-        E = E1;
+        curve = E1;
         // Infinity point (0:1:0)
-        x = E.getRing().getAdditiveIdentity();
-        y = E.getRing().getMultiplicativeIdentity();
+        x = curve.getRing().getAdditiveIdentity();
+        y = curve.getRing().getMultiplicativeIdentity();
         isInfinity = true;
         order = BigInteger.ONE;
     }
 
-    static public GeneralECPoint infinityPoint(final GeneralEC E1) {
+    static public GeneralECPoint infinityPoint(@NotNull final GeneralEC E1) {
         return new GeneralECPoint(E1);
     }
 
@@ -76,11 +79,12 @@ public class GeneralECPoint implements ECPoint {
      *
      * @param P the <i>GeneralECPoint</i> to be copied.
      */
-    public GeneralECPoint(final GeneralECPoint P) {
-        E = P.E;
+    public GeneralECPoint(@NotNull final GeneralECPoint P) {
+        curve = P.curve;
         x = P.x;
         y = P.y;
         isInfinity = P.isInfinity;
+        ecPrimeOrderSubgroup = P.ecPrimeOrderSubgroup;
         order = P.order;
     }
 
@@ -91,7 +95,7 @@ public class GeneralECPoint implements ECPoint {
      * initialized or {@code x} and {@code y} are not elements of the same
      * <i>GneralField</i>, then \(P\) is a null <i>Point</i>.
      *
-     * @param E      the <i>GeneralEC</i> to which \(P\) belongs.
+     * @param curve  the <i>GeneralEC</i> to which \(P\) belongs.
      * @param ix     the \(x\) coordinate for \(P\). It must belong to
      *               {@code this.E.getRing()}.
      * @param iy     the \(y\) coordinate for \(P\). It must belong to
@@ -100,10 +104,10 @@ public class GeneralECPoint implements ECPoint {
      *               constructor checks if the order is correct. If not, it is
      *               initialized to ONE.
      */
-    public GeneralECPoint(final GeneralEC E, final RingElement ix,
-                          final RingElement iy, final BigInteger iOrder) {
-        this.E = E;
-        if (!E.getRing().containsElement(ix) || !E.getRing().containsElement(iy)) {
+    protected GeneralECPoint(@NotNull final GeneralEC curve, @NotNull final RingElement ix,
+                          @NotNull final RingElement iy, @NotNull final BigInteger iOrder) {
+        this.curve = curve;
+        if (!curve.getRing().containsElement(ix) || !curve.getRing().containsElement(iy)) {
             throw new ConstructionException("The point is not constructed on the correct ring ecc.");
         }
         x = ix;
@@ -112,10 +116,10 @@ public class GeneralECPoint implements ECPoint {
         order = iOrder;
     }
 
-    protected GeneralECPoint(final GeneralEC iE, final RingElement ix,
-                             final RingElement iy, final BigInteger iOrder,
-                             final boolean iIsInfinity, final boolean safe) {
-        E = iE;
+    private GeneralECPoint(@NotNull final GeneralEC iE, @NotNull final RingElement ix,
+                             @NotNull final RingElement iy, @NotNull final BigInteger iOrder,
+                             final boolean iIsInfinity) {
+        curve = iE;
         if (!iIsInfinity) {
             x = ix;
             y = iy;
@@ -123,8 +127,8 @@ public class GeneralECPoint implements ECPoint {
             isInfinity = false;
         } else {
             // Infinity point (0:1:0)
-            x = E.getRing().getAdditiveIdentity();
-            y = E.getRing().getMultiplicativeIdentity();
+            x = curve.getRing().getAdditiveIdentity();
+            y = curve.getRing().getMultiplicativeIdentity();
             isInfinity = true;
             order = BigInteger.ONE;
         }
@@ -145,17 +149,17 @@ public class GeneralECPoint implements ECPoint {
      */
     public GeneralECPoint(final GeneralEC iE, final RingElement ix,
                           final RingElement iy) {
-        E = iE;
-        RingElement elem = E.getRing().getMultiplicativeIdentity();
-        if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem)) {
+        curve = iE;
+        RingElement elem = curve.getRing().getMultiplicativeIdentity();
+        if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem) && curve.isOnCurve(ix, iy)) {
             x = ix;
             y = iy;
             isInfinity = false;
             order = null;
         } else { // Infinity point (0:1:0)
             //System.out.println("Mal generador");
-            x = E.getRing().getAdditiveIdentity();
-            y = E.getRing().getMultiplicativeIdentity();
+            x = curve.getRing().getAdditiveIdentity();
+            y = curve.getRing().getMultiplicativeIdentity();
             isInfinity = true;
             order = BigInteger.ONE;
         }
@@ -170,7 +174,7 @@ public class GeneralECPoint implements ECPoint {
      */
     @Override
     public GeneralEC getCurve() {
-        return E;
+        return curve;
     }
 
     /**
@@ -214,10 +218,10 @@ public class GeneralECPoint implements ECPoint {
     @Override
     public GeneralECPoint square() {
         if (isInfinity) {
-            return E.getMultiplicativeIdentity();
+            return curve.getMultiplicativeIdentity();
         }
         RingElement[] point = computeDoublePoint();
-        Optional<GeneralECPoint> generalECPoint = fromCoordinates(point[0], point[1]);
+        Optional<? extends GeneralECPoint> generalECPoint = this.curve.buildElement().setXYCoordinates(point[0], point[1]).build();
         if (generalECPoint.isEmpty()) {
             throw new IllegalStateException();
         }
@@ -225,8 +229,8 @@ public class GeneralECPoint implements ECPoint {
     }
 
     private Optional<GeneralECPoint> fromCoordinates(RingElement xCoord, RingElement yCoord) {
-        GeneralECPoint point = new GeneralECPoint(E, xCoord, yCoord, order, false, true);
-        if (this.E.isOnCurve(point))
+        GeneralECPoint point = new GeneralECPoint(curve, xCoord, yCoord, order, false);
+        if (this.curve.isOnCurve(point))
             return Optional.of(point);
         return Optional.empty();
     }
@@ -244,7 +248,7 @@ public class GeneralECPoint implements ECPoint {
 
     private RingElement computeLambdaAdditionSamePoint() {
         final RingElement THREE = this.x.getGroup().THREE();
-        RingElement numerador = THREE.multiply(x.pow(BigInteger.TWO)).add(E.getA());
+        RingElement numerador = THREE.multiply(x.pow(BigInteger.TWO)).add(curve.getA());
         RingElement denominador = this.y.add(this.y);
         return numerador.multiply(denominador.inverse());
     }
@@ -255,7 +259,7 @@ public class GeneralECPoint implements ECPoint {
         if (!(iQ instanceof GeneralECPoint))
             throw new IllegalArgumentException("The point is not a GeneralECPoint.");
         GeneralECPoint Q = (GeneralECPoint) iQ;
-        if (!E.equals(Q.E))
+        if (!curve.equals(Q.curve))
             throw new ArithmeticException(
                     "Trying to add points from different Elliptic Curves");
         if (Q.isInfinity()) {
@@ -266,7 +270,7 @@ public class GeneralECPoint implements ECPoint {
             if (y.equals(Q.y)) {
                 return square();
             } else {
-                return E.getMultiplicativeIdentity();
+                return curve.getMultiplicativeIdentity();
             }
         } else {
             return computeDifferentPointAddition(Q);
@@ -286,7 +290,7 @@ public class GeneralECPoint implements ECPoint {
         result[0] = result[0].subtract(this.x).subtract(Bx);
         result[1] = lambda.multiply(this.x.subtract(result[0]));
         result[1] = result[1].subtract(this.y);
-        return fromCoordinates(result[0], result[1])
+        return this.curve.buildElement().setXYCoordinates(result[0], result[1]).build()
                 .orElseThrow(() -> new ConstructionException("Cannot create the new point. It does not belong in the current EC."));
     }
 
@@ -301,7 +305,7 @@ public class GeneralECPoint implements ECPoint {
 
     @Override
     public boolean belongsToSameGroup(final GroupElement q) {
-        return E.equals(q.getGroup());
+        return curve.equals(q.getGroup());
     }
 
     @Override
@@ -319,7 +323,7 @@ public class GeneralECPoint implements ECPoint {
         if (o == null || getClass() != o.getClass()) return false;
         GeneralECPoint that = (GeneralECPoint) o;
         return isInfinity == that.isInfinity &&
-                Objects.equals(E, that.E) &&
+                Objects.equals(curve, that.curve) &&
                 Objects.equals(x, that.x) &&
                 Objects.equals(y, that.y) &&
                 Objects.equals(order, that.order);
@@ -327,7 +331,7 @@ public class GeneralECPoint implements ECPoint {
 
     @Override
     public int hashCode() {
-        return Objects.hash(E, x, y, isInfinity, order);
+        return Objects.hash(curve, x, y, isInfinity, order);
     }
 
     @Override
@@ -335,8 +339,7 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity) {
             return this;
         }
-        return new GeneralECPoint(getCurve(), getX(), getY().opposite(),
-                order, false, true);
+        return new GeneralECPoint(getCurve(), getX(), getY().opposite(), order, false);
     }
 
     /**
@@ -355,12 +358,13 @@ public class GeneralECPoint implements ECPoint {
         if (order != null && k.compareTo(order) > 0) {
             k = k.mod(order);
         }
+        final BigInteger times = k;
         RingElement[] me = toProjective(this);
         Ring ring = me[0].getGroup();
         RingElement[] minusP = toProjective(inverse());
         RingElement[] Q =
                 {ring.ZERO(), ring.ONE(), ring.ZERO()};
-        ArrayList<Integer> kbits = NAF(k);
+        ArrayList<Integer> kbits = NAF(times);
         for (int i = kbits.size() - 1; i >= 0; i--) {
             Q = ProjectiveDouble(Q);
             if (kbits.get(i) > 0) {
@@ -383,7 +387,7 @@ public class GeneralECPoint implements ECPoint {
 
     private Optional<GeneralECPoint> toECPoint(final RingElement[] point) {
         if (point[2].equals(point[2].getGroup().ZERO())) {
-            return Optional.of(E.getMultiplicativeIdentity());
+            return Optional.of(curve.getMultiplicativeIdentity());
         }
         final RingElement aux = point[2].inverse();
         //final PrimeFieldElement X =
@@ -488,7 +492,7 @@ public class GeneralECPoint implements ECPoint {
         TT = T.multiply(T); // TT = T^2
         M = S1.add(S2); // M = S1+S2
         R = TT.subtract(U1.multiply(U2))
-                .add(E.getA().multiply(ZZ.multiply(ZZ))); // R = TT-U1*U2+a*ZZ2
+                .add(curve.getA().multiply(ZZ.multiply(ZZ))); // R = TT-U1*U2+a*ZZ2
         F = ZZ.multiply(M); // F = ZZ*M
         L = M.multiply(F); // L = M*F
         LL = L.multiply(L); // LL = L2
@@ -525,7 +529,7 @@ public class GeneralECPoint implements ECPoint {
         final RingElement XX, w, YY, R, RR, B, h;
 
         XX = point[0].multiply(point[0]);
-        w = E.getA().add(THREE.multiply(XX));
+        w = curve.getA().add(THREE.multiply(XX));
         YY = point[1].multiply(point[1]);
         R = YY.add(YY);
         RR = R.multiply(R);
@@ -546,7 +550,7 @@ public class GeneralECPoint implements ECPoint {
 
         XX = point[0].multiply(point[0]);
         ZZ = point[2].multiply(point[2]);
-        w = E.getA().multiply(ZZ)
+        w = curve.getA().multiply(ZZ)
                 .add(THREE.multiply(XX));
         s = TWO.multiply(point[1]).multiply(point[2]);
         R = point[1].multiply(s);
@@ -588,7 +592,7 @@ public class GeneralECPoint implements ECPoint {
      */
     @Override
     public Group getGroup() {
-        return E;
+        return curve;
     }
 
     /**
@@ -624,8 +628,16 @@ public class GeneralECPoint implements ECPoint {
     }
 
     @Override
+    public ECSubgroup getSubgroup() {
+        if (this.ecPrimeOrderSubgroup == null) {
+            this.ecPrimeOrderSubgroup = new ECPrimeOrderSubgroup(this.curve, this.order, this);
+        }
+        return null;
+    }
+
+    @Override
     public byte[] toBytes() throws UnsupportedOperationException {
-        byte[] bytes = new byte[this.E.cardFactors.get(0).bitLength() / 8 * 2 + 2];
+        byte[] bytes = new byte[this.curve.sizeOfSubgroups.get(0).bitLength() / 8 * 2 + 2];
         byte[] x = getX().toBytes();
         byte[] y = getY().toBytes();
         System.arraycopy(x, 0, bytes, bytes.length / 2 - x.length, x.length);

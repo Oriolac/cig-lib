@@ -145,14 +145,6 @@ public class ExtensionField implements Ring {
     }
 
     @Override
-    public Optional<? extends ExtensionFieldElement> toElement(final Object polynomial) {
-        if (!(polynomial instanceof Polynomial))
-            return Optional.empty();
-        Polynomial result = (Polynomial) polynomial;
-        return Optional.of(new ExtensionFieldElement(this, result));
-    }
-
-    @Override
     public ExtensionFieldElement getRandomElement() {
         /*
          * if(!isInitialized()) { return new ExtensionFieldElement(this, new

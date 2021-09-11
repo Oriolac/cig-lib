@@ -4,13 +4,16 @@ package cat.udl.cig.structures.ecc;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Objects;
-import java.util.Optional;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.MultiplicativeSubgroup;
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.builder.GroupElementBuilder;
+import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
+import cat.udl.cig.utils.discretelogarithm.BruteForce;
+import org.jetbrains.annotations.NotNull;
+
 
 /**
  * $Id$
@@ -22,20 +25,26 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
     private final GeneralEC EC;
 
-    private final BigInteger cardinality;
+    private final BigInteger orderOfSubgroup;
 
     private final GeneralECPoint generator;
 
-    public ECPrimeOrderSubgroup(final GeneralEC curve,
-            final BigInteger orderOfSubgroup, final GeneralECPoint g) {
-        if (g.pow(orderOfSubgroup).isInfinity()) {
+    public ECPrimeOrderSubgroup(@NotNull final GeneralEC curve,
+                                @NotNull final BigInteger orderOfSubgroup, @NotNull final GeneralECPoint generatorPoint) {
+        if (generatorPoint.pow(orderOfSubgroup).isInfinity()) {
             EC = curve;
-            cardinality = orderOfSubgroup;
-
-            generator = g;
+            this.orderOfSubgroup = orderOfSubgroup;
+            generator = generatorPoint;
         } else {
             throw new ConstructionException("G^orderOfSubgroup must be Infinity");
         }
+    }
+
+    public ECPrimeOrderSubgroup(@NotNull final GeneralEC curve,@NotNull final GeneralECPoint generator) {
+        BigInteger orderOfSubgroup = new BruteForce(generator).algorithm(curve.getMultiplicativeIdentity()).orElseThrow();
+        this.EC = curve;
+        this.generator = generator;
+        this.orderOfSubgroup = orderOfSubgroup;
     }
 
     /**
@@ -43,29 +52,14 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
      */
     @Override
     public BigInteger getSize() {
-        return cardinality;
+        return orderOfSubgroup;
     }
 
     @Override
-    public GroupElementBuilder buildElement() {
-        return null;
+    public ECPointBuilder buildElement() {
+        return new ECPointBuilder(this.EC);
     }
 
-    /**
-     * @see Group#toElement(Object)
-     * @return
-     */
-    @Override
-    public Optional<? extends GroupElement> toElement(final Object k) {
-        Optional<? extends GroupElement> aux = EC.toElement(k);
-        if (aux.isPresent() && aux.get() instanceof GeneralECPoint) {
-            GeneralECPoint point = (GeneralECPoint) aux.get();
-            if (point.pow(cardinality).isInfinity()) {
-                return Optional.of(point);
-            }
-        }
-        return Optional.empty();
-    }
 
     /**
      * @see Group#getRandomElement()
@@ -134,13 +128,13 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
         if (o == null || getClass() != o.getClass()) return false;
         ECPrimeOrderSubgroup that = (ECPrimeOrderSubgroup) o;
         return Objects.equals(EC, that.EC) &&
-                Objects.equals(cardinality, that.cardinality) &&
+                Objects.equals(orderOfSubgroup, that.orderOfSubgroup) &&
                 Objects.equals(generator, that.generator);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(EC, cardinality, generator);
+        return Objects.hash(EC, orderOfSubgroup, generator);
     }
 
     @Override

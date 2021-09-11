@@ -116,8 +116,4 @@ public class ExtensionFieldECTest extends GeneralECTest {
         return BigInteger.valueOf(2450506L);
     }
 
-    @Override
-    protected BigInteger returnPower() {
-        return BigInteger.valueOf(3);
-    }
 }

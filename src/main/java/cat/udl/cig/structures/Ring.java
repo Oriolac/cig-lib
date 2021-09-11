@@ -19,19 +19,6 @@ import java.util.Optional;
 public interface Ring extends Group {
 
     /**
-     * Converts a T \(k\) to a <i>RingElement</i> belonging to {@code this}
-     * <i>Ring</i> \(K\).
-     *
-     * @param k a T to be converted into a <i>RingElement</i> of {@code this}
-     *          <i>Ring</i> \(K\).
-     * @return a new <i>RingElement</i> \(r\), such that
-     * {@code r value = k.mod(this.getSize())} and
-     * {@code r.getRing() = this}.
-     */
-    @Override
-    public Optional<? extends RingElement> toElement(Object k);
-
-    /**
      * Returns a random element \(k\) of {@code this} <i>Ring</i>.
      *
      * @return a random element \(k\) that belongs to {@code this} <i>Ring</i>.

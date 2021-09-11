@@ -105,19 +105,6 @@ public class PrimeField implements Ring {
     }
 
     /**
-     * @see Group#toElement(Object)
-     * @return
-     */
-    @Override
-    public Optional<? extends PrimeFieldElement> toElement(final Object k) {
-        if (!(k instanceof BigInteger)) {
-            return Optional.empty();
-        }
-        BigInteger result = (BigInteger) k;
-        return Optional.of(new PrimeFieldElement(this, result));
-    }
-
-    /**
      * @see Group#getMultiplicativeIdentity()
      */
     @Override
@@ -152,7 +139,7 @@ public class PrimeField implements Ring {
     @Override
     public Optional<? extends PrimeFieldElement> fromBytes(byte[] bytes) {
         BigInteger bigInteger = new BigInteger(bytes);
-        return this.toElement(bigInteger);
+        return this.buildElement().setValue(bigInteger).build();
     }
 
     @Override

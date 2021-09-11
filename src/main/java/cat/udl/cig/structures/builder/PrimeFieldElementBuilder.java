@@ -3,8 +3,8 @@ package cat.udl.cig.structures.builder;
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.math.BigInteger;
 import java.util.Optional;
 
@@ -13,11 +13,11 @@ public class PrimeFieldElementBuilder implements RingElementBuilder {
     private final PrimeField field;
     private BigInteger value;
 
-    public PrimeFieldElementBuilder(@Nonnull PrimeField field) {
+    public PrimeFieldElementBuilder(@NotNull PrimeField field) {
         this.field = field;
     }
 
-    public PrimeFieldElementBuilder setValue(@Nonnull BigInteger value) {
+    public PrimeFieldElementBuilder setValue(@NotNull BigInteger value) {
         this.value = value;
         return this;
     }
