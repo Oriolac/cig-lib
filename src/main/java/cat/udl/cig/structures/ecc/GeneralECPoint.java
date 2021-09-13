@@ -362,8 +362,8 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity()) {
             return this;
         }
-        if (getOrder() != null && k.compareTo(getOrder()) > 0) {
-            k = k.mod(getOrder());
+        if (order != null && k.compareTo(order) > 0) {
+            k = k.mod(order);
         }
         final BigInteger power = k;
         String binaries = power.toString(2);
@@ -383,8 +383,8 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity()) {
             return this;
         }
-        if (getOrder() != null && k.compareTo(getOrder()) > 0) {
-            k = k.mod(getOrder());
+        if (order != null && k.compareTo(order) > 0) {
+            k = k.mod(order);
         }
         final BigInteger times = k;
         RingElement[] me = toProjective(this);
