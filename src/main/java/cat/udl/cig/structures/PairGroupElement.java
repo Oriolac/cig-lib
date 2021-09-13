@@ -5,6 +5,7 @@ import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.exceptions.NotImplementedException;
 import cat.udl.cig.structures.PairGroup;
 import cat.udl.cig.structures.GroupElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -147,5 +148,15 @@ public class PairGroupElement implements RingElement {
                 ", groupElementA=" + groupElementA +
                 ", groupElementB=" + groupElementB +
                 '}';
+    }
+
+    @Override
+    public int compareTo(@NotNull GroupElement o) {
+        if (!(o instanceof PairGroupElement))
+            throw new ArithmeticException("Must be same class");
+        PairGroupElement element = (PairGroupElement) o;
+        if (this.groupElementA.compareTo(element.groupElementA) == 0)
+            return this.groupElementB.compareTo(element.groupElementB);
+        return this.groupElementA.compareTo(element.groupElementA);
     }
 }

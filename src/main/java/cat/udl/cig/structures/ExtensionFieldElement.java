@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.utils.Polynomial;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Models an <i>Extension Field Element</i>. This <i>Extension Field Element</i>
@@ -259,5 +260,10 @@ public class ExtensionFieldElement implements RingElement {
     @Override
     public int hashCode() {
         return Objects.hash(Fpn, polynomial);
+    }
+
+    @Override
+    public int compareTo(@NotNull GroupElement o) {
+        return 0;
     }
 }

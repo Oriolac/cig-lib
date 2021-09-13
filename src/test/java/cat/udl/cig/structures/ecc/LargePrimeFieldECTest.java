@@ -4,12 +4,9 @@ import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
-import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class LargePrimeFieldECTest extends GeneralECTest {
 
@@ -90,19 +87,6 @@ public class LargePrimeFieldECTest extends GeneralECTest {
     @Override
     protected BigInteger returnExpectedOrderOfPoint1() {
         return n;
-    }
-
-    @Test
-    void testOrderOfAPoint() {
-        GeneralECPoint point = returnGeneralECPoint1();
-        BigInteger order = point.getOrder();
-        GeneralECPoint result = point.pow(order);
-        System.out.println("Point = " + point);
-        System.out.println("Order of the point = " + order);
-        System.out.println("Power = " + result);
-        System.out.println("Is the power result infinity? " + result.isInfinity());
-        System.out.println("Op: " + point + " * " + order + " = " + result);
-        assertTrue(result.isInfinity());
     }
 
 }
