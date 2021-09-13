@@ -6,6 +6,7 @@
 
 package cat.udl.cig.utils;
 
+import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.structures.ExtensionField;
 import cat.udl.cig.structures.Group;
@@ -619,6 +620,7 @@ public class Polynomial {
     public static class PolynomialBuilder {
 
         private final HashMap<Integer, PrimeFieldElement> coefficients;
+        private PrimeField field;
 
         public PolynomialBuilder() {
             coefficients = new HashMap<>();
@@ -629,17 +631,25 @@ public class Polynomial {
             return this;
         }
 
+        public PolynomialBuilder setField(PrimeField field) {
+            this.field = field;
+            return this;
+        }
+
         public Polynomial build() {
             Optional<Integer> polynomialDegree = this.coefficients.keySet().stream().max(Comparator.comparingInt(a -> a));
-            if (polynomialDegree.isEmpty())
+            if (polynomialDegree.isEmpty()){
+                if (this.field == null)
+                    throw new ConstructionException("Coefficients must be size > 0 or put the field");
                 return new Polynomial();
-            PrimeField field = coefficients.get(polynomialDegree.get()).getGroup();
+            }
+            this.field = coefficients.get(polynomialDegree.get()).getGroup();
             PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get() + 1];
             Arrays.fill(elements, field.getAdditiveIdentity());
             for (Map.Entry<Integer, PrimeFieldElement> entry : this.coefficients.entrySet()) {
                 elements[entry.getKey()] = entry.getValue();
             }
-            return new Polynomial(new ArrayList<>(Arrays.asList(elements)));
+            return new Polynomial(new ArrayList<>(Arrays.asList(elements)), field);
         }
 
     }

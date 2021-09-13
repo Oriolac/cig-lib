@@ -71,7 +71,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
     @Override
     protected GeneralECPoint returnGeneralECPoint2() {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
-        ExtensionFieldElement x = extensionField.buildElement().setPolynomial(pBuilder.build())
+        ExtensionFieldElement x = extensionField.buildElement().setPolynomial(pBuilder.setField(primeField).build())
                 .build().orElseThrow();
         ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(0, primeField.buildElement().setValue(2206).build().orElseThrow())
