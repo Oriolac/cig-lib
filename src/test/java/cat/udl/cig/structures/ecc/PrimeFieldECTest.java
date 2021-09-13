@@ -9,9 +9,7 @@ import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,6 +91,7 @@ public class PrimeFieldECTest extends GeneralECTest {
         assertTrue(power.isPresent());
         assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()));
         assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(BigInteger.valueOf(1093)));
+        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()).multiply(plusOp).multiply(plusOp));
     }
 
     @Test
@@ -114,4 +113,19 @@ public class PrimeFieldECTest extends GeneralECTest {
         System.out.println(returnGeneralECPoint2());
         assertFalse(result.isInfinity());
     }
+
+    @Test
+    void testSeveralPow() {
+        HashMap<BigInteger, GeneralECPoint> powers = PowersOfPrimeFieldAF.getPowers(curve, builder);
+        for (Map.Entry<BigInteger, GeneralECPoint> entry : powers.entrySet()) {
+            assertEquals(entry.getValue(), returnGeneralECPoint1().pow(entry.getKey()), "P1 * " + entry.getKey() + "!=" + entry.getValue());
+        }
+    }
+
+    @Test
+    void testPow1091() {
+        assertNotEquals(curve.getMultiplicativeIdentity(), returnGeneralECPoint1().pow(BigInteger.valueOf(1091)));
+        assertNotEquals(curve.getMultiplicativeIdentity(), returnGeneralECPoint2().pow(BigInteger.valueOf(1091)));
+    }
+
 }

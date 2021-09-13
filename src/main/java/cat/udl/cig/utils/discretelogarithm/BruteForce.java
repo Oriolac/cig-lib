@@ -22,7 +22,7 @@ public class BruteForce implements LogarithmAlgorithm {
 
     @Override
     public Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException {
-        for (int i = 1092; BigInteger.valueOf(i-1).compareTo(last) < 0; i++) {
+        for (int i = 1; BigInteger.valueOf(i-1).compareTo(last) < 0; i++) {
             BigInteger x = BigInteger.valueOf(i);
             if (alpha.pow(x).equals(beta))
                 return Optional.of(x);
