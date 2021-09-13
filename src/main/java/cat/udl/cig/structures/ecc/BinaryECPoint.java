@@ -303,7 +303,7 @@ public class BinaryECPoint extends GeneralECPoint {
         if (order != null && k.compareTo(order) >= 0) {
             k = k.mod(order);
         }
-        ArrayList<Integer> kbits = NAF(k);
+        ArrayList<Integer> kbits = nonAdjacentForm(k);
         BinaryECPoint Q = (BinaryECPoint) curve.getMultiplicativeIdentity();
         final ECPoint minusP = inverse();
         for (int i = kbits.size() - 1; i >= 0; i--) {

@@ -349,6 +349,31 @@ public class GeneralECPoint implements ECPoint {
      */
     @Override
     public GeneralECPoint pow(BigInteger k) {
+        return peasantRussianPow(k);
+    }
+
+    public GeneralECPoint peasantRussianPow(BigInteger k) {
+        if (isInfinity()) {
+            return this;
+        }
+        if (order != null && k.compareTo(order) > 0) {
+            k = k.mod(order);
+        }
+        final BigInteger power = k;
+        String binaries = power.toString(2);
+        binaries = binaries.substring(1);
+        GeneralECPoint acc = new GeneralECPoint(this);
+        for (char bin : binaries.toCharArray()) {
+            acc = acc.multiply(acc);
+            if (bin == '1') {
+                acc = acc.multiply(this);
+            }
+        }
+        return acc;
+    }
+
+    @NotNull
+    private GeneralECPoint powNAFMethod(BigInteger k) {
         if (isInfinity()) {
             return this;
         }
@@ -361,7 +386,7 @@ public class GeneralECPoint implements ECPoint {
         RingElement[] minusP = toProjective(inverse());
         RingElement[] Q =
                 {ring.ZERO(), ring.ONE(), ring.ZERO()};
-        ArrayList<Integer> kbits = NAF(times);
+        ArrayList<Integer> kbits = nonAdjacentForm(times);
         for (int i = kbits.size() - 1; i >= 0; i--) {
             Q = ProjectiveDouble(Q);
             if (kbits.get(i) > 0) {
@@ -561,7 +586,7 @@ public class GeneralECPoint implements ECPoint {
         return result;
     }
 
-    protected ArrayList<Integer> NAF(BigInteger k) {
+    protected ArrayList<Integer> nonAdjacentForm(BigInteger k) {
         ArrayList<Integer> kBits = new ArrayList<>();
         return getIntegers(k, kBits);
     }
