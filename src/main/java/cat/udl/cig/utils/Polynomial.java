@@ -12,6 +12,7 @@ import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 
+import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -36,6 +37,8 @@ public class Polynomial {
      */
     private int degree;
 
+    private PrimeField field;
+
     /**
      * Creates an empty <i>Polynomial</i>. That is
      * {@code this.coefficients.isEmpty() = true} and {@code this.degree = -1}.
@@ -43,6 +46,7 @@ public class Polynomial {
     public Polynomial() {
         coefficients = new ArrayList<PrimeFieldElement>();
         degree = -1;
+        this.field = null;
     }
 
     /**
@@ -56,13 +60,19 @@ public class Polynomial {
      * @see PrimeFieldElement
      */
     public Polynomial(final ArrayList<PrimeFieldElement> coefficients) {
+        this(coefficients, coefficients.get(0).getGroup());
+    }
+
+    public Polynomial(final ArrayList<PrimeFieldElement> coefficients, PrimeField field) {
         if (coefficients.isEmpty()) {
             this.coefficients = new ArrayList<PrimeFieldElement>();
             degree = -1;
+            this.field = null;
         } else {
             this.coefficients =
                     new ArrayList<>(coefficients);
             degree = this.coefficients.size() - 1;
+            this.field = field;
             checkDegree();
         }
     }
@@ -78,6 +88,7 @@ public class Polynomial {
             coefficients =
                     new ArrayList<PrimeFieldElement>(poly.coefficients);
             degree = poly.degree;
+            this.field = poly.field;
         }
     }
 
@@ -282,7 +293,7 @@ public class Polynomial {
      */
     public Polynomial pow(BigInteger k, final Polynomial modulus) {
         // k es pot reduir mòdul (p ^ n - 1)
-        BigInteger p = coefficients.get(0).getGroup().getSize();
+        BigInteger p = field.getSize();
         k = k.mod(p.pow(modulus.degree).subtract(BigInteger.ONE));
 
         ArrayList<PrimeFieldElement> rcoefficients =

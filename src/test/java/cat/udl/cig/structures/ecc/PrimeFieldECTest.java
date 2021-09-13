@@ -126,4 +126,9 @@ public class PrimeFieldECTest extends GeneralECTest {
         assertNotEquals(curve.getMultiplicativeIdentity(), returnGeneralECPoint2().pow(BigInteger.valueOf(1091)));
     }
 
+    @Test
+    void testOrderOfAPoint() {
+
+    }
+
 }

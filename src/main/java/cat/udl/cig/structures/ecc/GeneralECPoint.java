@@ -5,6 +5,7 @@ import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
+import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -114,6 +115,9 @@ public class GeneralECPoint implements ECPoint {
         y = iy;
         isInfinity = false;
         order = iOrder;
+        if (curve.validOrder(ix, iy).isEmpty()) {
+            throw new ConstructionException("The point has not valid order.");
+        }
     }
 
     private GeneralECPoint(@NotNull final GeneralEC iE, @NotNull final RingElement ix,
@@ -124,6 +128,9 @@ public class GeneralECPoint implements ECPoint {
             x = ix;
             y = iy;
             order = iOrder;
+            if (curve.validOrder(ix, iy).isEmpty()) {
+                throw new ConstructionException("The point has not valid order.");
+            }
             isInfinity = false;
         } else if (!curve.getRing().containsElement(ix) || !curve.getRing().containsElement(iy)) {
             throw new ConstructionException("The point is not constructed on the correct ring ecc.");
@@ -355,8 +362,8 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity()) {
             return this;
         }
-        if (order != null && k.compareTo(order) > 0) {
-            k = k.mod(order);
+        if (getOrder() != null && k.compareTo(getOrder()) > 0) {
+            k = k.mod(getOrder());
         }
         final BigInteger power = k;
         String binaries = power.toString(2);
@@ -376,8 +383,8 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity()) {
             return this;
         }
-        if (order != null && k.compareTo(order) > 0) {
-            k = k.mod(order);
+        if (getOrder() != null && k.compareTo(getOrder()) > 0) {
+            k = k.mod(getOrder());
         }
         final BigInteger times = k;
         RingElement[] me = toProjective(this);
@@ -637,6 +644,8 @@ public class GeneralECPoint implements ECPoint {
      */
     @Override
     public BigInteger getOrder() {
+        if (order == null)
+            order = new BruteForce(this).algorithm(this.curve.getMultiplicativeIdentity()).orElseThrow();
         return order;
     }
 
@@ -651,7 +660,7 @@ public class GeneralECPoint implements ECPoint {
     @Override
     public ECSubgroup getSubgroup() {
         if (this.ecPrimeOrderSubgroup == null) {
-            this.ecPrimeOrderSubgroup = new ECPrimeOrderSubgroup(this.curve, this.order, this);
+            this.ecPrimeOrderSubgroup = new ECPrimeOrderSubgroup(this.curve, getOrder(), this);
         }
         return null;
     }
