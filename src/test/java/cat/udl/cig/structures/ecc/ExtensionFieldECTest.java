@@ -61,8 +61,8 @@ public class ExtensionFieldECTest extends GeneralECTest {
                         .build())
                 .build().orElseThrow();
         ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
-                pBuilder.addTerm(1, primeField.buildElement().setValue(1607).build().orElseThrow())
-                        .addTerm(0, primeField.buildElement().setValue(1762).build().orElseThrow())
+                pBuilder.addTerm(1, primeField.buildElement().setValue(606).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(451).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
         return new GeneralECPoint(curve, x, y);

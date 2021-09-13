@@ -7,13 +7,10 @@
 package cat.udl.cig.utils;
 
 import cat.udl.cig.exceptions.ConstructionException;
-import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.structures.ExtensionField;
-import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 
-import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
@@ -39,14 +36,6 @@ public class Polynomial {
     private int degree;
 
     private PrimeField field;
-
-    /**
-     * Creates an empty <i>Polynomial</i>. That is
-     * {@code this.coefficients.isEmpty() = true} and {@code this.degree = -1}.
-     */
-    public Polynomial() {
-        this((PrimeField) null);
-    }
 
     /**
      * Creates a new <i>Polynomial</i> with the specified {@code coefficients}.
@@ -83,18 +72,18 @@ public class Polynomial {
      * @param poly the <i>Polynomial</i> to be copied.
      */
     public Polynomial(final Polynomial poly) {
-        if (poly.degree >= 0) {
-            coefficients =
-                    new ArrayList<PrimeFieldElement>(poly.coefficients);
-            degree = poly.degree;
-            this.field = poly.field;
-        }
+        this(poly.coefficients, poly.field, poly.degree);
     }
 
     public Polynomial(PrimeField field) {
-        coefficients = new ArrayList<PrimeFieldElement>();
-        degree = -1;
+        this(new ArrayList<>(), field, -1);
+    }
+
+    public Polynomial(ArrayList<PrimeFieldElement> coefficients, PrimeField field, int degree) {
+        this.coefficients = coefficients;
         this.field = field;
+        this.degree = degree;
+        this.checkDegree();
     }
 
     /**
@@ -131,7 +120,7 @@ public class Polynomial {
      */
     public Polynomial add(final Polynomial q) {
         Polynomial p1, p2;
-        Polynomial r = new Polynomial();
+        ArrayList<PrimeFieldElement> coefficients = new ArrayList<>();
         if (degree < q.degree) {
             p1 = this;
             p2 = q;
@@ -140,23 +129,17 @@ public class Polynomial {
             p2 = this;
         }
 
-        try {
-            for (int i = 0; i <= p1.degree; i++) {
-                r.coefficients.add(p1.coefficients.get(i).add(
-                        p2.coefficients.get(i)));
-            }
-
-            for (int i = p1.degree + 1; i <= p2.degree; i++) {
-                r.coefficients.add(new PrimeFieldElement(p2.coefficients
-                        .get(i)));
-            }
-
-            r.degree = p2.degree;
-            r.checkDegree();
-        } catch (IncorrectRingElementException e) {
+        for (int i = 0; i <= p1.degree; i++) {
+            coefficients.add(p1.coefficients.get(i).add(
+                    p2.coefficients.get(i)));
         }
 
-        return r;
+        for (int i = p1.degree + 1; i <= p2.degree; i++) {
+            coefficients.add(new PrimeFieldElement(p2.coefficients
+                    .get(i)));
+        }
+
+        return new Polynomial(coefficients, this.field, p2.degree);
     }
 
     /**
@@ -176,15 +159,11 @@ public class Polynomial {
      * @return a new <i>Polynomial</i> \(r\), where \(r = -p\).
      */
     public Polynomial opposite() {
-        Polynomial r = new Polynomial();
-
+        ArrayList<PrimeFieldElement> coefficients = new ArrayList<>();
         for (int i = 0; i <= degree; i++) {
-            r.coefficients.add(coefficients.get(i).opposite());
+            coefficients.add(coefficients.get(i).opposite());
         }
-
-        r.degree = degree;
-
-        return r;
+        return new Polynomial(coefficients, this.field, degree);
     }
 
     /**
@@ -200,7 +179,7 @@ public class Polynomial {
      */
     public Polynomial multiply(final Polynomial q, final Polynomial modulus) {
         if (!belongToSameBaseRing(q) || !belongToSameBaseRing(modulus)) {
-            return new Polynomial();
+            throw new ArithmeticException("Polynomial does not belong to the ring");
         }
         return euclideanMultiplication(q).euclideanDivision(modulus, this.field)
                 .getValue();
@@ -219,7 +198,7 @@ public class Polynomial {
      */
     public Polynomial divide(final Polynomial q, final Polynomial modulus) {
         if (!belongToSameBaseRing(q) || !belongToSameBaseRing(modulus)) {
-            return new Polynomial();
+            throw new ArithmeticException("Polynomial does not belong to the ring");
         }
         return multiply(q.inverse(modulus), modulus);
     }
@@ -241,7 +220,7 @@ public class Polynomial {
      */
     public Polynomial inverse(final Polynomial modulus) {
         if (!belongToSameBaseRing(modulus)) {
-            return new Polynomial();
+            throw new ArithmeticException("Polynomial does not belong to the ring");
         }
         // Extended Euclidean Algorithm
         ArrayList<PrimeFieldElement> tcoefficients =
@@ -283,7 +262,7 @@ public class Polynomial {
             invR.checkDegree();
             return invR;
         }
-        return new Polynomial();
+        return new Polynomial(this.field);
     }
 
     /**
@@ -306,15 +285,15 @@ public class Polynomial {
         rcoefficients.add(new PrimeFieldElement(coefficients.get(0)
                 .getGroup(), BigInteger.ONE));
         Polynomial r = new Polynomial(rcoefficients);
-        Polynomial tmp = this;
+        Polynomial polynomialTmp = this;
 
         String binary = k.toString(2);
         int nbits = binary.length();
         for (int i = nbits - 1; i >= 0; i--) {
             if (binary.charAt(i) == '1') {
-                r = r.multiply(tmp, modulus);
+                r = r.multiply(polynomialTmp, modulus);
             }
-            tmp = tmp.multiply(tmp, modulus);
+            polynomialTmp = polynomialTmp.multiply(polynomialTmp, modulus);
         }
         r.checkDegree();
         return r;
@@ -331,7 +310,6 @@ public class Polynomial {
      */
     public Polynomial squareRoot(final Polynomial modulus) {
         // TODO: in need to be checkd. The computations are too slow!
-        Polynomial root = new Polynomial();
         final BigInteger TWO = BigInteger.valueOf(2);
         if (isSquare(modulus)) {
             BigInteger p =
@@ -384,10 +362,11 @@ public class Polynomial {
                 a = a.pow(tmpE, modulus);
             }
             tmpE = s.add(BigInteger.ONE).divide(TWO);
-            root = pow(tmpE, modulus).multiply(h, modulus);
+            Polynomial root = pow(tmpE, modulus).multiply(h, modulus);
             root.checkDegree();
+            return root;
         }
-        return root;
+        throw new ArithmeticException("Is not quadratic");
     }
 
     /**
@@ -417,28 +396,21 @@ public class Polynomial {
      * @return a new <i>Polynomial</i> \(r\), where \(r = p \cdot q\).
      */
     public Polynomial euclideanMultiplication(final Polynomial q) {
-        Polynomial r;
-        try {
-            r = new Polynomial();
-
-            r.degree = degree + q.degree;
-            PrimeField field = coefficients.get(0).getGroup();
-            for (int i = 0; i <= r.degree; i++) {
-                r.coefficients.add(new PrimeFieldElement(field, BigInteger.ZERO));
-            }
-
-            // Multiply polynomials
-            for (int i = 0; i <= degree; i++) {
-                for (int j = 0; j <= q.degree; j++) {
-                    PrimeFieldElement mult = coefficients.get(i).multiply(q.coefficients.get(j));
-                    r.coefficients.set(i + j, r.coefficients.get(i + j).add(mult));
-                }
-            }
-            r.checkDegree();
-        } catch (IncorrectRingElementException e) {
-            r = new Polynomial();
+        int newdegree = this.degree + q.degree;
+        ArrayList<PrimeFieldElement> newCoeff = new ArrayList<>();
+        PrimeField field = coefficients.get(0).getGroup();
+        for (int i = 0; i <= newdegree; i++) {
+            newCoeff.add(new PrimeFieldElement(field, BigInteger.ZERO));
         }
-        return r;
+
+        // Multiply polynomials
+        for (int i = 0; i <= degree; i++) {
+            for (int j = 0; j <= q.degree; j++) {
+                PrimeFieldElement mult = newCoeff.get(i).multiply(q.coefficients.get(j));
+                newCoeff.set(i + j, newCoeff.get(i + j).add(mult));
+            }
+        }
+        return new Polynomial(newCoeff, this.field, newdegree);
     }
 
     /**
@@ -457,10 +429,7 @@ public class Polynomial {
         if ((degree > -1 && q.degree > -1 && !coefficients.get(0)
                 .getGroup().equals(q.coefficients.get(0).getGroup()))
                 || degree < 0 || q.degree < 0) {
-            result =
-                    new SimpleEntry<Polynomial, Polynomial>(new Polynomial(),
-                            new Polynomial());
-            return result;
+            throw new ArithmeticException();
         }
 
         if (q.degree > degree) {
@@ -483,38 +452,31 @@ public class Polynomial {
                         coefficients.get(0).getGroup(), BigInteger.ZERO));
             }
 
-            try {
-                Polynomial curQuotient = new Polynomial();
-                while (remainder.degree >= q.degree
-                        && !remainder.isZeroPolynomial()) {
-                    curQuotient.degree = remainder.degree - q.degree;
-                    curQuotient.coefficients.clear();
-                    for (int i = 0; i <= curQuotient.degree; i++) {
-                        curQuotient.coefficients
-                                .add(new PrimeFieldElement(coefficients.get(0)
-                                        .getGroup(), BigInteger.ZERO));
-                    }
-                    quotient.coefficients.set(curQuotient.degree,
-                            remainder.coefficients.get(remainder.degree)
-                                    .divide(q.coefficients.get(q.degree)));
-                    curQuotient.coefficients.set(curQuotient.degree,
-                            quotient.coefficients.get(curQuotient.degree));
-
-                    remainder =
-                            remainder.subtract(q
-                                    .euclideanMultiplication(curQuotient));
+            while (remainder.degree >= q.degree
+                    && !remainder.isZeroPolynomial()) {
+                int newDegree = remainder.degree - q.degree;
+                ArrayList<PrimeFieldElement> newCoefficients = new ArrayList<>();
+                for (int i = 0; i <= newDegree; i++) {
+                    newCoefficients
+                            .add(new PrimeFieldElement(coefficients.get(0)
+                                    .getGroup(), BigInteger.ZERO));
                 }
-
-                quotient.checkDegree();
-                remainder.checkDegree();
-                result =
-                        new SimpleEntry<Polynomial, Polynomial>(quotient,
-                                remainder);
-            } catch (IncorrectRingElementException e) {
-                result =
-                        new SimpleEntry<Polynomial, Polynomial>(
-                                new Polynomial(), new Polynomial());
+                quotient.coefficients.set(newDegree,
+                        remainder.coefficients.get(remainder.degree)
+                                .divide(q.coefficients.get(q.degree)));
+                newCoefficients.set(newDegree,
+                        quotient.coefficients.get(newDegree));
+                Polynomial curQuotient = new Polynomial(coefficients, this.field, degree);
+                remainder =
+                        remainder.subtract(q
+                                .euclideanMultiplication(curQuotient));
             }
+
+            quotient.checkDegree();
+            remainder.checkDegree();
+            result =
+                    new SimpleEntry<Polynomial, Polynomial>(quotient,
+                            remainder);
         }
         return result;
     }
@@ -638,16 +600,16 @@ public class Polynomial {
 
         public Polynomial build() {
             Optional<Integer> polynomialDegree = this.coefficients.keySet().stream().max(Comparator.comparingInt(a -> a));
-            if (polynomialDegree.isEmpty()){
+            if (polynomialDegree.isEmpty()) {
                 if (this.field == null)
                     throw new ConstructionException("Coefficients must be size > 0 or put the field");
-                return new Polynomial();
+                return new Polynomial(this.field);
             }
-            this.field = coefficients.get(polynomialDegree.get()).getGroup();
-            PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get() + 1];
-            Arrays.fill(elements, field.getAdditiveIdentity());
-            for (Map.Entry<Integer, PrimeFieldElement> entry : this.coefficients.entrySet()) {
-                elements[entry.getKey()] = entry.getValue();
+                this.field = coefficients.get(polynomialDegree.get()).getGroup();
+                PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get() + 1];
+                Arrays.fill(elements, field.getAdditiveIdentity());
+                for (Map.Entry<Integer, PrimeFieldElement> entry : this.coefficients.entrySet()) {
+                    elements[entry.getKey()] = entry.getValue();
             }
             return new Polynomial(new ArrayList<>(Arrays.asList(elements)), field);
         }
