@@ -117,7 +117,7 @@ public class GeneralEC implements EC {
 
     @Override
     public boolean isOnCurve(final RingElement ix, final RingElement iy) {
-        return ix.getGroup().equals(ring) && !ix.getGroup().equals(iy.getGroup()) && isOnCurveAux(ix, iy);
+        return ix.getGroup().equals(ring) && iy.getGroup().equals(ring) && isOnCurveAux(ix, iy);
 
     }
 

@@ -105,7 +105,7 @@ public class GeneralECPoint implements ECPoint {
      *               initialized to ONE.
      */
     protected GeneralECPoint(@NotNull final GeneralEC curve, @NotNull final RingElement ix,
-                          @NotNull final RingElement iy, @NotNull final BigInteger iOrder) {
+                             @NotNull final RingElement iy, @NotNull final BigInteger iOrder) {
         this.curve = curve;
         if (!curve.getRing().containsElement(ix) || !curve.getRing().containsElement(iy)) {
             throw new ConstructionException("The point is not constructed on the correct ring ecc.");
@@ -117,21 +117,23 @@ public class GeneralECPoint implements ECPoint {
     }
 
     private GeneralECPoint(@NotNull final GeneralEC iE, @NotNull final RingElement ix,
-                             @NotNull final RingElement iy, @NotNull final BigInteger iOrder,
-                             final boolean iIsInfinity) {
+                           @NotNull final RingElement iy, @NotNull final BigInteger iOrder,
+                           final boolean iIsInfinity) {
         curve = iE;
         if (!iIsInfinity) {
             x = ix;
             y = iy;
             order = iOrder;
             isInfinity = false;
+        } else if (!curve.getRing().containsElement(ix) || !curve.getRing().containsElement(iy)) {
+            throw new ConstructionException("The point is not constructed on the correct ring ecc.");
         } else {
-            // Infinity point (0:1:0)
             x = curve.getRing().getAdditiveIdentity();
             y = curve.getRing().getMultiplicativeIdentity();
             isInfinity = true;
             order = BigInteger.ONE;
         }
+
     }
 
     /**
@@ -151,18 +153,13 @@ public class GeneralECPoint implements ECPoint {
                           final RingElement iy) {
         curve = iE;
         RingElement elem = curve.getRing().getMultiplicativeIdentity();
-        if (ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem) && curve.isOnCurve(ix, iy)) {
-            x = ix;
-            y = iy;
-            isInfinity = false;
-            order = null;
-        } else { // Infinity point (0:1:0)
-            //System.out.println("Mal generador");
-            x = curve.getRing().getAdditiveIdentity();
-            y = curve.getRing().getMultiplicativeIdentity();
-            isInfinity = true;
-            order = BigInteger.ONE;
+        if (!(ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem) && curve.isOnCurve(ix, iy))) {
+            throw new ConstructionException("The point does not belong to the curve.");
         }
+        x = ix;
+        y = iy;
+        isInfinity = false;
+        order = null;
     }
 
     /**
@@ -229,7 +226,7 @@ public class GeneralECPoint implements ECPoint {
     }
 
     private Optional<GeneralECPoint> fromCoordinates(RingElement xCoord, RingElement yCoord) {
-        GeneralECPoint point = new GeneralECPoint(curve, xCoord, yCoord, order, false);
+        GeneralECPoint point = new GeneralECPoint(curve, xCoord, yCoord);
         if (this.curve.isOnCurve(point))
             return Optional.of(point);
         return Optional.empty();
@@ -339,7 +336,7 @@ public class GeneralECPoint implements ECPoint {
         if (isInfinity) {
             return this;
         }
-        return new GeneralECPoint(getCurve(), getX(), getY().opposite(), order, false);
+        return new GeneralECPoint(getCurve(), getX(), getY().opposite());
     }
 
     /**

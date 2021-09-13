@@ -120,8 +120,8 @@ abstract class GeneralECTest {
     @Test
     void testIsElementOnCurve() {
         boolean elem1 = generalEC.isOnCurve(point1);
-        boolean elem2 = generalEC.isOnCurve(point2);
         assertEquals(point1.getCurve().equals(generalEC), elem1);
+        boolean elem2 = generalEC.isOnCurve(point2);
         assertEquals(point2.getCurve().equals(generalEC), elem2);
     }
 
@@ -129,8 +129,8 @@ abstract class GeneralECTest {
     void testAreCoordenatesOnCurve() {
         boolean elem1 = generalEC.isOnCurve(xCoordinateFromPoint1, yCoordinateFromPoint1);
         boolean elem2 = generalEC.isOnCurve(xCoordinateFromPoint2, yCoordinateFromPoint2);
-        boolean cond1 = xCoordinateFromPoint1.getGroup().equals(ring) && !xCoordinateFromPoint1.getGroup().equals(yCoordinateFromPoint1.getGroup());
-        boolean cond2 = xCoordinateFromPoint2.getGroup().equals(ring) && !xCoordinateFromPoint2.getGroup().equals(yCoordinateFromPoint2.getGroup());
+        boolean cond1 = xCoordinateFromPoint1.getGroup().equals(ring) && yCoordinateFromPoint1.getGroup().equals(ring);
+        boolean cond2 = xCoordinateFromPoint2.getGroup().equals(ring) && yCoordinateFromPoint2.getGroup().equals(ring);
         assertEquals(cond1, elem1);
         assertEquals(cond2, elem2);
     }

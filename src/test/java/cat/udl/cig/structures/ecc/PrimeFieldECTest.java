@@ -8,14 +8,13 @@ import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
 import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.text.html.Option;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class PrimeFieldECTest extends GeneralECTest {
 
@@ -53,15 +52,17 @@ public class PrimeFieldECTest extends GeneralECTest {
 
     @Override
     protected GeneralECPoint returnGeneralECPoint2() {
-        return returnGeneralECPoint1().pow(BigInteger.TWO);
+        GeneralECPoint point2 = returnGeneralECPoint1().pow(BigInteger.TWO);
+        assertEquals(new GeneralECPoint(curve, builder.setValue(821).build().orElseThrow(), builder.setValue(1341).build().orElseThrow()), point2);
+        return point2;
     }
 
     @Override
     protected GeneralECPoint returnExpectedResultPlusOperation() {
-        String point1Str = "297";
-        BigInteger x = new BigInteger(point1Str);
-        String point2Str = "968";
-        BigInteger y = new BigInteger(point2Str);
+        String xStr = "297";
+        BigInteger x = new BigInteger(xStr);
+        String yStr = "968";
+        BigInteger y = new BigInteger(yStr);
         return new GeneralECPoint(curve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
 
@@ -92,7 +93,7 @@ public class PrimeFieldECTest extends GeneralECTest {
         Optional<BigInteger> power = new BruteForce(plusOp).algorithm(generalEC.getMultiplicativeIdentity());
         assertTrue(power.isPresent());
         assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()));
-        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get().add(BigInteger.TWO)));
-        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()).multiply(plusOp).multiply(plusOp));
+        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(BigInteger.valueOf(1093)));
     }
+
 }
