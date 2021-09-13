@@ -44,9 +44,7 @@ public class Polynomial {
      * {@code this.coefficients.isEmpty() = true} and {@code this.degree = -1}.
      */
     public Polynomial() {
-        coefficients = new ArrayList<PrimeFieldElement>();
-        degree = -1;
-        this.field = null;
+        this((PrimeField) null);
     }
 
     /**
@@ -90,6 +88,12 @@ public class Polynomial {
             degree = poly.degree;
             this.field = poly.field;
         }
+    }
+
+    public Polynomial(PrimeField field) {
+        coefficients = new ArrayList<PrimeFieldElement>();
+        degree = -1;
+        this.field = field;
     }
 
     /**
@@ -197,7 +201,7 @@ public class Polynomial {
         if (!belongToSameBaseRing(q) || !belongToSameBaseRing(modulus)) {
             return new Polynomial();
         }
-        return euclideanMultiplication(q).euclideanDivision(modulus)
+        return euclideanMultiplication(q).euclideanDivision(modulus, this.field)
                 .getValue();
     }
 
@@ -259,7 +263,7 @@ public class Polynomial {
         Polynomial quotient, tmp;
         SimpleEntry<Polynomial, Polynomial> divResult;
         while (newr.degree != -1 && !newr.isZeroPolynomial()) {
-            divResult = r.euclideanDivision(newr);
+            divResult = r.euclideanDivision(newr, this.field);
             quotient = divResult.getKey();
 
             r = newr;
@@ -444,9 +448,9 @@ public class Polynomial {
      * @return a new <i>Polynomial</i> \(r\), where \(r = p \cdot q\).
      */
     public SimpleEntry<Polynomial, Polynomial> euclideanDivision(
-            final Polynomial q) {
-        Polynomial quotient = new Polynomial();
-        Polynomial remainder = new Polynomial();
+            final Polynomial q, PrimeField field) {
+        Polynomial quotient = new Polynomial(field);
+        Polynomial remainder = new Polynomial(field);
         SimpleEntry<Polynomial, Polynomial> result;
 
         if ((degree > -1 && q.degree > -1 && !coefficients.get(0)
@@ -606,6 +610,10 @@ public class Polynomial {
         int result = coefficients.hashCode();
         result = 31 * result + degree;
         return result;
+    }
+
+    public PrimeField getField() {
+        return field;
     }
 
     public static class PolynomialBuilder {

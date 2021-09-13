@@ -28,27 +28,27 @@ class ExtensionFieldTest extends RingTemplateTest {
                 .addTerm(4, new PrimeFieldElement(primeField, BigInteger.valueOf(1)));
         extensionField = new ExtensionField(p, m.intValue(), polyBuilder.build());
         ring = extensionField;
-        setUpOperandA(primeField, extensionField);
-        setUpOperandB(primeField, extensionField);
+        operandA = setUpOperandA(primeField, extensionField);
+        operandB = setUpOperandB(primeField, extensionField);
         power = BigInteger.valueOf(3);
     }
 
-    private void setUpOperandA(PrimeField field, ExtensionField extensionField) {
+    private ExtensionFieldElement setUpOperandA(PrimeField field, ExtensionField extensionField) {
         Polynomial polynomialA = new Polynomial.PolynomialBuilder()
                 .addTerm(0, new PrimeFieldElement(field, BigInteger.valueOf(2)))
                 .addTerm(1, new PrimeFieldElement(field, BigInteger.valueOf(1)))
-                .addTerm(3, new PrimeFieldElement(field, BigInteger.valueOf(2))).build();
-        operandA = new ExtensionFieldElement(extensionField, polynomialA);
+                .addTerm(3, new PrimeFieldElement(field, BigInteger.valueOf(2)))
+                .build();
+        return new ExtensionFieldElement(extensionField, polynomialA);
     }
 
-    private void setUpOperandB(PrimeField field, ExtensionField extensionField) {
+    private ExtensionFieldElement setUpOperandB(PrimeField field, ExtensionField extensionField) {
         Polynomial polynomialA = new Polynomial.PolynomialBuilder()
                 .addTerm(0, new PrimeFieldElement(field, BigInteger.ONE))
                 .addTerm(2, new PrimeFieldElement(field, BigInteger.TWO))
                 .addTerm(3, new PrimeFieldElement(field, BigInteger.ONE))
                 .build();
-        ArrayList<PrimeFieldElement> coefficients = new ArrayList<>(5);
-        operandB = new ExtensionFieldElement(extensionField, polynomialA);
+        return new ExtensionFieldElement(extensionField, polynomialA);
     }
 
     @Test

@@ -53,7 +53,7 @@ public class ExtensionFieldElement implements RingElement {
         // if(Fpn != null && Fpn.isInitialized() && polynomial != null) {
         this.Fpn = Fpn;
         this.polynomial =
-                polynomial.euclideanDivision(Fpn.getReducingPolynomial())
+                polynomial.euclideanDivision(Fpn.getReducingPolynomial(), polynomial.getField())
                 .getValue();
         /*
          * } else { this.Fpn = null; this.polynomial = null; }
