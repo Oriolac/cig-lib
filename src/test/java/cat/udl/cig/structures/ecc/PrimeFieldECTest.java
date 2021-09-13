@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PrimeFieldECTest extends GeneralECTest {
 
@@ -96,4 +95,23 @@ public class PrimeFieldECTest extends GeneralECTest {
         assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(BigInteger.valueOf(1093)));
     }
 
+    @Test
+    void testP1MultNIsInfinity() {
+        GeneralECPoint result = returnGeneralECPoint1().pow(BigInteger.valueOf(1093));
+        assertTrue(result.isInfinity());
+    }
+
+    @Test
+    void testP2MultNIsInfinity() {
+        GeneralECPoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093));
+        assertTrue(result.isInfinity());
+    }
+
+    @Test
+    void testP2MultNMinus2IsNotIfinity() {
+        GeneralECPoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093-2));
+        System.out.println(result);
+        System.out.println(returnGeneralECPoint2());
+        assertFalse(result.isInfinity());
+    }
 }
