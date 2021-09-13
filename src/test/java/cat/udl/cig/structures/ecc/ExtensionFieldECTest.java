@@ -3,6 +3,7 @@ package cat.udl.cig.structures.ecc;
 import cat.udl.cig.structures.*;
 import cat.udl.cig.structures.builder.ExtensionFieldElementBuilder;
 import cat.udl.cig.utils.Polynomial;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         primeField = new PrimeField(p);
         ExtensionFieldElementBuilder builder = extensionField.buildElement();
-        ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(4901012)));
+        ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(4901312)));
         curve = new GeneralEC(
                 extensionField,
                 builder.setPolynomial(
@@ -61,7 +62,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
                 .build().orElseThrow();
         ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(1, primeField.buildElement().setValue(1607).build().orElseThrow())
-                        .addTerm(0, primeField.buildElement().setValue(451).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(1762).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
         return new GeneralECPoint(curve, x, y);
@@ -73,7 +74,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(pBuilder.build())
                 .build().orElseThrow();
         ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
-                pBuilder.addTerm(0, primeField.buildElement().setValue(7).build().orElseThrow())
+                pBuilder.addTerm(0, primeField.buildElement().setValue(2206).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
         return new GeneralECPoint(curve, x, y);
@@ -83,29 +84,29 @@ public class ExtensionFieldECTest extends GeneralECTest {
     protected GeneralECPoint returnExpectedResultPlusOperation() {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
-                pBuilder.addTerm(1, primeField.buildElement().setValue(1290).build().orElseThrow())
+                pBuilder.addTerm(1, primeField.buildElement().setValue(921).build().orElseThrow())
                         .addTerm(0, primeField.buildElement().setValue(895).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
         ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
-                pBuilder.addTerm(1, primeField.buildElement().setValue(2142).build().orElseThrow())
-                        .addTerm(0, primeField.buildElement().setValue(1628).build().orElseThrow())
+                pBuilder.addTerm(1, primeField.buildElement().setValue(930).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(1924).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
         return new GeneralECPoint(curve, x, y);
     }
 
     @Override
-    protected GeneralECPoint returnsExpectedElementMultByNonZeroScalar() {
+    protected GeneralECPoint returnsExpectedElementMultByTHREE() {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
-                pBuilder.addTerm(1, primeField.buildElement().setValue(1023).build().orElseThrow())
-                        .addTerm(0, primeField.buildElement().setValue(281).build().orElseThrow())
+                pBuilder.addTerm(1, primeField.buildElement().setValue(1667).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(1802).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
         ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
-                pBuilder.addTerm(1, primeField.buildElement().setValue(2190).build().orElseThrow())
-                        .addTerm(0, primeField.buildElement().setValue(1184).build().orElseThrow())
+                pBuilder.addTerm(1, primeField.buildElement().setValue(1908).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(1047).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
         return new GeneralECPoint(curve, x, y);
@@ -113,7 +114,12 @@ public class ExtensionFieldECTest extends GeneralECTest {
 
     @Override
     protected BigInteger returnExpectedOrderOfPoint1() {
-        return BigInteger.valueOf(2450506L);
+        return BigInteger.valueOf(306332);
     }
 
+
+    @Test
+    void testPolynomial() {
+        System.out.println(extensionField.getReducingPolynomial());
+    }
 }

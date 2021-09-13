@@ -76,7 +76,7 @@ public class LargePrimeFieldECTest extends GeneralECTest {
     }
 
     @Override
-    protected GeneralECPoint returnsExpectedElementMultByNonZeroScalar() {
+    protected GeneralECPoint returnsExpectedElementMultByTHREE() {
         String point1Str = "2915109630280678890720206779706963455590627465886103135194";
         BigInteger x = new BigInteger(point1Str);
         String point2Str = "2946626711558792003980654088990112021985937607003425539581";

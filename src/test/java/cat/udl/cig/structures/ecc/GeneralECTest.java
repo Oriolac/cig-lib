@@ -45,7 +45,7 @@ abstract class GeneralECTest {
         xCoordinateFromPoint2 = point2.x;
         yCoordinateFromPoint2 = point2.y;
         expectedResultPlusOperation = returnExpectedResultPlusOperation();
-        expectedResultMultByZeroNonScalarOperation = returnsExpectedElementMultByNonZeroScalar();
+        expectedResultMultByZeroNonScalarOperation = returnsExpectedElementMultByTHREE();
         powerThree = BigInteger.valueOf(3);
         powerTwo = BigInteger.valueOf(2);
         expectedOrderPoint1 = returnExpectedOrderOfPoint1();
@@ -63,7 +63,7 @@ abstract class GeneralECTest {
 
     protected abstract GeneralECPoint returnExpectedResultPlusOperation();
 
-    protected abstract GeneralECPoint returnsExpectedElementMultByNonZeroScalar();
+    protected abstract GeneralECPoint returnsExpectedElementMultByTHREE();
 
     protected abstract BigInteger returnExpectedOrderOfPoint1();
 

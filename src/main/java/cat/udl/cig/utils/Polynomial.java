@@ -61,7 +61,7 @@ public class Polynomial {
             degree = -1;
         } else {
             this.coefficients =
-                    new ArrayList<PrimeFieldElement>(coefficients);
+                    new ArrayList<>(coefficients);
             degree = this.coefficients.size() - 1;
             checkDegree();
         }
@@ -611,7 +611,7 @@ public class Polynomial {
         }
 
         public Polynomial build() {
-            Optional<Integer> polynomialDegree = this.coefficients.keySet().stream().max((a, b) -> a - b);
+            Optional<Integer> polynomialDegree = this.coefficients.keySet().stream().max(Comparator.comparingInt(a -> a));
             if (polynomialDegree.isEmpty())
                 return new Polynomial();
             PrimeField field = coefficients.get(polynomialDegree.get()).getGroup();

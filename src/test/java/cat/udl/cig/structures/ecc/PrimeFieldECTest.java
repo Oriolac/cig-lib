@@ -64,7 +64,7 @@ public class PrimeFieldECTest extends GeneralECTest {
     }
 
     @Override
-    protected GeneralECPoint returnsExpectedElementMultByNonZeroScalar() {
+    protected GeneralECPoint returnsExpectedElementMultByTHREE() {
         String point1Str = "297";
         BigInteger x = new BigInteger(point1Str);
         String point2Str = "968";

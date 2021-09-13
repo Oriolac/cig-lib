@@ -205,16 +205,7 @@ public class ExtensionFieldElement implements RingElement {
 
     @Override
     public ExtensionFieldElement pow(final BigInteger k) {// throws
-        // IncorrectRingElementException
-        // {
-        /*
-         * if(!isInitialized()) { throw new
-         * IncorrectRingElementException("FiniteFieldElement not " +
-         * "initialized"); }
-         */
-
-        return new ExtensionFieldElement(Fpn, polynomial.pow(k,
-            Fpn.getReducingPolynomial()));
+        return new ExtensionFieldElement(Fpn, polynomial.pow(k, Fpn.getReducingPolynomial()));
     }
 
     @Override

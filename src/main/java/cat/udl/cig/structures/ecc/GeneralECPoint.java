@@ -152,8 +152,7 @@ public class GeneralECPoint implements ECPoint {
     public GeneralECPoint(final GeneralEC iE, final RingElement ix,
                           final RingElement iy) {
         curve = iE;
-        RingElement elem = curve.getRing().getMultiplicativeIdentity();
-        if (!(ix.belongsToSameGroup(elem) && iy.belongsToSameGroup(elem) && curve.isOnCurve(ix, iy))) {
+        if (!(curve.getRing().containsElement(ix) && curve.getRing().containsElement(iy) && curve.isOnCurve(ix, iy))) {
             throw new ConstructionException("The point does not belong to the curve.");
         }
         x = ix;
