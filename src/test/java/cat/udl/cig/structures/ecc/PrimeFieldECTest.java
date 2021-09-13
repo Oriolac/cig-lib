@@ -95,4 +95,24 @@ public class PrimeFieldECTest extends GeneralECTest {
         assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get().add(BigInteger.TWO)));
         assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()).multiply(plusOp).multiply(plusOp));
     }
+
+    @Test
+    void testP1MultNIsInfinity() {
+        GeneralECPoint result = returnGeneralECPoint1().pow(BigInteger.valueOf(1093));
+        assertTrue(result.isInfinity());
+    }
+
+    @Test
+    void testP2MultNIsInfinity() {
+        GeneralECPoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093));
+        assertTrue(result.isInfinity());
+    }
+
+    @Test
+    void testP2MultNMinus2IsNotIfinity() {
+        GeneralECPoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093-2));
+        System.out.println(result);
+        System.out.println(returnGeneralECPoint2());
+        assertFalse(result.isInfinity());
+    }
 }
