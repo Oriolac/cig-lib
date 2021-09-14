@@ -1,9 +1,12 @@
 package cat.udl.cig.structures;
 
 import cat.udl.cig.utils.Polynomial;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ExtensionFieldPow2ElementTest extends RingElementTemplateTest {
 
@@ -106,6 +109,21 @@ public class ExtensionFieldPow2ElementTest extends RingElementTemplateTest {
                 .addTerm(0, primeField.buildElement().setValue(9).build().orElseThrow())
                 .build();
         return extensionField.buildElement().setPolynomial(polynomial).build().orElseThrow();
+    }
 
+    @Test
+    public void testSubstitutionMaxSize() {
+        ExtensionFieldElement element = (ExtensionFieldElement) returnOperand1();
+        BigInteger expected = BigInteger.valueOf(11).add(BigInteger.valueOf(7));
+        assertEquals(expected, element.getSubstitutionMaxSizeValue());
+
+    }
+
+    @Test
+    public void testCompareTo() {
+        ExtensionFieldElement element1 = (ExtensionFieldElement) returnOperand1();  // x + 7
+        ExtensionFieldElement element2 = (ExtensionFieldElement) returnOperand2(); // 5x + 2
+        int expected = -1; // Because element1 < element2
+        assertEquals(expected, element1.compareTo(element2));
     }
 }

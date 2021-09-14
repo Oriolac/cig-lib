@@ -674,4 +674,9 @@ public class GeneralECPoint implements ECPoint {
         System.arraycopy(y, 0, bytes, bytes.length - y.length, y.length);
         return bytes;
     }
+
+    @Override
+    public int compareTo(@NotNull GroupElement o) {
+        return 0;
+    }
 }

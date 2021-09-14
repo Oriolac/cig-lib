@@ -1,7 +1,11 @@
 package cat.udl.cig.structures;
 
+import org.junit.jupiter.api.Test;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PairGroupElementTest extends RingElementTemplateTest {
 
@@ -90,5 +94,25 @@ public class PairGroupElementTest extends RingElementTemplateTest {
         RingElement op1 = new PrimeFieldElement(groupA, BigInteger.valueOf(9L));
         RingElement op2 = new PrimeFieldElement(groupB, BigInteger.valueOf(4L));
         return new PairGroupElement(op1, op2);
+    }
+
+    @Test
+    public void testCompareToElementADifferent() {
+        RingElement op1 = returnOperand1();  // GroupElementA = 13, GroupElementB = 9
+        RingElement op2 = returnOperand2();  // GroupElementA = 9, GroupElementB = 5
+        int expected = 1;  // Because 13 > 9
+        assertEquals(expected, op1.compareTo(op2));
+    }
+
+    @Test
+    public void testCompareToElementAEqual() {
+        RingElement firstElementOp1 = new PrimeFieldElement(groupA, BigInteger.valueOf(9L));
+        RingElement secondElementOp1 = new PrimeFieldElement(groupB, BigInteger.valueOf(5L));
+        PairGroupElement op1 = new PairGroupElement(firstElementOp1, secondElementOp1); // GroupElementA = 9, GroupElementB = 5
+        RingElement firstElementOp2 = new PrimeFieldElement(groupA, BigInteger.valueOf(9L));
+        RingElement secondElementOp2 = new PrimeFieldElement(groupB, BigInteger.valueOf(8L));
+        PairGroupElement op2 = new PairGroupElement(firstElementOp2, secondElementOp2); // GroupElementA = 9, GroupElementB = 8
+        int expected = -1;  // Because 9 = 9, so we compare groupElementB and 5 < 8
+        assertEquals(expected, op1.compareTo(op2));
     }
 }
