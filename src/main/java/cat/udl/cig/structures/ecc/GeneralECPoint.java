@@ -50,7 +50,7 @@ public class GeneralECPoint implements ECPoint {
      * \(\text{ord}(P)\). Given a BigInteger \(a\) such that \(a =
      * \text{ord}(P)\), then \(a \cdot P = \mathcal{O}\).
      */
-    protected BigInteger order;
+    BigInteger order;
 
     private ECPrimeOrderSubgroup ecPrimeOrderSubgroup;
 
@@ -226,7 +226,7 @@ public class GeneralECPoint implements ECPoint {
         RingElement[] point = computeDoublePoint();
         Optional<? extends GeneralECPoint> generalECPoint = this.curve.buildElement().setXYCoordinates(point[0], point[1]).build();
         if (generalECPoint.isEmpty()) {
-            throw new IllegalStateException();
+            return new GeneralECPoint(this.curve);
         }
         return generalECPoint.get();
     }
@@ -270,7 +270,7 @@ public class GeneralECPoint implements ECPoint {
         } else if (this.isInfinity()) {
             return Q;
         } else if (x.equals(Q.x)) {
-            if (y.equals(Q.y)) {
+            if (!y.equals(y.getGroup().getAdditiveIdentity()) && y.equals(Q.y)) {
                 return square();
             } else {
                 return curve.getMultiplicativeIdentity();
@@ -364,6 +364,9 @@ public class GeneralECPoint implements ECPoint {
         }
         if (order != null && k.compareTo(order) > 0) {
             k = k.mod(order);
+        }
+        if (k.equals(BigInteger.ZERO)) {
+            return new GeneralECPoint(this.curve);
         }
         final BigInteger power = k;
         String binaries = power.toString(2);
