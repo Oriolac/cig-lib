@@ -2,6 +2,7 @@ package cat.udl.cig.structures.ecc;
 
 import cat.udl.cig.structures.*;
 import cat.udl.cig.structures.builder.ExtensionFieldElementBuilder;
+import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
 import cat.udl.cig.utils.Polynomial;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
@@ -14,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,6 +25,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
     ExtensionField extensionField;
     BigInteger p = BigInteger.valueOf(2213);
     PrimeField primeField;
+    static private final boolean TEST_MULT_RUN_FLAG = false;
 
     @Override
     protected GeneralEC returnGeneralEC() {
@@ -30,6 +34,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
         primeField = new PrimeField(p);
         ExtensionFieldElementBuilder builder = extensionField.buildElement();
         ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(306332)));
+
         curve = new GeneralEC(
                 extensionField,
                 builder.setPolynomial(
@@ -153,7 +158,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
                         .addTerm(0, primeField.buildElement().setValue(y0).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
-        return new GeneralECPoint(curve, x,y);
+        return new GeneralECPoint(curve, x, y);
     }
 
 
@@ -168,17 +173,89 @@ public class ExtensionFieldECTest extends GeneralECTest {
 
     @Test
     void testMultiplication() {
-        try (Reader reader = Files.newBufferedReader(Paths.get("orderp1ext.csv"));
+        if (!TEST_MULT_RUN_FLAG) return;
+        GeneralECPoint point1 = returnGeneralECPoint1();
+        try (Reader reader = Files.newBufferedReader(Paths.get("filetest/orderp1ext.csv"));
              CSVReader csvReader = new CSVReader(reader)) {
-
+            int i = 0;
             String[] record;
             while ((record = csvReader.readNext()) != null) {
-                System.out.println("User["+ String.join(", ", record) +"]");
-            }
+                BigInteger power = new BigInteger(record[0]);
+                String[] pointStr = record[1].substring(1, record[1].length() - 1).split(": ");
+                String x = pointStr[0].replaceAll("\\u0020", "");
+                String y = pointStr[1].replaceAll("\\u0020", "");
+                BigInteger z = new BigInteger(pointStr[2].replaceAll("\\u0020", ""));
+                GeneralECPoint point = null;
+                if (z.equals(BigInteger.ZERO)) {
+                    point = curve.getMultiplicativeIdentity();
+                } else {
+                    ExtensionFieldElement xCoord = strToExtensionFieldElement(x);
+                    ExtensionFieldElement yCoord = strToExtensionFieldElement(y);
+                    point = curve.buildElement().setXYCoordinates(xCoord, yCoord).build().orElseThrow();
+                }
+                try {
 
+                    assertEquals(point, point1.pow(power), point1 + " * " + power);
+                } catch (Exception ex) {
+                    System.out.println("Failed at " + point + " * " + power);
+                }
+                i++;
+            }
         } catch (IOException | CsvValidationException ex) {
             ex.printStackTrace();
         }
+    }
+
+    private ExtensionFieldElement strToExtensionFieldElement(String s) {
+        Pattern firstDegreePattern = Pattern.compile("([0-9]+\\*)?a");
+        Pattern coefPattern = Pattern.compile("[0-9]*\\*");
+        Pattern zeroDegreePattern = Pattern.compile("[0-9]+$");
+        Matcher firstDegreeMatcher = firstDegreePattern.matcher(s);
+        PrimeFieldElementBuilder coefFirstDegree = this.primeField.buildElement().setValue(0);
+        if (firstDegreeMatcher.find()) {
+            Matcher coefMatcher = coefPattern.matcher(firstDegreeMatcher.group());
+            if (coefMatcher.find()) {
+                coefFirstDegree = coefFirstDegree.setValue(new BigInteger(coefMatcher.group().split("\\*")[0]));
+            } else {
+                coefFirstDegree = coefFirstDegree.setValue(1);
+            }
+        }
+        PrimeFieldElement firstDegree = coefFirstDegree.build().orElseThrow();
+        Matcher zeroDegreeMatcher = zeroDegreePattern.matcher(s);
+        PrimeFieldElementBuilder coefZeroDegree = this.primeField.buildElement().setValue(0);
+        if (zeroDegreeMatcher.find()) {
+            coefZeroDegree = coefZeroDegree.setValue(new BigInteger(zeroDegreeMatcher.group()));
+        }
+        PrimeFieldElement zeroDegree = coefZeroDegree.build().orElseThrow();
+        Polynomial polynomial = new Polynomial.PolynomialBuilder().addTerm(0, zeroDegree).addTerm(1, firstDegree).build();
+        return extensionField.buildElement().setPolynomial(polynomial).build().orElseThrow();
+    }
+
+    @Test
+    void testSizePow() {
+        GeneralECPoint point1 = returnGeneralECPoint1();
+        BigInteger order = point1.getOrder();
+        GeneralECPoint subPoint = point1.pow(order.subtract(BigInteger.ONE));
+        assertEquals(curve.getMultiplicativeIdentity(), subPoint.multiply(point1));
+        assertEquals(curve.getMultiplicativeIdentity(), point1.pow(order));
+    }
+
+    @Test
+    void testSizePowInternal() {
+        GeneralECPoint point1 = returnGeneralECPoint1();
+        ExtensionFieldElement x = extensionField.buildElement()
+                .setPolynomial(new Polynomial.PolynomialBuilder()
+                        .addTerm(1, primeField.getAdditiveIdentity())
+                        .addTerm(0, primeField.buildElement().setValue(2016).build().orElseThrow())
+                        .build())
+                .build().orElseThrow();
+        ExtensionFieldElement y = extensionField.buildElement()
+                .setPolynomial(new Polynomial.PolynomialBuilder()
+                        .addTerm(0, primeField.getAdditiveIdentity())
+                        .build())
+                .build().orElseThrow();
+        GeneralECPoint rootInf = new GeneralECPoint(curve, x, y);
+        rootInf.multiply(rootInf);
     }
 
 }
