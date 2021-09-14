@@ -1,11 +1,11 @@
 package cat.udl.cig.structures;
 
+import cat.udl.cig.exceptions.IncorrectRingElementException;
+import cat.udl.cig.utils.Polynomial;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
-
-import cat.udl.cig.exceptions.IncorrectRingElementException;
-import cat.udl.cig.utils.Polynomial;
 
 /**
  * Models an <i>Extension Field Element</i>. This <i>Extension Field Element</i>
@@ -14,8 +14,8 @@ import cat.udl.cig.utils.Polynomial;
  * of <i>ExtensionFieldElement</i> with an instance of a different kind of
  * <i>RingElement</i> causes an runtime exception.
  *
- * @see RingElement
  * @author M.Àngels Cerveró
+ * @see RingElement
  */
 public class ExtensionFieldElement implements RingElement {
     /**
@@ -40,21 +40,19 @@ public class ExtensionFieldElement implements RingElement {
      * {@code this.Fpn = null} and {@code this.polynomial = null}. This
      * constructor does not make a deep compy of \(Fpn\).
      *
-     * @param Fpn
-     *            the <i>ExtensionField</i> to which {@code this}
-     *            <i>ExtensionFieldElement</i> will belong.
-     * @param polynomial
-     *            a Polynomial representing the value for {@code this}
-     *            <i>ExtensionFieldElement</i>.
+     * @param Fpn        the <i>ExtensionField</i> to which {@code this}
+     *                   <i>ExtensionFieldElement</i> will belong.
+     * @param polynomial a Polynomial representing the value for {@code this}
+     *                   <i>ExtensionFieldElement</i>.
      * @see ExtensionField
      */
     public ExtensionFieldElement(final ExtensionField Fpn,
-            final Polynomial polynomial) {
+                                 final Polynomial polynomial) {
         // if(Fpn != null && Fpn.isInitialized() && polynomial != null) {
         this.Fpn = Fpn;
         this.polynomial =
                 polynomial.euclideanDivision(Fpn.getReducingPolynomial(), polynomial.getField())
-                .getValue();
+                        .getValue();
         /*
          * } else { this.Fpn = null; this.polynomial = null; }
          */
@@ -64,8 +62,7 @@ public class ExtensionFieldElement implements RingElement {
      * Creates a copy of the <i>ExtensionFieldElement</i> \(q\). If \(q\) is
      * null or uninitialized, {@code this} instance remains uninitialized.
      *
-     * @param q
-     *            the <i>ExtensionFieldElement</i> to be copied.
+     * @param q the <i>ExtensionFieldElement</i> to be copied.
      */
     public ExtensionFieldElement(final ExtensionFieldElement q) {
         // if(q != null)&& q.isInitialized()) {
@@ -129,8 +126,8 @@ public class ExtensionFieldElement implements RingElement {
             return new ExtensionFieldElement(Fpn, r);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of ExtensionFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of ExtensionFieldElement");
         }
     }
 
@@ -143,8 +140,8 @@ public class ExtensionFieldElement implements RingElement {
             return new ExtensionFieldElement(Fpn, r);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of FiniteFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of FiniteFieldElement");
         }
     }
 
@@ -155,12 +152,12 @@ public class ExtensionFieldElement implements RingElement {
             ExtensionFieldElement q1 = (ExtensionFieldElement) q;
             Polynomial r =
                     polynomial.multiply(q1.polynomial,
-                        Fpn.getReducingPolynomial());
+                            Fpn.getReducingPolynomial());
             return new ExtensionFieldElement(Fpn, r);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of FiniteFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of FiniteFieldElement");
         }
     }
 
@@ -171,12 +168,12 @@ public class ExtensionFieldElement implements RingElement {
             ExtensionFieldElement q1 = (ExtensionFieldElement) q;
             Polynomial r =
                     polynomial.divide(q1.polynomial,
-                        Fpn.getReducingPolynomial());
+                            Fpn.getReducingPolynomial());
             return new ExtensionFieldElement(Fpn, r);
         } else {
             throw new IncorrectRingElementException(
-                "RingElement q is not a "
-                        + "correct instance of FiniteFieldElement");
+                    "RingElement q is not a "
+                            + "correct instance of FiniteFieldElement");
         }
     }
 
@@ -200,7 +197,7 @@ public class ExtensionFieldElement implements RingElement {
          * "initialized"); }
          */
         return new ExtensionFieldElement(Fpn, polynomial.inverse(Fpn
-            .getReducingPolynomial()));
+                .getReducingPolynomial()));
     }
 
     @Override
@@ -218,10 +215,12 @@ public class ExtensionFieldElement implements RingElement {
          * "initialized"); }
          */
         ArrayList<RingElement> root = new ArrayList<RingElement>();
-
-        Polynomial p = polynomial.squareRoot(Fpn.getReducingPolynomial());
-        if (p.getDegree() != -1) {
-            root.add(new ExtensionFieldElement(Fpn, p));
+        try {
+            Polynomial p = polynomial.squareRoot(Fpn.getReducingPolynomial());
+            if (p.getDegree() != -1) {
+                root.add(new ExtensionFieldElement(Fpn, p));
+            }
+        } catch (ArithmeticException ignored) {
         }
 
         return root;
@@ -232,7 +231,7 @@ public class ExtensionFieldElement implements RingElement {
      * <i>ExtensionFieldElement</i>.
      *
      * @return polynomial, the Polynomial representing the value of this
-     *         <i>ExtensionFieldElement</i>.
+     * <i>ExtensionFieldElement</i>.
      */
     public Polynomial getPolynomial() {
         return polynomial;

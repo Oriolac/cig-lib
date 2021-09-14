@@ -89,14 +89,14 @@ abstract class GeneralECTest {
     @Test
     void testElementPlusAnotherElement() {
         GeneralECPoint plus = generalEC.multiply(point1, point2);
-        assertEquals(this.expectedResultPlusOperation, plus);
+        assertEquals(this.expectedResultPlusOperation, plus, "P" + point1 + " + P" + point2);
 
     }
 
     @Test
     void testElementMultByNonZeroScalar() {
         GeneralECPoint mult = generalEC.pow(point1, powerThree);
-        assertEquals(this.expectedResultMultByZeroNonScalarOperation, mult);
+        assertEquals(this.expectedResultMultByZeroNonScalarOperation, mult, "P" + point1 + " * 3");
     }
 
     @Test
@@ -141,12 +141,12 @@ abstract class GeneralECTest {
         testCorrectLiftX(point2);
     }
 
-    private void testCorrectLiftX(GeneralECPoint point1) {
-        ArrayList<? extends GeneralECPoint> points = generalEC.liftX(point1.x);
+    private void testCorrectLiftX(GeneralECPoint point) {
+        ArrayList<? extends GeneralECPoint> points = generalEC.liftX(point.x);
         assertTrue(points.size() > 0);
-        assertTrue(points.contains(point1));
-        GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point1)).collect(Collectors.toList()).get(0);
-        assertEquals(actualPoint, point1);
+        assertTrue(points.contains(point), points + "does not contain point " + point);
+        GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point)).collect(Collectors.toList()).get(0);
+        assertEquals(actualPoint, point);
         assertTrue(ring.containsElement(actualPoint.x));
         assertTrue(ring.containsElement(actualPoint.y));
     }
@@ -201,6 +201,12 @@ abstract class GeneralECTest {
         assertEquals(doublePoint, point1.pow(BigInteger.TWO));
     }
 
-
+    @Test
+    void testInfinityElement() {
+        GeneralECPoint infinity = generalEC.getMultiplicativeIdentity();
+        assertEquals(generalEC.getRing().ZERO(), infinity.x);
+        assertEquals(generalEC.getRing().ONE(), infinity.y);
+        assertTrue(infinity.isInfinity);
+    }
 
 }

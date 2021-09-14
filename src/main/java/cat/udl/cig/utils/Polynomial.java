@@ -7,12 +7,12 @@
 package cat.udl.cig.utils;
 
 import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.ExtensionField;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 
 import java.math.BigInteger;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.*;
 
 /**
@@ -161,7 +161,7 @@ public class Polynomial {
     public Polynomial opposite() {
         ArrayList<PrimeFieldElement> coefficients = new ArrayList<>();
         for (int i = 0; i <= degree; i++) {
-            coefficients.add(coefficients.get(i).opposite());
+            coefficients.add(this.coefficients.get(i).opposite());
         }
         return new Polynomial(coefficients, this.field, degree);
     }
@@ -241,7 +241,7 @@ public class Polynomial {
         newt = new Polynomial(ntcoefficients);
 
         Polynomial quotient, tmp;
-        SimpleEntry<Polynomial, Polynomial> divResult;
+        Pair<Polynomial, Polynomial> divResult;
         while (newr.degree != -1 && !newr.isZeroPolynomial()) {
             divResult = r.euclideanDivision(newr, this.field);
             quotient = divResult.getKey();
@@ -334,7 +334,7 @@ public class Polynomial {
             Polynomial a = rho.pow(s, modulus);
             Polynomial b = pow(s, modulus);
             ArrayList<PrimeFieldElement> hcoefficients =
-                    new ArrayList<PrimeFieldElement>();
+                    new ArrayList<>();
             hcoefficients.add(new PrimeFieldElement(coefficients.get(0)
                     .getGroup(), BigInteger.ONE));
             Polynomial h = new Polynomial(hcoefficients);
@@ -406,7 +406,7 @@ public class Polynomial {
         // Multiply polynomials
         for (int i = 0; i <= degree; i++) {
             for (int j = 0; j <= q.degree; j++) {
-                PrimeFieldElement mult = newCoeff.get(i).multiply(q.coefficients.get(j));
+                PrimeFieldElement mult = coefficients.get(i).multiply(q.coefficients.get(j));
                 newCoeff.set(i + j, newCoeff.get(i + j).add(mult));
             }
         }
@@ -420,36 +420,35 @@ public class Polynomial {
      * @param q the <i>Polynomial</i> we want to multiply {@code this}.
      * @return a new <i>Polynomial</i> \(r\), where \(r = p \cdot q\).
      */
-    public SimpleEntry<Polynomial, Polynomial> euclideanDivision(
+    public Pair<Polynomial, Polynomial> euclideanDivision(
             final Polynomial q, PrimeField field) {
         Polynomial quotient = new Polynomial(field);
         Polynomial remainder = new Polynomial(field);
-        SimpleEntry<Polynomial, Polynomial> result;
+        Pair<Polynomial, Polynomial> result;
 
-        if ((degree > -1 && q.degree > -1 && !coefficients.get(0)
-                .getGroup().equals(q.coefficients.get(0).getGroup()))
-                || degree < 0 || q.degree < 0) {
+        if (degree > -1 && q.degree > -1 && !coefficients.get(0).getGroup().equals(q.coefficients.get(0).getGroup())) {
             throw new ArithmeticException();
         }
+        if (degree < 0 || q.degree < 0)
+            return new Pair<>(
+                    new Polynomial.PolynomialBuilder()
+                            .addTerm(0, this.field.buildElement().setValue(0).build().orElseThrow())
+                            .build(),
+                    new Polynomial.PolynomialBuilder()
+                            .addTerm(0, this.field.buildElement().setValue(0).build().orElseThrow())
+                            .build());
 
         if (q.degree > degree) {
             remainder.degree = degree;
-            for (int i = 0; i <= degree; i++) {
-                remainder.coefficients =
-                        new ArrayList<PrimeFieldElement>(coefficients);
-            }
+            remainder.coefficients = new ArrayList<>(coefficients);
             quotient.degree = 0;
-            quotient.coefficients.add(new PrimeFieldElement(coefficients
-                    .get(0).getGroup(), BigInteger.ZERO));
-            result =
-                    new SimpleEntry<Polynomial, Polynomial>(quotient,
-                            remainder);
+            quotient.coefficients.add(this.field.getAdditiveIdentity());
+            result = new Pair<>(quotient, remainder);
         } else {
             remainder = this;
             quotient.degree = degree - q.degree;
             for (int i = 0; i <= quotient.degree; i++) {
-                quotient.coefficients.add(new PrimeFieldElement(
-                        coefficients.get(0).getGroup(), BigInteger.ZERO));
+                quotient.coefficients.add(i, this.field.getAdditiveIdentity());
             }
 
             while (remainder.degree >= q.degree
@@ -457,26 +456,20 @@ public class Polynomial {
                 int newDegree = remainder.degree - q.degree;
                 ArrayList<PrimeFieldElement> newCoefficients = new ArrayList<>();
                 for (int i = 0; i <= newDegree; i++) {
-                    newCoefficients
-                            .add(new PrimeFieldElement(coefficients.get(0)
-                                    .getGroup(), BigInteger.ZERO));
+                    newCoefficients.add(field.getAdditiveIdentity());
                 }
                 quotient.coefficients.set(newDegree,
-                        remainder.coefficients.get(remainder.degree)
-                                .divide(q.coefficients.get(q.degree)));
+                        remainder.coefficients.get(remainder.degree).divide(q.coefficients.get(q.degree)));
                 newCoefficients.set(newDegree,
                         quotient.coefficients.get(newDegree));
-                Polynomial curQuotient = new Polynomial(coefficients, this.field, degree);
-                remainder =
-                        remainder.subtract(q
-                                .euclideanMultiplication(curQuotient));
+                Polynomial curQuotient = new Polynomial(newCoefficients, this.field, newDegree);
+                remainder = remainder.subtract(q
+                        .euclideanMultiplication(curQuotient));
             }
 
             quotient.checkDegree();
             remainder.checkDegree();
-            result =
-                    new SimpleEntry<Polynomial, Polynomial>(quotient,
-                            remainder);
+            result = new Pair<>(quotient, remainder);
         }
         return result;
     }
@@ -558,14 +551,24 @@ public class Polynomial {
 
         Polynomial that = (Polynomial) o;
 
-        if (degree != that.degree) return false;
-        if (coefficients.size() != that.coefficients.size()) return false;
+        if (!this.field.equals(that.field)) return false;
+        if (coefficients.size() < that.coefficients.size()) {
+            fill(coefficients, that.coefficients.size(), that.field.getAdditiveIdentity());
+        } else if (coefficients.size() > that.coefficients.size()) {
+            fill(that.coefficients, coefficients.size(), that.field.getAdditiveIdentity());
+        }
         for (int i = 0; i < coefficients.size(); i++) {
             if (!coefficients.get(i).equals(that.coefficients.get(i))) {
                 return false;
             }
         }
         return true;
+    }
+
+    static private void fill(ArrayList<PrimeFieldElement> coefficients, int size, PrimeFieldElement additiveIdentity) {
+        for (int i = coefficients.size(); i < size; i++) {
+            coefficients.add(i, additiveIdentity);
+        }
     }
 
     @Override
@@ -605,11 +608,11 @@ public class Polynomial {
                     throw new ConstructionException("Coefficients must be size > 0 or put the field");
                 return new Polynomial(this.field);
             }
-                this.field = coefficients.get(polynomialDegree.get()).getGroup();
-                PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get() + 1];
-                Arrays.fill(elements, field.getAdditiveIdentity());
-                for (Map.Entry<Integer, PrimeFieldElement> entry : this.coefficients.entrySet()) {
-                    elements[entry.getKey()] = entry.getValue();
+            this.field = coefficients.get(polynomialDegree.get()).getGroup();
+            PrimeFieldElement[] elements = new PrimeFieldElement[polynomialDegree.get() + 1];
+            Arrays.fill(elements, field.getAdditiveIdentity());
+            for (Map.Entry<Integer, PrimeFieldElement> entry : this.coefficients.entrySet()) {
+                elements[entry.getKey()] = entry.getValue();
             }
             return new Polynomial(new ArrayList<>(Arrays.asList(elements)), field);
         }

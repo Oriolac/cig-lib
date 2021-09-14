@@ -3,8 +3,10 @@ package cat.udl.cig.structures;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.print.attribute.HashAttributeSet;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -136,6 +138,6 @@ public abstract class RingElementTemplateTest {
 
     @Test
     void testSquareRoot() {
-        assertEquals(expectedSquaresRootOfOp1, op1.squareRoot());
+        assertEquals(new HashSet<>(expectedSquaresRootOfOp1), new HashSet<>(op1.squareRoot()));
     }
 }
