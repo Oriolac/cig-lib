@@ -1,7 +1,6 @@
 package cat.udl.cig.structures.ecc;
 
 import cat.udl.cig.structures.*;
-import cat.udl.cig.structures.builder.ExtensionFieldElementBuilder;
 import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
 import cat.udl.cig.utils.Polynomial;
 import com.opencsv.CSVReader;
@@ -32,22 +31,16 @@ public class ExtensionFieldECTest extends GeneralECTest {
         extensionField = ExtensionField.ExtensionFieldP2(p);
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         primeField = new PrimeField(p);
-        ExtensionFieldElementBuilder builder = extensionField.buildElement();
         ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(306332)));
-
-        curve = new GeneralEC(
-                extensionField,
-                builder.setPolynomial(
-                        pBuilder
-                                .addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(3)))
-                                .build())
-                        .build().orElseThrow(),
-                builder.setPolynomial(
-                        pBuilder
-                                .addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(49)))
-                                .build())
-                        .build().orElseThrow(),
-                cardFactor);
+        ExtensionFieldElement A = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(3)))
+                        .build())
+                .build().orElseThrow();
+        ExtensionFieldElement B = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(49)))
+                        .build())
+                .build().orElseThrow();
+        curve = new GeneralEC(extensionField, A, B, cardFactor);
         return curve;
     }
 
