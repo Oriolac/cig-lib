@@ -1,10 +1,13 @@
 package cat.udl.cig.structures;
 
 import cat.udl.cig.utils.bfarithmetic.BitSetManipulation;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.BitSet;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BinaryFieldElementTest extends RingElementTemplateTest{
 
@@ -73,5 +76,24 @@ public class BinaryFieldElementTest extends RingElementTemplateTest{
     @Override
     protected RingElement expectedResultDivision() {
         return new BinaryFieldElement(field, BitSetManipulation.longToBitSet(7)); // x^2 + x + 1
+    }
+
+    @Test
+    public void testCompareTo() {
+        BinaryFieldElement op1 = (BinaryFieldElement) returnOperand1(); // x^2
+        BinaryFieldElement op2 = (BinaryFieldElement) returnOperand2(); // x^2 + x
+        int expected = -1; // Because the degree is the same, so as 2 <= 2 -> expected = -1
+        assertEquals(expected, op1.compareTo(op2));
+
+    }
+
+    @Test
+    public void testGetSubstitutionMaxSize() {
+        BinaryFieldElement element1 = (BinaryFieldElement) returnOperand1();
+        BigInteger expected1 = (BigInteger.TWO).pow(2);
+        assertEquals(expected1, element1.getSubstitutionMaxSizeValue());
+        BinaryFieldElement element2 = (BinaryFieldElement) returnOperand2();
+        BigInteger expected2 = ((BigInteger.TWO).pow(2)).add(BigInteger.TWO);
+        assertEquals(expected2, element2.getSubstitutionMaxSizeValue());
     }
 }

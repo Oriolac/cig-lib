@@ -1049,6 +1049,23 @@ public class BinaryFieldElement implements RingElement {
     public int compareTo(@NotNull GroupElement o) {
         if (!(o instanceof BinaryFieldElement))
             throw new ArithmeticException("Must be same class");
-        return 0;
+        BinaryFieldElement element = (BinaryFieldElement) o;
+        BigInteger result1 = getSubstitutionMaxSizeValue();
+        BigInteger result2 = element.getSubstitutionMaxSizeValue();
+        return result1.compareTo(result2);
+    }
+
+    @NotNull
+    public BigInteger getSubstitutionMaxSizeValue() {
+        BigInteger result = BigInteger.ZERO;
+        long[] d = F.getReducingPolynomial().toLongArray();
+        int degree = degree(d);
+        for (int i = 0; i <= degree; i++) {
+            if (this.k.get(i)) {
+                BigInteger op = (BigInteger.TWO).pow(i);
+                result = result.add(op);
+            }
+        }
+        return result;
     }
 }
