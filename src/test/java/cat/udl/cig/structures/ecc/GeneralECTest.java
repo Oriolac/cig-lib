@@ -103,6 +103,7 @@ abstract class GeneralECTest {
 
     @Test
     void multToSizePoint1() {
+        System.out.println(point1);
         GeneralECPoint result = generalEC.pow(point1, generalEC.getSize());
         assertEquals(generalEC.getMultiplicativeIdentity(), result);
     }

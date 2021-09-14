@@ -4,9 +4,12 @@ import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.RingElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class BabyStepGiantStep implements LogarithmAlgorithm {
@@ -25,14 +28,19 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
     public Optional<BigInteger> algorithm(GroupElement beta) throws ArithmeticException {
         ArrayList<Pair<BigInteger, GroupElement>> babies = new ArrayList<>();
         ArrayList<Pair<BigInteger, GroupElement>> giants = new ArrayList<>();
-        BigInteger i = BigInteger.ZERO;
-        for(; !i.equals(m); i = i.add(BigInteger.ONE)) {
-            babies.add(new Pair<>(i, alpha.pow(i)));
-            giants.add(new Pair<>(i, beta.multiply(alpha.pow(i.multiply(m)).inverse())));
+        BigInteger iterator = BigInteger.ZERO;
+        BigInteger size = alpha.getGroup().getSize();
+        for(; !iterator.equals(m); iterator = iterator.add(BigInteger.ONE)) {
+            babies.add(new Pair<>(iterator, alpha.pow(iterator)));
+            giants.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator.multiply(m)).inverse())));
         }
-        for(Pair<BigInteger, GroupElement> baby : babies) {
-            for(Pair<BigInteger, GroupElement> giant : giants) {
-
+        babies.sort(Pair::compareTo);
+        giants.sort(Pair::compareTo);
+        for (int jiterator = 0; jiterator < Math.min(babies.size(), giants.size()); jiterator++) {
+            if (babies.get(jiterator).getValue().equals(giants.get(jiterator).getValue())) {
+                BigInteger i = babies.get(jiterator).getKey();
+                BigInteger j = giants.get(jiterator).getKey();
+                return Optional.of(i.add(j.multiply(m)).mod(size));
             }
         }
         return Optional.empty();
