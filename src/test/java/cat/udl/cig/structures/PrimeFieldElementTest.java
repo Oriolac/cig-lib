@@ -96,8 +96,8 @@ class PrimeFieldElementTest extends RingElementTemplateTest {
 
     @Test
     public void testCompareTo() {
-        RingElement op1 = returnOperand1(); // op1 = 10
-        RingElement op2 = returnOperand2(); // op2 = 7
+        PrimeFieldElement op1 = (PrimeFieldElement) returnOperand1(); // op1 = 10
+        PrimeFieldElement op2 = (PrimeFieldElement) returnOperand2(); // op2 = 7
         int expected = 1; // Because 10 > 7
         assertEquals(expected, op1.compareTo(op2));
     }
