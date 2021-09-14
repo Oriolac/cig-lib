@@ -17,7 +17,7 @@ import cat.udl.cig.exceptions.IncorrectRingElementException;
 /**
  *
  */
-public interface GroupElement {
+public interface GroupElement extends Comparable<GroupElement> {
 
     /**
      * Checks if <i>GroupElement</i> {@code q} belongs to the same <i>Group</i>

@@ -7,6 +7,7 @@ import java.util.Random;
 
 import cat.udl.cig.exceptions.IncorrectModuleException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Models a <i>Prime Field Element</i>. This <i>Prime Field Element</i> has a
@@ -342,5 +343,12 @@ public class PrimeFieldElement implements RingElement {
             }
         }
         return true;
+    }
+
+    @Override
+    public int compareTo(@NotNull GroupElement o) {
+        if (!(o instanceof PrimeFieldElement))
+            throw new ArithmeticException("Must be same calss");
+        return this.k.compareTo(((PrimeFieldElement) o).k);
     }
 }

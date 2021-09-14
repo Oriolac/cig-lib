@@ -128,7 +128,15 @@ public class PrimeFieldECTest extends GeneralECTest {
 
     @Test
     void testOrderOfAPoint() {
-
+        GeneralECPoint point = returnGeneralECPoint1();
+        BigInteger order = point.getOrder();
+        GeneralECPoint result = point.pow(order);
+        System.out.println("Point = " + point);
+        System.out.println("Order of the point = " + order);
+        System.out.println("Power = " + result);
+        System.out.println("Is the power result infinity? " + result.isInfinity());
+        System.out.println("Op: " + point + " * " + order + " = " + result);
+        assertTrue(result.isInfinity());
     }
 
 }
