@@ -5,6 +5,7 @@ import cat.udl.cig.utils.Polynomial;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
@@ -216,16 +217,18 @@ public class ExtensionFieldElement implements RingElement {
          * IncorrectRingElementException("FiniteFieldElement not " +
          * "initialized"); }
          */
-        ArrayList<RingElement> root = new ArrayList<RingElement>();
+        HashSet<RingElement> root = new HashSet<>();
         try {
-            Polynomial p = polynomial.squareRoot(Fpn.getReducingPolynomial());
-            if (p.getDegree() != -1) {
-                root.add(new ExtensionFieldElement(Fpn, p));
+            for (int i = 0; i < 5; i++) {
+                Polynomial p = polynomial.squareRoot(Fpn.getReducingPolynomial());
+                if (p.getDegree() != -1) {
+                    root.add(new ExtensionFieldElement(Fpn, p));
+                }
             }
         } catch (ArithmeticException ignored) {
         }
 
-        return root;
+        return new ArrayList<>(root);
     }
 
     /**

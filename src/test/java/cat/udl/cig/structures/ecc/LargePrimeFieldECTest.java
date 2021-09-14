@@ -7,6 +7,7 @@ import cat.udl.cig.structures.RingElement;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 
 public class LargePrimeFieldECTest extends GeneralECTest {
 
@@ -87,6 +88,11 @@ public class LargePrimeFieldECTest extends GeneralECTest {
     @Override
     protected BigInteger returnExpectedOrderOfPoint1() {
         return n;
+    }
+
+    @Override
+    protected ArrayList<GeneralECPoint> returnLessPointsOfPoint1() {
+        return new ArrayList<>(List.of());
     }
 
 }

@@ -77,6 +77,11 @@ public class PrimeFieldECTest extends GeneralECTest {
         return BigInteger.valueOf(1093);
     }
 
+    @Override
+    protected ArrayList<GeneralECPoint> returnLessPointsOfPoint1() {
+        return new ArrayList<>(List.of(returnsExpectedElementMultByTHREE(), returnExpectedResultPlusOperation(), returnGeneralECPoint2()));
+    }
+
     @Test
     void testTwoPointsOrderAddition() {
         GeneralEC generalEC = returnGeneralEC();

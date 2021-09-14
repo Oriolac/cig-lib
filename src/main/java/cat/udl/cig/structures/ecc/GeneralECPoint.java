@@ -677,6 +677,14 @@ public class GeneralECPoint implements ECPoint {
 
     @Override
     public int compareTo(@NotNull GroupElement o) {
-        return 0;
+        if (!(o instanceof GeneralECPoint)) {
+            throw new ArithmeticException("Must be from same class");
+        }
+        GeneralECPoint that = (GeneralECPoint) o;
+        int xComparison = this.x.compareTo(that.x);
+        if (xComparison == 0) {
+            return this.y.compareTo(that.y);
+        }
+        return xComparison;
     }
 }

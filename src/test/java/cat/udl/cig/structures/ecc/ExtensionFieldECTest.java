@@ -3,11 +3,16 @@ package cat.udl.cig.structures.ecc;
 import cat.udl.cig.structures.*;
 import cat.udl.cig.structures.builder.ExtensionFieldElementBuilder;
 import cat.udl.cig.utils.Polynomial;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -127,6 +132,30 @@ public class ExtensionFieldECTest extends GeneralECTest {
         return BigInteger.valueOf(306332);
     }
 
+    @Override
+    protected ArrayList<GeneralECPoint> returnLessPointsOfPoint1() {
+        ArrayList<GeneralECPoint> res = new ArrayList<>();
+        res.add(returnGeneralPoint(0, 1, 0, 617));
+        res.add(returnGeneralPoint(0, 1432, 1573, 0));
+        res.add(returnGeneralPoint(0, 1432, 1573, 0));
+        return res;
+    }
+
+    public GeneralECPoint returnGeneralPoint(int x1, int x0, int y1, int y0) {
+        Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
+        ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(1, primeField.buildElement().setValue(x1).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(x0).build().orElseThrow())
+                        .build())
+                .build().orElseThrow();
+        ExtensionFieldElement y = extensionField.buildElement().setPolynomial(
+                pBuilder.addTerm(1, primeField.buildElement().setValue(y1).build().orElseThrow())
+                        .addTerm(0, primeField.buildElement().setValue(y0).build().orElseThrow())
+                        .build())
+                .build().orElseThrow();
+        return new GeneralECPoint(curve, x,y);
+    }
+
 
     @Test
     void testPolynomial() {
@@ -135,6 +164,21 @@ public class ExtensionFieldECTest extends GeneralECTest {
                 .addTerm(0, primeField.buildElement().setValue(2).build().orElseThrow())
                 .build();
         assertEquals(polynomial, this.extensionField.getReducingPolynomial());
+    }
+
+    @Test
+    void testMultiplication() {
+        try (Reader reader = Files.newBufferedReader(Paths.get("orderp1ext.csv"));
+             CSVReader csvReader = new CSVReader(reader)) {
+
+            String[] record;
+            while ((record = csvReader.readNext()) != null) {
+                System.out.println("User["+ String.join(", ", record) +"]");
+            }
+
+        } catch (IOException | CsvValidationException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

@@ -13,8 +13,6 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 abstract class GeneralECTest {
 
     private GeneralEC generalEC;
@@ -31,6 +29,7 @@ abstract class GeneralECTest {
     private GeneralECPoint expectedResultPlusOperation;
     private GeneralECPoint expectedResultMultByZeroNonScalarOperation;
     private BigInteger powerTwo;
+    private ArrayList<GeneralECPoint> lessPointsOfPoint1;
 
 
     @BeforeEach
@@ -49,6 +48,7 @@ abstract class GeneralECTest {
         powerThree = BigInteger.valueOf(3);
         powerTwo = BigInteger.valueOf(2);
         expectedOrderPoint1 = returnExpectedOrderOfPoint1();
+        lessPointsOfPoint1 = returnLessPointsOfPoint1();
     }
 
     protected abstract GeneralEC returnGeneralEC();
@@ -66,6 +66,8 @@ abstract class GeneralECTest {
     protected abstract GeneralECPoint returnsExpectedElementMultByTHREE();
 
     protected abstract BigInteger returnExpectedOrderOfPoint1();
+
+    protected abstract ArrayList<GeneralECPoint> returnLessPointsOfPoint1();
 
     @Test
     void testElementPlusInfinityEqualsElement() {
@@ -209,4 +211,16 @@ abstract class GeneralECTest {
         assertTrue(infinity.isInfinity);
     }
 
+    @Test
+    void testLessComparison() {
+        for (GeneralECPoint lessPoint : lessPointsOfPoint1) {
+            assertTrue(lessPoint.compareTo(point1) < 0);
+        }
+    }
+
+    @Test
+    void testEqualComparison() {
+        assertEquals(0, point1.compareTo(point1));
+        assertEquals(0, point2.compareTo(point2));
+    }
 }
