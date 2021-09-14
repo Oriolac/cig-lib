@@ -264,6 +264,24 @@ public class ExtensionFieldElement implements RingElement {
 
     @Override
     public int compareTo(@NotNull GroupElement o) {
-        return 0;
+        if (!(o instanceof ExtensionFieldElement))
+            throw new ArithmeticException("Must be same class");
+        ExtensionFieldElement element = (ExtensionFieldElement) o;
+        BigInteger result1 = getSubstitutionMaxSizeValue();
+        BigInteger result2 = element.getSubstitutionMaxSizeValue();
+        return result1.compareTo(result2);
+
+    }
+
+    @NotNull
+    public BigInteger getSubstitutionMaxSizeValue() {
+        BigInteger result = BigInteger.ZERO;
+        BigInteger size = this.Fpn.getReducingPolynomial().getField().getSize();
+        for (int i = 0; i <= this.polynomial.getDegree(); i++) {
+            BigInteger coefficient = this.polynomial.getCoefficient(i).getValue();
+            BigInteger op = size.pow(i).multiply(coefficient);
+            result = result.add(op);
+        }
+        return result;
     }
 }

@@ -1045,4 +1045,10 @@ public class BinaryFieldElement implements RingElement {
         return output;
     }
 
+    @Override
+    public int compareTo(@NotNull GroupElement o) {
+        if (!(o instanceof BinaryFieldElement))
+            throw new ArithmeticException("Must be same class");
+        return 0;
+    }
 }
