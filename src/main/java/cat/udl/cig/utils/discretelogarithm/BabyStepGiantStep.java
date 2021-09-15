@@ -31,22 +31,23 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
         BigInteger iterator = BigInteger.ZERO;
         BigInteger size = alpha.getGroup().getSize();
         for(; !iterator.equals(m); iterator = iterator.add(BigInteger.ONE)) {
-            /*babies.add(new Pair<>(iterator, alpha.pow(iterator)));
-            giants.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator.multiply(m)).inverse())));*/
             babies.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator))));
             giants.add(new Pair<>(iterator, alpha.pow(m.multiply(iterator))));
         }
         babies.sort(Pair::compareTo);
         giants.sort(Pair::compareTo);
-        for (int jiterator = 0; jiterator < Math.min(babies.size(), giants.size()); jiterator++) {
-            if (babies.get(jiterator).getValue().equals(giants.get(jiterator).getValue())) {
-                BigInteger i = babies.get(jiterator).getKey();
-                BigInteger j = giants.get(jiterator).getKey();
-                BigInteger value = babies.get(jiterator).getValue().getIntValue();
-                //return Optional.of(i.add(j.multiply(m)).mod(size));
-                System.out.println("result " + j.multiply(value).subtract(i));
-                return Optional.of(j.multiply(value).subtract(i));
+        for (Pair<BigInteger, GroupElement> baby : babies) {
+            for (Pair<BigInteger, GroupElement> giant : giants) {
+                if (baby.getValue().equals(giant.getValue())) {
+                    BigInteger i = baby.getKey();
+                    BigInteger j = giant.getKey();
+                    return Optional.of(j.multiply(m).subtract(i).mod(size.subtract(BigInteger.ONE)));
+                }
+                if (baby.getValue().compareTo(giant.getValue()) < 0) {
+                    break;
+                }
             }
+
         }
         return Optional.empty();
     }
