@@ -41,8 +41,8 @@ abstract class LogarithmAlgorithmTest {
         for (int i = 1; i < 100; i++) {
             GroupElement beta = generator.pow(BigInteger.valueOf(i));
             Optional<BigInteger> actual = logarithmAlgorithm.algorithm(beta);
-            assertTrue(actual.isPresent());
-            assertEquals(BigInteger.valueOf(i), actual.get());
+            assertTrue(actual.isPresent(), "It has failed at " + i);
+            assertEquals(BigInteger.valueOf(i), actual.get(), "It has failed at " + i);
         }
     }
 
