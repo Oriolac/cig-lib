@@ -42,7 +42,7 @@ abstract class LogarithmAlgorithmTest {
 
     @Test
     void testTrySomeManyPowers() {
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < getNumTries(); i++) {
             GroupElement beta = generator.pow(BigInteger.valueOf(i));
             Optional<BigInteger> actual = logarithmAlgorithm.algorithm(beta);
             assertTrue(actual.isPresent(), "It has failed at " + i);
