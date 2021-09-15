@@ -262,7 +262,9 @@ public class ExtensionFieldElement implements RingElement {
 
     @Override
     public int hashCode() {
-        return Objects.hash(Fpn, polynomial);
+        int result = Fpn != null ? Fpn.hashCode() : 0;
+        result = 31 * result + (polynomial != null ? polynomial.hashCode() : 0);
+        return result;
     }
 
     @Override

@@ -91,7 +91,7 @@ public class PrimeField implements Ring {
 
     @Override
     public int hashCode() {
-        return Objects.hash(p);
+        return p != null ? p.hashCode() : 0;
     }
 
     @Override

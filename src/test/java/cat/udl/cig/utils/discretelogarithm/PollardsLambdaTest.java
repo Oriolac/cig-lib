@@ -8,7 +8,7 @@ public class PollardsLambdaTest extends LogarithmAlgorithmTest {
 
     @Override
     protected LogarithmAlgorithm returnAlgorithm() {
-        return new PollardsLambda(returnGenerator());
+        return new PollardsLambda(returnGenerator(), PrimeFieldGenerator.primeField.getSize().add(BigInteger.ONE));
     }
 
     @Override

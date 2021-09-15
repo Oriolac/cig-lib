@@ -233,9 +233,12 @@ public class PrimeFieldElement implements RingElement {
                 Objects.equals(k, that.k);
     }
 
+
     @Override
     public int hashCode() {
-        return Objects.hash(field, k);
+        int result = field != null ? field.hashCode() : 0;
+        result = 31 * result + (k != null ? k.hashCode() : 0);
+        return result;
     }
 
     /**

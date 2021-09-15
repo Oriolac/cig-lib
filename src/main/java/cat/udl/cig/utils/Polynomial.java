@@ -573,8 +573,9 @@ public class Polynomial {
 
     @Override
     public int hashCode() {
-        int result = coefficients.hashCode();
+        int result = coefficients != null ? coefficients.hashCode() : 0;
         result = 31 * result + degree;
+        result = 31 * result + (field != null ? field.hashCode() : 0);
         return result;
     }
 

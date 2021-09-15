@@ -334,7 +334,12 @@ public class GeneralECPoint implements ECPoint {
 
     @Override
     public int hashCode() {
-        return Objects.hash(curve, x, y, isInfinity, order);
+        int result = curve != null ? curve.hashCode() : 0;
+        result = 31 * result + (x != null ? x.hashCode() : 0);
+        result = 31 * result + (y != null ? y.hashCode() : 0);
+        result = 31 * result + (isInfinity ? 1 : 0);
+        result = 31 * result + (order != null ? order.hashCode() : 0);
+        return result;
     }
 
     @Override

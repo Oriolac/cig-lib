@@ -5,10 +5,12 @@ import cat.udl.cig.structures.GroupElement;
 import java.math.BigInteger;
 
 public class BabyStepGiantStepTest extends LogarithmAlgorithmTest {
+
     @Override
     protected LogarithmAlgorithm returnAlgorithm() {
         return new BabyStepGiantStep(returnGenerator());
     }
+
     @Override
     protected GroupElement returnGenerator() {
         return LogarithmAlgorithmTest.PrimeFieldGenerator.returnGenerator();

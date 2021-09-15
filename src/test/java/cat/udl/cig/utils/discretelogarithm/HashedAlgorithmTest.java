@@ -8,7 +8,7 @@ import java.math.BigInteger;
 public class HashedAlgorithmTest extends LogarithmAlgorithmTest {
     @Override
     protected LogarithmAlgorithm returnAlgorithm() {
-        HashedAlgorithm.loadHashedInstance(returnGenerator(), PrimeFieldGenerator.primeField.getSize(), PrimeFieldGenerator.primeField.getSize());
+        HashedAlgorithm.loadHashedInstance(returnGenerator(), PrimeFieldGenerator.primeField.getSize(), BigInteger.ONE);
         return HashedAlgorithm.getHashedInstance();
     }
 

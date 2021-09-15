@@ -222,7 +222,11 @@ public class ExtensionField implements Ring {
 
     @Override
     public int hashCode() {
-        return Objects.hash(p, n, reducingPolynomial);
+        int result = p != null ? p.hashCode() : 0;
+        result = 31 * result + n;
+        result = 31 * result + (field != null ? field.hashCode() : 0);
+        result = 31 * result + (reducingPolynomial != null ? reducingPolynomial.hashCode() : 0);
+        return result;
     }
 
     /**
