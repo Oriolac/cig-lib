@@ -5,6 +5,7 @@ import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
+import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
 import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.jetbrains.annotations.NotNull;
 
@@ -653,7 +654,11 @@ public class GeneralECPoint implements ECPoint {
     @Override
     public BigInteger getOrder() {
         if (order == null)
-            order = new BruteForce(this).algorithm(this.curve.getMultiplicativeIdentity()).orElseThrow();
+            order = new BabyStepGiantStep(this).algorithm(this.curve.getMultiplicativeIdentity()).map(x -> {
+                if (x.equals(BigInteger.ZERO))
+                    return this.getGroup().getSize();
+                return x;
+            }).orElseThrow();
         return order;
     }
 
