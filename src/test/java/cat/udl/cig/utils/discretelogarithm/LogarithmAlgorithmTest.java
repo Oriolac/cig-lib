@@ -36,6 +36,10 @@ abstract class LogarithmAlgorithmTest {
 
     protected abstract BigInteger returnExpectedPower();
 
+    int getNumTries() {
+        return 100;
+    }
+
     @Test
     void testTrySomeManyPowers() {
         for (int i = 1; i < 100; i++) {
