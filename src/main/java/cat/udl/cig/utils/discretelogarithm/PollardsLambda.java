@@ -40,7 +40,7 @@ public class PollardsLambda implements LogarithmAlgorithm {
         Optional<BigInteger> res = Optional.empty();
         Pair<GroupElement, BigInteger> pair;
         for (int i = 0; i < 30 && res.isEmpty(); i++) {
-            getHashMap();
+            getHashFunctionMap();
             pair = getD();
             res = getExponent(pair.getKey(), pair.getValue(), beta);
         }
@@ -52,11 +52,11 @@ public class PollardsLambda implements LogarithmAlgorithm {
         return this.alpha;
     }
 
-    private void getHashMap() {
+    private void getHashFunctionMap() {
         this.hashMap = new HashMap<>();
-        for (BigInteger k = BigInteger.ZERO; k.compareTo(N.sqrt()) < 0; k = k.add(BigInteger.ONE)) {
-            BigInteger r = new BigInteger(group.getSize().bitLength(), new SecureRandom()).remainder(N).add(BigInteger.ONE);
-            hashMap.put(k, new Pair<>(r, alpha.pow(r)));
+        for (BigInteger index = BigInteger.ZERO; index.compareTo(N.sqrt()) < 0; index = index.add(BigInteger.ONE)) {
+            BigInteger power = new BigInteger(group.getSize().bitLength(), new SecureRandom()).remainder(N).add(BigInteger.ONE);
+            hashMap.put(index, new Pair<>(power, alpha.pow(power)));
         }
     }
 
@@ -74,6 +74,9 @@ public class PollardsLambda implements LogarithmAlgorithm {
         return Optional.empty();
     }
 
+    /*
+
+     */
     private Pair<GroupElement, BigInteger> getD() {
         GroupElement xn = alpha.pow(b);
         BigInteger d = BigInteger.ZERO;

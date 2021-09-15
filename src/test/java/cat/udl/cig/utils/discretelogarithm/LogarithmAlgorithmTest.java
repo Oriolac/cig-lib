@@ -36,9 +36,13 @@ abstract class LogarithmAlgorithmTest {
 
     protected abstract BigInteger returnExpectedPower();
 
+    int getNumTries() {
+        return 100;
+    }
+
     @Test
     void testTrySomeManyPowers() {
-        for (int i = 1; i < 100; i++) {
+        for (int i = 1; i < getNumTries(); i++) {
             GroupElement beta = generator.pow(BigInteger.valueOf(i));
             Optional<BigInteger> actual = logarithmAlgorithm.algorithm(beta);
             assertTrue(actual.isPresent(), "It has failed at " + i);
