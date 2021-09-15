@@ -79,7 +79,7 @@ public class PairGroupElementTest extends RingElementTemplateTest {
         RingElement sqrt2A = new PrimeFieldElement(groupA, BigInteger.valueOf(9L));
         RingElement sqrt2B = new PrimeFieldElement(groupB, BigInteger.valueOf(8L));
 
-        return new ArrayList<RingElement>(){{add(new PairGroupElement(sqrt1A, sqrt1B)); add(new PairGroupElement(sqrt2A, sqrt2B));}};
+        return new ArrayList<RingElement>(){{add(new PairGroupElement(sqrt1A, sqrt1B)); add(new PairGroupElement(sqrt2A, sqrt2B)); add(new PairGroupElement(sqrt1A, sqrt2B)); add(new PairGroupElement(sqrt2A, sqrt1B));}};
     }
 
     @Override

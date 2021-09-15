@@ -90,8 +90,10 @@ public class PairGroupElement implements RingElement {
 
         if (listA.size() != listB.size()) return null;
 
-        for (int i = 0; i < listA.size(); i++) {
-            result.add(new PairGroupElement(listA.get(i), listB.get(i)));
+        for (RingElement ringElement : listA) {
+            for (RingElement element : listB) {
+                result.add(new PairGroupElement(ringElement, element));
+            }
         }
         return result;
     }

@@ -70,7 +70,7 @@ abstract class LogarithmAlgorithmTest {
                 GroupElement beta = generator.pow(BigInteger.valueOf(i));
                 Optional<BigInteger> actual = logarithm.algorithm(beta);
                 assertTrue(actual.isPresent(), "It has failed at " + i);
-                assertEquals(BigInteger.valueOf(i), actual.get(), "It has failed at " + i);
+                assertEquals(BigInteger.valueOf(i), actual.get(), "It has failed at " + logarithm.getAlpha() + " ** " + i);
             }
         }
     }
