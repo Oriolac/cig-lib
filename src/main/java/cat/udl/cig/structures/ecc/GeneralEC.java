@@ -362,7 +362,6 @@ public class GeneralEC implements EC {
         result = 31 * result + B.hashCode();
         result = 31 * result + sizeOfSubgroups.hashCode();
         result = 31 * result + orders.hashCode();
-        result = 31 * result + infintiyPoint.hashCode();
         return result;
     }
 

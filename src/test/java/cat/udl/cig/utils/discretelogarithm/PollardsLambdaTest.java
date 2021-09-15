@@ -1,29 +1,14 @@
 package cat.udl.cig.utils.discretelogarithm;
 
-import cat.udl.cig.structures.GroupElement;
-
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class PollardsLambdaTest extends LogarithmAlgorithmTest {
 
     @Override
-    protected LogarithmAlgorithm returnAlgorithm() {
-        return new PollardsLambda(returnGenerator(), BigInteger.valueOf(50));
-    }
-
-    @Override
-    protected GroupElement returnGenerator() {
-        return LogarithmAlgorithmTest.PrimeFieldGenerator.returnGenerator();
-    }
-
-    @Override
-    protected GroupElement returnBeta() {
-        return LogarithmAlgorithmTest.PrimeFieldGenerator.returnBeta();
-    }
-
-    @Override
-    protected BigInteger returnExpectedPower() {
-        return LogarithmAlgorithmTest.PrimeFieldGenerator.returnExpectedPower();
+    protected ArrayList<LogarithmAlgorithm> returnAlgorithm() {
+        return returnGenerator().stream().map(g -> new PollardsLambda(g, BigInteger.valueOf(50))).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override

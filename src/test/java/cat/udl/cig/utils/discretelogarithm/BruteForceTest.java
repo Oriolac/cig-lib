@@ -1,29 +1,14 @@
 package cat.udl.cig.utils.discretelogarithm;
 
 
-import cat.udl.cig.structures.GroupElement;
-
-import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class BruteForceTest extends LogarithmAlgorithmTest {
 
     @Override
-    protected LogarithmAlgorithm returnAlgorithm() {
-        return new BruteForce(returnGenerator());
+    protected ArrayList<LogarithmAlgorithm> returnAlgorithm() {
+        return returnGenerator().stream().map(BruteForce::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    @Override
-    protected GroupElement returnGenerator() {
-        return LogarithmAlgorithmTest.PrimeFieldGenerator.returnGenerator();
-    }
-
-    @Override
-    protected GroupElement returnBeta() {
-        return LogarithmAlgorithmTest.PrimeFieldGenerator.returnBeta();
-    }
-
-    @Override
-    protected BigInteger returnExpectedPower() {
-        return LogarithmAlgorithmTest.PrimeFieldGenerator.returnExpectedPower();
-    }
 }
