@@ -20,7 +20,7 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
 
     public BabyStepGiantStep(GroupElement alpha) {
         BigInteger size = alpha.getGroup().getSize();
-        this.m = size.sqrt().add(BigInteger.ONE);
+        this.m = size.sqrt();
         this.alpha = alpha;
     }
 
@@ -31,8 +31,10 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
         BigInteger iterator = BigInteger.ZERO;
         BigInteger size = alpha.getGroup().getSize();
         for(; !iterator.equals(m); iterator = iterator.add(BigInteger.ONE)) {
-            babies.add(new Pair<>(iterator, alpha.pow(iterator)));
-            giants.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator.multiply(m)).inverse())));
+            /*babies.add(new Pair<>(iterator, alpha.pow(iterator)));
+            giants.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator.multiply(m)).inverse())));*/
+            babies.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator))));
+            giants.add(new Pair<>(iterator, alpha.pow(m.multiply(iterator))));
         }
         babies.sort(Pair::compareTo);
         giants.sort(Pair::compareTo);
@@ -40,7 +42,10 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
             if (babies.get(jiterator).getValue().equals(giants.get(jiterator).getValue())) {
                 BigInteger i = babies.get(jiterator).getKey();
                 BigInteger j = giants.get(jiterator).getKey();
-                return Optional.of(i.add(j.multiply(m)).mod(size));
+                BigInteger value = babies.get(jiterator).getValue().getIntValue();
+                //return Optional.of(i.add(j.multiply(m)).mod(size));
+                System.out.println("result " + j.multiply(value).subtract(i));
+                return Optional.of(j.multiply(value).subtract(i));
             }
         }
         return Optional.empty();
