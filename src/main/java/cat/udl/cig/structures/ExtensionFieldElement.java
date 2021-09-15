@@ -219,7 +219,7 @@ public class ExtensionFieldElement implements RingElement {
          */
         HashSet<RingElement> root = new HashSet<>();
         try {
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 Polynomial p = polynomial.squareRoot(Fpn.getReducingPolynomial());
                 if (p.getDegree() != -1) {
                     root.add(new ExtensionFieldElement(Fpn, p));
