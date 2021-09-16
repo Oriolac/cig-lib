@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
@@ -54,7 +53,7 @@ public class GeneralECPoint implements ECPoint {
      */
     BigInteger order;
 
-    private ECPrimeOrderSubgroup ecPrimeOrderSubgroup;
+    private ECSubgroup ecSubgroup;
 
     /**
      * Creates the <i>Infinity Point</i> \(P\) for the <i>GeneralEC</i> \(E\).
@@ -87,7 +86,7 @@ public class GeneralECPoint implements ECPoint {
         x = P.x;
         y = P.y;
         isInfinity = P.isInfinity;
-        ecPrimeOrderSubgroup = P.ecPrimeOrderSubgroup;
+        ecSubgroup = P.ecSubgroup;
         order = P.order;
     }
 
@@ -117,7 +116,7 @@ public class GeneralECPoint implements ECPoint {
         y = iy;
         isInfinity = false;
         order = iOrder;
-        if (curve.validOrder(ix, iy).isEmpty()) {
+        if (!this.pow(iOrder).equals(curve.getMultiplicativeIdentity())) {
             throw new ConstructionException("The point has not valid order.");
         }
     }
@@ -130,10 +129,10 @@ public class GeneralECPoint implements ECPoint {
             x = ix;
             y = iy;
             order = iOrder;
-            if (curve.validOrder(ix, iy).isEmpty()) {
+            isInfinity = false;
+            if (!this.pow(iOrder).equals(curve.getMultiplicativeIdentity())) {
                 throw new ConstructionException("The point has not valid order.");
             }
-            isInfinity = false;
         } else if (!curve.getRing().containsElement(ix) || !curve.getRing().containsElement(iy)) {
             throw new ConstructionException("The point is not constructed on the correct ring ecc.");
         } else {
@@ -330,8 +329,7 @@ public class GeneralECPoint implements ECPoint {
         return isInfinity == that.isInfinity &&
                 Objects.equals(curve, that.curve) &&
                 Objects.equals(x, that.x) &&
-                Objects.equals(y, that.y) &&
-                Objects.equals(order, that.order);
+                Objects.equals(y, that.y);
     }
 
     @Override
@@ -658,12 +656,24 @@ public class GeneralECPoint implements ECPoint {
     }
 
     public BigInteger getOrder(List<BigInteger> numBabySteps) {
-        if (order == null)
+        if (this.ecSubgroup != null) {
+            order = this.ecSubgroup.getOrder();
+            return order;
+        }
+        if (order == null) {
+            Optional<ECSubgroup> subgroup =  this.curve.identifySubgroup(this);
+            if (subgroup.isPresent()) {
+                order = subgroup.get().getOrder();
+                this.ecSubgroup = subgroup.get();
+                return order;
+            }
             order = new BSGSTerrOrder(this, new ArrayList<>(numBabySteps)).algorithm(this.curve.getMultiplicativeIdentity()).map(x -> {
                 if (x.equals(BigInteger.ZERO))
                     return this.getGroup().getSize();
                 return x;
             }).orElseThrow();
+            this.curve.createSubgroupOrder(this, order);
+        }
         return order;
     }
 
@@ -677,18 +687,18 @@ public class GeneralECPoint implements ECPoint {
 
     @Override
     public ECSubgroup getSubgroup() {
-        if (this.ecPrimeOrderSubgroup == null) {
-            this.ecPrimeOrderSubgroup = new ECPrimeOrderSubgroup(this.curve, getOrder(), this);
+        if (this.ecSubgroup == null) {
+            this.ecSubgroup = new ECPrimeOrderSubgroup(this.curve, getOrder(), this);
         }
         return null;
     }
 
     @Override
     public byte[] toBytes() throws UnsupportedOperationException {
-        byte[] bytes = new byte[this.curve.sizeOfSubgroups.get(0).bitLength() / 8 * 2 + 2];
         byte[] x = getX().toBytes();
         byte[] y = getY().toBytes();
-        System.arraycopy(x, 0, bytes, bytes.length / 2 - x.length, x.length);
+        byte[] bytes = new byte[x.length + y.length];
+        System.arraycopy(x, 0, bytes, 0, x.length);
         System.arraycopy(y, 0, bytes, bytes.length - y.length, y.length);
         return bytes;
     }

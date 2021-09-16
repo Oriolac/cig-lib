@@ -13,7 +13,10 @@ public class BabyStepGiantStepTest extends LogarithmAlgorithmTest {
 
     @Override
     protected ArrayList<LogarithmAlgorithm> returnAlgorithm() {
-        return returnGenerator().stream().map(BabyStepGiantStep::new).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<LogarithmAlgorithm> algorithms = new ArrayList<>();
+        algorithms.add(new BabyStepGiantStep(returnGenerator().get(0)));
+        algorithms.add(new BabyStepGiantStep((GeneralECPoint) returnGenerator().get(1), BigInteger.valueOf(1093)));
+        return algorithms;
     }
 
 

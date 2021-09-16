@@ -120,12 +120,10 @@ abstract class LogarithmAlgorithmTest {
 
         static PrimeField primeField = new PrimeField(BigInteger.valueOf(2213));
         static PrimeFieldElementBuilder builder = primeField.buildElement();
-        static ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(1093)));
         static EllipticCurve curve = new EllipticCurve(
                 primeField,
                 builder.setValue(1).build().orElseThrow(),
-                builder.setValue(49).build().orElseThrow(),
-                cardFactor);
+                builder.setValue(49).build().orElseThrow());
 
         public GeneralECPoint returnGenerator() {
             return new GeneralECPoint(curve, builder.setValue(1583).build().orElseThrow(), builder.setValue(1734).build().orElseThrow());

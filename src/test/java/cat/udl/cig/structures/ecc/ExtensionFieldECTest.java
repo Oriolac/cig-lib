@@ -31,7 +31,6 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
         extensionField = ExtensionField.ExtensionFieldP2(p);
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         primeField = new PrimeField(p);
-        ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(306332)));
         ExtensionFieldElement A = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(3)))
                         .build())
@@ -40,7 +39,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                 pBuilder.addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(49)))
                         .build())
                 .build().orElseThrow();
-        curve = new EllipticCurve(extensionField, A, B, cardFactor);
+        curve = new EllipticCurve(extensionField, A, B, BigInteger.valueOf(4901312));
         return curve;
     }
 

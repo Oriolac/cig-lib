@@ -1,5 +1,6 @@
 package cat.udl.cig.structures.ecc;
 
+import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 import cat.udl.cig.structures.Ring;
@@ -28,23 +29,18 @@ public class LargePrimeFieldECTest extends EllipticCurveTest {
         BigInteger gx = new BigInteger(gxStr, 16);
         String gyStr = "07192b95 ffc8da78 631011ed 6b24cdd5 73f977a1 1e794811".replaceAll("\\s", "");
         BigInteger gy = new BigInteger(gyStr, 16);
-        ellipticCurve = curveConstruction(module, b, n);
-        genConstruction(n, gx, gy, ellipticCurve);
+        ellipticCurve = curveConstruction(module, b, n, gx, gy);
         return ellipticCurve;
     }
 
-    private EllipticCurve curveConstruction(BigInteger module, BigInteger b, BigInteger order) {
-        ArrayList<BigInteger> card = new ArrayList<>();
+    private EllipticCurve curveConstruction(BigInteger module, BigInteger b, BigInteger order, BigInteger gx, BigInteger gy) {
         this.primeField = new PrimeField(module);
         RingElement A = new PrimeFieldElement(primeField, BigInteger.valueOf(-3));
         RingElement B = new PrimeFieldElement(primeField, b);
-        card.add(order);
-        return new EllipticCurve(primeField, A, B, card);
-    }
-
-    private ECPrimeOrderSubgroup genConstruction(BigInteger n, BigInteger gx, BigInteger gy, EllipticCurve ellipticCurve) {
-        gen = new GeneralECPoint(ellipticCurve, new PrimeFieldElement(primeField, gx), new PrimeFieldElement(primeField, gy));
-        return new ECPrimeOrderSubgroup(ellipticCurve, n, gen);
+        Pair<EllipticCurve, GeneralECPoint> pair = EllipticCurve
+                .EllipticCurveGeneratorGroup(primeField, A, B, order, new PrimeFieldElement(primeField, gx), new PrimeFieldElement(primeField, gy));
+        gen = pair.getValue();
+        return pair.getKey();
     }
 
     @Override

@@ -2,8 +2,10 @@ package cat.udl.cig.structures.ecc;
 
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
+import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.*;
 import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
+import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -43,35 +45,14 @@ public class EllipticCurve implements EC {
     // protected ECPoint generator;
 
     /**
-     * The prime factors of the cardinality of the group law \(E(k)\). They must
-     * be of the class BigInteger. The list is sorted in ascendent order.
-     */
-    protected final ArrayList<BigInteger> sizeOfSubgroups;
-
-    /**
-     * The possible orders for the points in this curve.
-     */
-    protected ArrayList<SortedSet<BigInteger>> orders;
-
-    /**
      * The Infinity point, also used as the neuter element of th group
      */
     private final GeneralECPoint infintiyPoint;
+    private final boolean onlyOneGroup;
+    private final Set<ECSubgroup> subgroups;
+    private BigInteger size;
 
-    /**
-     * Creates a <i>GeneralEC</i> over the <i>GeneralField</i> \(K\) or empty if
-     * \(a\) and \(b\) are not elements of \(K\).
-     *
-     * @param ring         the <i>GeneralField</i> over which the <i>GeneralEC</i> is
-     *                     described.
-     * @param A            y² = x³ + Ax + B
-     * @param B            y² = x³ + Ax + B
-     * @param sizeOfSubgroups  prime factors composing the cardinality of the group law \(E\).
-     * @see PrimeField
-     * @see PrimeFieldElement
-     */
-    public EllipticCurve(@NotNull final Ring ring, @NotNull final RingElement A, @NotNull final RingElement B,
-                         @NotNull final ArrayList<BigInteger> sizeOfSubgroups) {
+    public EllipticCurve(@NotNull final Ring ring, @NotNull final RingElement A, @NotNull final RingElement B) {
         if (ring.getSize().equals(BigInteger.valueOf(2)) ||
                 ring.getSize().equals(BigInteger.valueOf(3))) {
             throw new ConstructionException("The ring must not be 2 or 3");
@@ -82,10 +63,49 @@ public class EllipticCurve implements EC {
         this.ring = ring;
         this.A = A;
         this.B = B;
-        this.sizeOfSubgroups = new ArrayList<>(sizeOfSubgroups);
-        Collections.sort(this.sizeOfSubgroups);
-        orders = possiblePointOrder();
         infintiyPoint = new GeneralECPoint(this);
+        this.onlyOneGroup = false;
+        subgroups = new HashSet<>();
+    }
+
+
+    public EllipticCurve(Ring ring, RingElement A, RingElement B, BigInteger order) {
+        this(ring, A, B, order, false);
+    }
+
+    private EllipticCurve(Ring ring, RingElement A, RingElement B, BigInteger order, boolean onlyOneGroup) {
+        if (ring.getSize().equals(BigInteger.valueOf(2)) ||
+                ring.getSize().equals(BigInteger.valueOf(3))) {
+            throw new ConstructionException("The ring must not be 2 or 3");
+        }
+        if (!ring.containsElement(A) || !ring.containsElement(B)) {
+            throw new ConstructionException("The coefficients does not belong to the same group.");
+        }
+        this.ring = ring;
+        this.A = A;
+        this.B = B;
+        infintiyPoint = new GeneralECPoint(this);
+        if (!validHasseTheorem(order)) {
+            throw new ConstructionException("Not valid size for Hasse Theorem.");
+        }
+        this.size = order;
+        this.onlyOneGroup = onlyOneGroup;
+        subgroups = new HashSet<>();
+    }
+
+    static public Pair<EllipticCurve, GeneralECPoint> EllipticCurveGeneratorGroup(Ring ring, RingElement A, RingElement B, BigInteger order, RingElement x, RingElement y) {
+        EllipticCurve curve = new EllipticCurve(ring, A, B, order, true);
+        GeneralECPoint point = new GeneralECPoint(curve, x, y, order);
+        curve.createSubgroupOrder(point, order);
+        return new Pair<>(curve, point);
+    }
+
+    // Check of existing subgroup uncontrolled.
+    protected void createSubgroupOrder(GeneralECPoint point, BigInteger order) {
+        if (this.onlyOneGroup && this.subgroups.size() > 0)
+            throw new ConstructionException("Cannot create another subgroup order. OnlyeOneGroup flag is activated.");
+        ECSubgroup subgroup = new ECPrimeOrderSubgroup(this, order, point);
+        this.subgroups.add(subgroup);
     }
 
     /**
@@ -96,12 +116,14 @@ public class EllipticCurve implements EC {
      */
     public EllipticCurve(final EllipticCurve E) {
         ring = E.ring;
-        sizeOfSubgroups = E.sizeOfSubgroups;
-        orders = E.orders;
         this.A = E.A;
         this.B = E.B;
+        this.size = E.size;
+        this.onlyOneGroup = E.onlyOneGroup;
+        this.subgroups = E.subgroups;
         infintiyPoint = new GeneralECPoint(this);
     }
+
 
     @Override
     public GeneralECPoint getMultiplicativeIdentity() {
@@ -146,33 +168,6 @@ public class EllipticCurve implements EC {
         return leftPart.equals(rightPart);
     }
 
-    private ArrayList<SortedSet<BigInteger>> possiblePointOrder() {
-        ArrayList<SortedSet<BigInteger>> ordersAux =
-                new ArrayList<>(); // order = prime factor
-        ordersAux.add(new TreeSet<>());
-        for (BigInteger cardFactor : sizeOfSubgroups) {
-            ordersAux.get(0).add(cardFactor);
-        } // ALERTA! COMPROVAR QUE, REALMENT, CALCULO TOTES LES POSSIBILITATS!
-        int lastIndx;
-        Iterator<?> it;
-        BigInteger ord;
-        int iniFactorIndx;
-        while (ordersAux.size() != sizeOfSubgroups.size()) {
-            lastIndx = ordersAux.size() - 1;
-            iniFactorIndx = lastIndx + 1;
-            ordersAux.add(new TreeSet<>());
-            it = ordersAux.get(lastIndx).iterator();
-            while (it.hasNext()) {
-                ord = (BigInteger) it.next();
-                for (int j = iniFactorIndx; j < sizeOfSubgroups.size(); j++) {
-                    ordersAux.get(lastIndx + 1).add(
-                            ord.multiply(sizeOfSubgroups.get(j)));
-                }
-                iniFactorIndx++;
-            }
-        }
-        return ordersAux;
-    }
 
     @Override
     public ArrayList<? extends GeneralECPoint> liftX(final RingElement x) {
@@ -220,11 +215,29 @@ public class EllipticCurve implements EC {
      */
     @Override
     public BigInteger getSize() {
-        BigInteger result = BigInteger.ONE;
-        for (BigInteger cardFactor : sizeOfSubgroups) {
-            result = result.multiply(cardFactor);
+        if (this.size != null)
+            return this.size;
+        BigInteger size = BigInteger.ONE;
+        Set<GeneralECPoint> gensOfSubgroups = new HashSet<>();
+        int i = 0;
+        while (i < 4 || !this.validHasseTheorem(size)) {
+            GeneralECPoint point = getRandomElement();
+            boolean found = false;
+            for (GeneralECPoint gen : gensOfSubgroups) {
+                Optional<BigInteger> discreteLog = new BabyStepGiantStep(gen, gen.getOrder()).algorithm(point);
+                if (discreteLog.isPresent())
+                    found = true;
+                break;
+            }
+            if (!found) {
+                gensOfSubgroups.add(point);
+                BigInteger orderOfSubgroup = point.getOrder();
+                size = size.add(orderOfSubgroup.subtract(BigInteger.ONE));
+            }
+            i++;
         }
-        return result;
+        this.size = size;
+        return size;
     }
 
     @Override
@@ -237,13 +250,7 @@ public class EllipticCurve implements EC {
      */
     @Override
     public BigInteger getRandomExponent() {
-        BigInteger result =
-                new BigInteger(sizeOfSubgroups.get(sizeOfSubgroups.size() - 1)
-                        .bitLength(), new SecureRandom());
-        if (result.compareTo(sizeOfSubgroups.get(sizeOfSubgroups.size() - 1)) >= 0) {
-            return result.mod(sizeOfSubgroups.get(sizeOfSubgroups.size() - 1));
-        }
-        return result;
+        return new BigInteger(this.getSize().bitLength(), new SecureRandom()).mod(this.getSize());
     }
 
     /**
@@ -295,14 +302,6 @@ public class EllipticCurve implements EC {
     }
 
     /**
-     * @see EC#getCardinalityFactors()
-     */
-    @Override
-    public ArrayList<BigInteger> getCardinalityFactors() {
-        return sizeOfSubgroups;
-    }
-
-    /**
      * @see EC#getRandomElement()
      */
     @Override
@@ -320,38 +319,13 @@ public class EllipticCurve implements EC {
         return P.get(0);
     }
 
-    public ECPrimeOrderSubgroup getSubgroup(GeneralECPoint P) {
-        return new ECPrimeOrderSubgroup(this, P);
-    }
-
-    public Optional<BigInteger> validOrder(final RingElement x, final RingElement y) {
-        return validOrder(new GeneralECPoint(this, x, y));
-    }
-
-    public Optional<BigInteger> validOrder(final ECPoint P) {
-        BigInteger ord;
-        Iterator<?> it;
-        for (SortedSet<BigInteger> order : orders) {
-            it = order.iterator();
-            while (it.hasNext()) {
-                ord = (BigInteger) it.next();
-                if (P.pow(ord).isInfinity()) {
-                    return Optional.of(ord);
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         EllipticCurve ellipticCurve = (EllipticCurve) o;
         return Objects.equals(ring, ellipticCurve.ring) &&
-                Objects.equals(A, ellipticCurve.A) && Objects.equals(B, ellipticCurve.B) &&
-                Objects.equals(sizeOfSubgroups, ellipticCurve.sizeOfSubgroups) &&
-                Objects.equals(orders, ellipticCurve.orders);
+                Objects.equals(A, ellipticCurve.A) && Objects.equals(B, ellipticCurve.B);
     }
 
     @Override
@@ -359,8 +333,6 @@ public class EllipticCurve implements EC {
         int result = ring.hashCode();
         result = 31 * result + A.hashCode();
         result = 31 * result + B.hashCode();
-        result = 31 * result + sizeOfSubgroups.hashCode();
-        result = 31 * result + orders.hashCode();
         return result;
     }
 
@@ -386,5 +358,22 @@ public class EllipticCurve implements EC {
     @Override
     public GroupElement THREE() {
         throw new ConstructionException();
+    }
+
+    public Optional<BigInteger> validOrder(ECPoint plusOp) {
+        BigInteger order = plusOp.getOrder();
+        BigInteger size = getSize();
+        if (size.mod(order).equals(BigInteger.ZERO))
+            return Optional.of(order);
+        return Optional.empty();
+    }
+
+    public Optional<ECSubgroup> identifySubgroup(GeneralECPoint generalECPoint) {
+        for (ECSubgroup subgroup : this.subgroups) {
+            if (subgroup.containsElement(generalECPoint)) {
+                return Optional.of(subgroup);
+            }
+        }
+        return Optional.empty();
     }
 }

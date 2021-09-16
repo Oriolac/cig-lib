@@ -2,6 +2,7 @@ package cat.udl.cig.utils.discretelogarithm;
 
 import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.ecc.GeneralECPoint;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -12,11 +13,18 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
 
     private final BigInteger m;
     private final GroupElement alpha;
+    private final BigInteger size;
 
     public BabyStepGiantStep(GroupElement alpha) {
-        BigInteger size = alpha.getGroup().getSize();
+        this.size = alpha.getGroup().getSize();
         this.m = size.sqrt();
         this.alpha = alpha;
+    }
+
+    public BabyStepGiantStep(GeneralECPoint gen, BigInteger order) {
+        this.size = order;
+        this.m = order.sqrt();
+        this.alpha = gen;
     }
 
     @Override
@@ -24,7 +32,6 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
         ArrayList<Pair<BigInteger, GroupElement>> babies = new ArrayList<>();
         ArrayList<Pair<BigInteger, GroupElement>> giants = new ArrayList<>();
         BigInteger iterator = BigInteger.ONE;
-        BigInteger size = alpha.getGroup().getSize();
         for (; !iterator.equals(m.add(BigInteger.ONE)); iterator = iterator.add(BigInteger.ONE)) {
             babies.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator))));
             giants.add(new Pair<>(iterator, alpha.pow(m.multiply(iterator))));

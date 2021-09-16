@@ -180,12 +180,12 @@ abstract class EllipticCurveTest {
 
     @Test
     void testComputesOrder() {
-        assertTrue(ellipticCurve.validOrder(point1).isPresent());
+        point1.getOrder();
     }
 
     @Test
     void testPoint2OrderAddition() {
-        assertTrue(ellipticCurve.validOrder(point2).isPresent());
+        point2.getOrder();
     }
 
     @Test

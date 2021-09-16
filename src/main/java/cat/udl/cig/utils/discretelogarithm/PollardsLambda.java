@@ -18,6 +18,7 @@ public class PollardsLambda implements LogarithmAlgorithm {
     private final Group group;
     private final BigInteger b;
     private final BigInteger N;
+    private final BigInteger size;
     private HashMap<BigInteger, Pair<BigInteger, GroupElement>> hashMap;
 
 
@@ -29,6 +30,7 @@ public class PollardsLambda implements LogarithmAlgorithm {
         group = alpha.getGroup();
         this.b = b;
         N = b.sqrt().add(BigInteger.ONE);
+        this.size = b;
         this.alpha = alpha;
     }
 

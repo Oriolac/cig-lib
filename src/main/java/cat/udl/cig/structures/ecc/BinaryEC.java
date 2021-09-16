@@ -32,7 +32,7 @@ public class BinaryEC extends EllipticCurve {
      * {@code this} <i>BinaryEC</i> is super singular. Otherwise, {@code this}
      * <i>BinaryEC</i> is non-super singular
      */
-    private boolean isSuperSingular;
+    private final boolean isSuperSingular;
 
     /**
      * Creates a copy of the <i>BinaryEC</i> \(E\). This constructor makes a
@@ -57,17 +57,13 @@ public class BinaryEC extends EllipticCurve {
      *                     is defined.
      * @param coefficients an ArrayList that contains the coefficients of {@code this}
      *                     <i>BinaryEC</i>.
-     * @param cardFactors  an ArrayList that contains the factors of the cardinality of
-     *                     {@code this} <i>BinaryEC</i>.
      * @see BinaryField
      * @see BinaryFieldElement
      */
     public BinaryEC(@NotNull final BinaryField K,
-                    @NotNull final BinaryFieldElement[] coefficients,
-                    @NotNull final ArrayList<BigInteger> cardFactors) {
-        super(K, coefficients[0], coefficients[1], cardFactors);
-        if (!IsACorrectCurve(K,
-                coefficients, cardFactors)) {
+                    @NotNull final BinaryFieldElement[] coefficients) {
+        super(K, coefficients[0], coefficients[1]);
+        if (!IsACorrectCurve(K, coefficients)) {
             throw new ConstructionException("Is not a correct curve.");
         }
         BinaryFieldElement elem = coefficients[0];
@@ -85,24 +81,17 @@ public class BinaryEC extends EllipticCurve {
     }
 
     public BinaryEC(@NotNull final BinaryField K,
-                    @NotNull final BinaryFieldElement A, @NotNull final BinaryFieldElement B, @NotNull final BinaryFieldElement C,
-                    @NotNull final ArrayList<BigInteger> cardFactors) {
-        this(K, new BinaryFieldElement[]{A, B, C}, cardFactors);
+                    @NotNull final BinaryFieldElement A, @NotNull final BinaryFieldElement B, @NotNull final BinaryFieldElement C) {
+        this(K, new BinaryFieldElement[]{A, B, C});
     }
 
-    private static boolean IsACorrectCurve(final BinaryField K,
-                                           final BinaryFieldElement[] coefficients,
-                                           final ArrayList<BigInteger> cardFactors) {
+    private boolean IsACorrectCurve(final BinaryField K,
+                                           final BinaryFieldElement[] coefficients) {
         if (K != null) {
             BigInteger aux = coefficients[0].getGroup().getSize();
-            aux = aux.add(BigInteger.ONE);
-            BigInteger aux2 = BigInteger.ONE;
-            for (BigInteger cardFactor : cardFactors) {
-                aux = aux.multiply(cardFactor);
-            }
-            BigInteger t = aux.subtract(aux2);
-            boolean isSuperSingularaux =
-                    t.mod(TWO).equals(BigInteger.ZERO);
+            aux = aux.add(getSize());
+            BigInteger t = aux.subtract(BigInteger.ONE);
+            boolean isSuperSingularaux = t.mod(TWO).equals(BigInteger.ZERO);
             return (!isSuperSingularaux || coefficients.length == 3)
                     && (isSuperSingularaux || coefficients.length == 2);
         } else {
@@ -320,14 +309,6 @@ public class BinaryEC extends EllipticCurve {
         }
         // }
         return content;
-    }
-
-    /**
-     * @see Group#getSize()
-     */
-    @Override
-    public BigInteger getSize() {
-        return sizeOfSubgroups.stream().reduce(BigInteger::multiply).orElseThrow().multiply(BigInteger.ONE);
     }
 
     /**

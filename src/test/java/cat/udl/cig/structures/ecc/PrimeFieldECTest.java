@@ -23,12 +23,11 @@ public class PrimeFieldECTest extends EllipticCurveTest {
     protected EllipticCurve returnGeneralEC() {
         primeField = new PrimeField(BigInteger.valueOf(2213));
         builder = primeField.buildElement();
-        ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(1093)));
         curve = new EllipticCurve(
                 primeField,
                 builder.setValue(1).build().orElseThrow(),
                 builder.setValue(49).build().orElseThrow(),
-                cardFactor);
+                BigInteger.valueOf(1093).multiply(BigInteger.TWO));
         return curve;
     }
 
