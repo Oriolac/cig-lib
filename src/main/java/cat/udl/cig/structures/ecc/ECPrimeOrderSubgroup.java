@@ -9,7 +9,6 @@ import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.MultiplicativeSubgroup;
 import cat.udl.cig.structures.Group;
-import cat.udl.cig.structures.builder.GroupElementBuilder;
 import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
 import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.jetbrains.annotations.NotNull;
@@ -23,13 +22,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
 
-    private final GeneralEC EC;
+    private final EllipticCurve EC;
 
     private final BigInteger orderOfSubgroup;
 
     private final GeneralECPoint generator;
 
-    public ECPrimeOrderSubgroup(@NotNull final GeneralEC curve,
+    public ECPrimeOrderSubgroup(@NotNull final EllipticCurve curve,
                                 @NotNull final BigInteger orderOfSubgroup, @NotNull final GeneralECPoint generatorPoint) {
         if (generatorPoint.pow(orderOfSubgroup).isInfinity()) {
             EC = curve;
@@ -40,7 +39,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup {
         }
     }
 
-    public ECPrimeOrderSubgroup(@NotNull final GeneralEC curve,@NotNull final GeneralECPoint generator) {
+    public ECPrimeOrderSubgroup(@NotNull final EllipticCurve curve, @NotNull final GeneralECPoint generator) {
         BigInteger orderOfSubgroup = new BruteForce(generator).algorithm(curve.getMultiplicativeIdentity()).orElseThrow();
         this.EC = curve;
         this.generator = generator;

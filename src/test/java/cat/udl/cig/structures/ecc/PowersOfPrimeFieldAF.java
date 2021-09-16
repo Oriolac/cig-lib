@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class PowersOfPrimeFieldAF {
 
-    static HashMap<BigInteger, GeneralECPoint> getPowers(GeneralEC curve, PrimeFieldElementBuilder builder) {
+    static HashMap<BigInteger, GeneralECPoint> getPowers(EllipticCurve curve, PrimeFieldElementBuilder builder) {
         HashMap<BigInteger, GeneralECPoint> powers = new HashMap<>();
         powers.put(BigInteger.valueOf(1), new GeneralECPoint(curve, builder.setValue(1583).build().orElseThrow(), builder.setValue(1734).build().orElseThrow()));
         powers.put(BigInteger.valueOf(2), new GeneralECPoint(curve, builder.setValue(821).build().orElseThrow(), builder.setValue(1341).build().orElseThrow()));

@@ -3,7 +3,6 @@ package cat.udl.cig.structures.ecc;
 import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.structures.*;
-import cat.udl.cig.structures.builder.GroupElementBuilder;
 import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
  * @author Víctor Mateu
  * @see EC
  */
-public class GeneralEC implements EC {
+public class EllipticCurve implements EC {
 
     /**
      * The <i>Ring</i> or <i>Field</i> over which the <i>Elliptic Curve</i>
@@ -71,8 +70,8 @@ public class GeneralEC implements EC {
      * @see PrimeField
      * @see PrimeFieldElement
      */
-    public GeneralEC(@NotNull final Ring ring, @NotNull final RingElement A, @NotNull final RingElement B,
-                     @NotNull final ArrayList<BigInteger> sizeOfSubgroups) {
+    public EllipticCurve(@NotNull final Ring ring, @NotNull final RingElement A, @NotNull final RingElement B,
+                         @NotNull final ArrayList<BigInteger> sizeOfSubgroups) {
         if (ring.getSize().equals(BigInteger.valueOf(2)) ||
                 ring.getSize().equals(BigInteger.valueOf(3))) {
             throw new ConstructionException("The ring must not be 2 or 3");
@@ -95,7 +94,7 @@ public class GeneralEC implements EC {
      *
      * @param E the <i>GeneralEC</i> to be copied.
      */
-    public GeneralEC(final GeneralEC E) {
+    public EllipticCurve(final EllipticCurve E) {
         ring = E.ring;
         sizeOfSubgroups = E.sizeOfSubgroups;
         orders = E.orders;
@@ -348,11 +347,11 @@ public class GeneralEC implements EC {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GeneralEC generalEC = (GeneralEC) o;
-        return Objects.equals(ring, generalEC.ring) &&
-                Objects.equals(A, generalEC.A) && Objects.equals(B, generalEC.B) &&
-                Objects.equals(sizeOfSubgroups, generalEC.sizeOfSubgroups) &&
-                Objects.equals(orders, generalEC.orders);
+        EllipticCurve ellipticCurve = (EllipticCurve) o;
+        return Objects.equals(ring, ellipticCurve.ring) &&
+                Objects.equals(A, ellipticCurve.A) && Objects.equals(B, ellipticCurve.B) &&
+                Objects.equals(sizeOfSubgroups, ellipticCurve.sizeOfSubgroups) &&
+                Objects.equals(orders, ellipticCurve.orders);
     }
 
     @Override

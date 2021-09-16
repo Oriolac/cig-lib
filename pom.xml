@@ -89,5 +89,11 @@
             <artifactId>annotations</artifactId>
             <version>13.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.8.0-RC1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

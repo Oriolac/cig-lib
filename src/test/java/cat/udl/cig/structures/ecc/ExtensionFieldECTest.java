@@ -19,15 +19,15 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ExtensionFieldECTest extends GeneralECTest {
-    GeneralEC curve;
+public class ExtensionFieldECTest extends EllipticCurveTest {
+    EllipticCurve curve;
     ExtensionField extensionField;
     BigInteger p = BigInteger.valueOf(2213);
     PrimeField primeField;
     static private final boolean TEST_MULT_RUN_FLAG = false;
 
     @Override
-    protected GeneralEC returnGeneralEC() {
+    protected EllipticCurve returnGeneralEC() {
         extensionField = ExtensionField.ExtensionFieldP2(p);
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         primeField = new PrimeField(p);
@@ -40,7 +40,7 @@ public class ExtensionFieldECTest extends GeneralECTest {
                 pBuilder.addTerm(0, new PrimeFieldElement(primeField, BigInteger.valueOf(49)))
                         .build())
                 .build().orElseThrow();
-        curve = new GeneralEC(extensionField, A, B, cardFactor);
+        curve = new EllipticCurve(extensionField, A, B, cardFactor);
         return curve;
     }
 

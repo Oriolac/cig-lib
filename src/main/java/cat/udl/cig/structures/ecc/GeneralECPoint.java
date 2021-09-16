@@ -6,7 +6,6 @@ import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
 import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
-import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -20,7 +19,7 @@ import java.util.Optional;
  *
  * @author Víctor Mateu
  * @see ECPoint
- * @see GeneralEC
+ * @see EllipticCurve
  */
 public class GeneralECPoint implements ECPoint {
 
@@ -29,7 +28,7 @@ public class GeneralECPoint implements ECPoint {
      *
      * @see EC
      */
-    final protected GeneralEC curve;
+    final protected EllipticCurve curve;
 
     /**
      * The coordinates \((X:Y)\) of the point. \(X\) and \(Y\) belongs to the
@@ -62,7 +61,7 @@ public class GeneralECPoint implements ECPoint {
      *
      * @param E1 the <i>GeneralEC</i> to which \(P\) belongs.
      */
-    public GeneralECPoint(final GeneralEC E1) {
+    public GeneralECPoint(final EllipticCurve E1) {
         curve = E1;
         // Infinity point (0:1:0)
         x = curve.getRing().getAdditiveIdentity();
@@ -71,7 +70,7 @@ public class GeneralECPoint implements ECPoint {
         order = BigInteger.ONE;
     }
 
-    static public GeneralECPoint infinityPoint(@NotNull final GeneralEC E1) {
+    static public GeneralECPoint infinityPoint(@NotNull final EllipticCurve E1) {
         return new GeneralECPoint(E1);
     }
 
@@ -106,7 +105,7 @@ public class GeneralECPoint implements ECPoint {
      *               constructor checks if the order is correct. If not, it is
      *               initialized to ONE.
      */
-    protected GeneralECPoint(@NotNull final GeneralEC curve, @NotNull final RingElement ix,
+    protected GeneralECPoint(@NotNull final EllipticCurve curve, @NotNull final RingElement ix,
                              @NotNull final RingElement iy, @NotNull final BigInteger iOrder) {
         this.curve = curve;
         if (!curve.getRing().containsElement(ix) || !curve.getRing().containsElement(iy)) {
@@ -121,7 +120,7 @@ public class GeneralECPoint implements ECPoint {
         }
     }
 
-    private GeneralECPoint(@NotNull final GeneralEC iE, @NotNull final RingElement ix,
+    private GeneralECPoint(@NotNull final EllipticCurve iE, @NotNull final RingElement ix,
                            @NotNull final RingElement iy, @NotNull final BigInteger iOrder,
                            final boolean iIsInfinity) {
         curve = iE;
@@ -157,7 +156,7 @@ public class GeneralECPoint implements ECPoint {
      * @param iy the \(y\) coordinate for \(P\). It must belong to
      *           {@code this.E.getRing()}.
      */
-    public GeneralECPoint(final GeneralEC iE, final RingElement ix,
+    public GeneralECPoint(final EllipticCurve iE, final RingElement ix,
                           final RingElement iy) {
         curve = iE;
         if (!(curve.getRing().containsElement(ix) && curve.getRing().containsElement(iy) && curve.isOnCurve(ix, iy))) {
@@ -177,7 +176,7 @@ public class GeneralECPoint implements ECPoint {
      * <i>ECPoint</i> \(P\) belongs. That is, \(P \in E(K)\).
      */
     @Override
-    public GeneralEC getCurve() {
+    public EllipticCurve getCurve() {
         return curve;
     }
 

@@ -13,18 +13,18 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PrimeFieldECTest extends GeneralECTest {
+public class PrimeFieldECTest extends EllipticCurveTest {
 
-    GeneralEC curve;
+    EllipticCurve curve;
     PrimeField primeField;
     PrimeFieldElementBuilder builder;
 
     @Override
-    protected GeneralEC returnGeneralEC() {
+    protected EllipticCurve returnGeneralEC() {
         primeField = new PrimeField(BigInteger.valueOf(2213));
         builder = primeField.buildElement();
         ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(1093)));
-        curve = new GeneralEC(
+        curve = new EllipticCurve(
                 primeField,
                 builder.setValue(1).build().orElseThrow(),
                 builder.setValue(49).build().orElseThrow(),
@@ -84,18 +84,18 @@ public class PrimeFieldECTest extends GeneralECTest {
 
     @Test
     void testTwoPointsOrderAddition() {
-        GeneralEC generalEC = returnGeneralEC();
+        EllipticCurve ellipticCurve = returnGeneralEC();
         ECPoint plusOp = returnExpectedResultPlusOperation();
         BigInteger expectedOrderPoint1 = returnExpectedOrderOfPoint1();
-        Optional<BigInteger> optOrderPoint = generalEC.validOrder(plusOp);
+        Optional<BigInteger> optOrderPoint = ellipticCurve.validOrder(plusOp);
         assertTrue(optOrderPoint.isPresent());
         BigInteger orderPoint = optOrderPoint.get();
         assertEquals(expectedOrderPoint1, orderPoint);
-        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(orderPoint));
-        Optional<BigInteger> power = new BruteForce(plusOp).algorithm(generalEC.getMultiplicativeIdentity());
+        assertEquals(ellipticCurve.getMultiplicativeIdentity(), plusOp.pow(orderPoint));
+        Optional<BigInteger> power = new BruteForce(plusOp).algorithm(ellipticCurve.getMultiplicativeIdentity());
         assertTrue(power.isPresent());
-        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(power.get()));
-        assertEquals(generalEC.getMultiplicativeIdentity(), plusOp.pow(BigInteger.valueOf(1093)));
+        assertEquals(ellipticCurve.getMultiplicativeIdentity(), plusOp.pow(power.get()));
+        assertEquals(ellipticCurve.getMultiplicativeIdentity(), plusOp.pow(BigInteger.valueOf(1093)));
         assertEquals(BigInteger.valueOf(1093), power.get());
     }
 

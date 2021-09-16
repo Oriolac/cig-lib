@@ -4,7 +4,7 @@ import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
-import cat.udl.cig.structures.ecc.GeneralEC;
+import cat.udl.cig.structures.ecc.EllipticCurve;
 import cat.udl.cig.structures.ecc.GeneralECPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -121,7 +121,7 @@ abstract class LogarithmAlgorithmTest {
         static PrimeField primeField = new PrimeField(BigInteger.valueOf(2213));
         static PrimeFieldElementBuilder builder = primeField.buildElement();
         static ArrayList<BigInteger> cardFactor = new ArrayList<>(List.of(BigInteger.valueOf(1093)));
-        static GeneralEC curve = new GeneralEC(
+        static EllipticCurve curve = new EllipticCurve(
                 primeField,
                 builder.setValue(1).build().orElseThrow(),
                 builder.setValue(49).build().orElseThrow(),

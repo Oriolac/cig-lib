@@ -9,15 +9,15 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LargePrimeFieldECTest extends GeneralECTest {
+public class LargePrimeFieldECTest extends EllipticCurveTest {
 
-    GeneralEC generalEC;
+    EllipticCurve ellipticCurve;
     private PrimeField primeField;
     private BigInteger n;
     private GeneralECPoint gen;
 
     @Override
-    protected GeneralEC returnGeneralEC() {
+    protected EllipticCurve returnGeneralEC() {
         String pStr = "6277101735386680763835789423207666416083908700390324961279";
         BigInteger module = new BigInteger(pStr);
         String nStr = "6277101735386680763835789423176059013767194773182842284081";
@@ -28,23 +28,23 @@ public class LargePrimeFieldECTest extends GeneralECTest {
         BigInteger gx = new BigInteger(gxStr, 16);
         String gyStr = "07192b95 ffc8da78 631011ed 6b24cdd5 73f977a1 1e794811".replaceAll("\\s", "");
         BigInteger gy = new BigInteger(gyStr, 16);
-        generalEC = curveConstruction(module, b, n);
-        genConstruction(n, gx, gy, generalEC);
-        return generalEC;
+        ellipticCurve = curveConstruction(module, b, n);
+        genConstruction(n, gx, gy, ellipticCurve);
+        return ellipticCurve;
     }
 
-    private GeneralEC curveConstruction(BigInteger module, BigInteger b, BigInteger order) {
+    private EllipticCurve curveConstruction(BigInteger module, BigInteger b, BigInteger order) {
         ArrayList<BigInteger> card = new ArrayList<>();
         this.primeField = new PrimeField(module);
         RingElement A = new PrimeFieldElement(primeField, BigInteger.valueOf(-3));
         RingElement B = new PrimeFieldElement(primeField, b);
         card.add(order);
-        return new GeneralEC(primeField, A, B, card);
+        return new EllipticCurve(primeField, A, B, card);
     }
 
-    private ECPrimeOrderSubgroup genConstruction(BigInteger n, BigInteger gx, BigInteger gy, GeneralEC generalEC) {
-        gen = new GeneralECPoint(generalEC, new PrimeFieldElement(primeField, gx), new PrimeFieldElement(primeField, gy));
-        return new ECPrimeOrderSubgroup(generalEC, n, gen);
+    private ECPrimeOrderSubgroup genConstruction(BigInteger n, BigInteger gx, BigInteger gy, EllipticCurve ellipticCurve) {
+        gen = new GeneralECPoint(ellipticCurve, new PrimeFieldElement(primeField, gx), new PrimeFieldElement(primeField, gy));
+        return new ECPrimeOrderSubgroup(ellipticCurve, n, gen);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class LargePrimeFieldECTest extends GeneralECTest {
         BigInteger x = new BigInteger(point1Str);
         String point2Str = "2946626711558792003980654088990112021985937607003425539581";
         BigInteger y = new BigInteger(point2Str);
-        return new GeneralECPoint(generalEC, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
+        return new GeneralECPoint(ellipticCurve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
 
     @Override
@@ -82,7 +82,7 @@ public class LargePrimeFieldECTest extends GeneralECTest {
         BigInteger x = new BigInteger(point1Str);
         String point2Str = "2946626711558792003980654088990112021985937607003425539581";
         BigInteger y = new BigInteger(point2Str);
-        return new GeneralECPoint(generalEC, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
+        return new GeneralECPoint(ellipticCurve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
 
     @Override

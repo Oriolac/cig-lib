@@ -18,7 +18,7 @@ import java.util.List;
  * @author Ricard Garra
  * @see BinaryField
  */
-public class BinaryEC extends GeneralEC {
+public class BinaryEC extends EllipticCurve {
 
     /**
      * Auxiliar constant.

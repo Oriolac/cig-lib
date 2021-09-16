@@ -13,9 +13,9 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-abstract class GeneralECTest {
+abstract class EllipticCurveTest {
 
-    private GeneralEC generalEC;
+    private EllipticCurve ellipticCurve;
     private GeneralECPoint point1;
     private GeneralECPoint point2;
     private RingElement xCoordinateFromPoint1;
@@ -34,7 +34,7 @@ abstract class GeneralECTest {
 
     @BeforeEach
     void setUp() {
-        generalEC = returnGeneralEC();
+        ellipticCurve = returnGeneralEC();
         ring = returnRingOfEC();
         point1 = returnGeneralECPoint1();
         point2 = returnGeneralECPoint2();
@@ -51,7 +51,7 @@ abstract class GeneralECTest {
         lessPointsOfPoint1 = returnLessPointsOfPoint1();
     }
 
-    protected abstract GeneralEC returnGeneralEC();
+    protected abstract EllipticCurve returnGeneralEC();
 
     protected abstract Ring returnRingOfEC();
 
@@ -71,7 +71,7 @@ abstract class GeneralECTest {
 
     @Test
     void testElementPlusInfinityEqualsElement() {
-        GeneralECPoint inf = generalEC.getMultiplicativeIdentity();
+        GeneralECPoint inf = ellipticCurve.getMultiplicativeIdentity();
         GeneralECPoint elem1 = point1.multiply(inf);
         GeneralECPoint elem2 = point2.multiply(inf);
         assertEquals(point1, elem1);
@@ -90,28 +90,28 @@ abstract class GeneralECTest {
 
     @Test
     void testElementPlusAnotherElement() {
-        GeneralECPoint plus = generalEC.multiply(point1, point2);
+        GeneralECPoint plus = ellipticCurve.multiply(point1, point2);
         assertEquals(this.expectedResultPlusOperation, plus, "P" + point1 + " + P" + point2);
 
     }
 
     @Test
     void testElementMultByNonZeroScalar() {
-        GeneralECPoint mult = generalEC.pow(point1, powerThree);
+        GeneralECPoint mult = ellipticCurve.pow(point1, powerThree);
         assertEquals(this.expectedResultMultByZeroNonScalarOperation, mult, "P" + point1 + " * 3");
     }
 
     @Test
     void multToSizePoint1() {
         System.out.println(point1);
-        GeneralECPoint result = generalEC.pow(point1, generalEC.getSize());
-        assertEquals(generalEC.getMultiplicativeIdentity(), result);
+        GeneralECPoint result = ellipticCurve.pow(point1, ellipticCurve.getSize());
+        assertEquals(ellipticCurve.getMultiplicativeIdentity(), result);
     }
 
     @Test
     void multToSizePoint2() {
-        GeneralECPoint result = generalEC.pow(point2, generalEC.getSize());
-        assertEquals(generalEC.getMultiplicativeIdentity(), result);
+        GeneralECPoint result = ellipticCurve.pow(point2, ellipticCurve.getSize());
+        assertEquals(ellipticCurve.getMultiplicativeIdentity(), result);
     }
 
     @Test
@@ -122,16 +122,16 @@ abstract class GeneralECTest {
 
     @Test
     void testIsElementOnCurve() {
-        boolean elem1 = generalEC.isOnCurve(point1);
-        assertEquals(point1.getCurve().equals(generalEC), elem1);
-        boolean elem2 = generalEC.isOnCurve(point2);
-        assertEquals(point2.getCurve().equals(generalEC), elem2);
+        boolean elem1 = ellipticCurve.isOnCurve(point1);
+        assertEquals(point1.getCurve().equals(ellipticCurve), elem1);
+        boolean elem2 = ellipticCurve.isOnCurve(point2);
+        assertEquals(point2.getCurve().equals(ellipticCurve), elem2);
     }
 
     @Test
     void testAreCoordenatesOnCurve() {
-        boolean elem1 = generalEC.isOnCurve(xCoordinateFromPoint1, yCoordinateFromPoint1);
-        boolean elem2 = generalEC.isOnCurve(xCoordinateFromPoint2, yCoordinateFromPoint2);
+        boolean elem1 = ellipticCurve.isOnCurve(xCoordinateFromPoint1, yCoordinateFromPoint1);
+        boolean elem2 = ellipticCurve.isOnCurve(xCoordinateFromPoint2, yCoordinateFromPoint2);
         boolean cond1 = xCoordinateFromPoint1.getGroup().equals(ring) && yCoordinateFromPoint1.getGroup().equals(ring);
         boolean cond2 = xCoordinateFromPoint2.getGroup().equals(ring) && yCoordinateFromPoint2.getGroup().equals(ring);
         assertEquals(cond1, elem1);
@@ -145,7 +145,7 @@ abstract class GeneralECTest {
     }
 
     private void testCorrectLiftX(GeneralECPoint point) {
-        ArrayList<? extends GeneralECPoint> points = generalEC.liftX(point.x);
+        ArrayList<? extends GeneralECPoint> points = ellipticCurve.liftX(point.x);
         assertTrue(points.size() > 0);
         assertTrue(points.contains(point), points + "does not contain point " + point);
         GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point)).collect(Collectors.toList()).get(0);
@@ -156,7 +156,7 @@ abstract class GeneralECTest {
 
     @Test
     void testIncorrectLiftX() {
-        ArrayList<? extends GeneralECPoint> point = generalEC.liftX(xBadCoordinate);
+        ArrayList<? extends GeneralECPoint> point = ellipticCurve.liftX(xBadCoordinate);
         assertTrue(point.isEmpty());
     }
 
@@ -167,30 +167,30 @@ abstract class GeneralECTest {
     }
 
     private void testIsOnCurveAndContainsElement(GeneralECPoint point1) {
-        generalEC.isOnCurve(point1);
-        generalEC.containsElement(point1);
-        ArrayList<? extends GeneralECPoint> points = new GeneralEC(generalEC).liftX(point1.x);
+        ellipticCurve.isOnCurve(point1);
+        ellipticCurve.containsElement(point1);
+        ArrayList<? extends GeneralECPoint> points = new EllipticCurve(ellipticCurve).liftX(point1.x);
         assertFalse(points.isEmpty());
         assertTrue(points.contains(point1));
         GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point1)).collect(Collectors.toList()).get(0);
         assertEquals(point1, actualPoint);
-        assertTrue(generalEC.containsElement(point1));
-        points.forEach(p -> assertTrue(generalEC.containsElement(p)));
+        assertTrue(ellipticCurve.containsElement(point1));
+        points.forEach(p -> assertTrue(ellipticCurve.containsElement(p)));
     }
 
     @Test
     void testComputesOrder() {
-        assertTrue(generalEC.validOrder(point1).isPresent());
+        assertTrue(ellipticCurve.validOrder(point1).isPresent());
     }
 
     @Test
     void testPoint2OrderAddition() {
-        assertTrue(generalEC.validOrder(point2).isPresent());
+        assertTrue(ellipticCurve.validOrder(point2).isPresent());
     }
 
     @Test
     void testAreCoordinatesOfAPointFromSameField() {
-        ArrayList<? extends GeneralECPoint> points = generalEC.liftX(point1.x);
+        ArrayList<? extends GeneralECPoint> points = ellipticCurve.liftX(point1.x);
         assertTrue(points.size() > 0);
         GeneralECPoint actualPoint = points.stream().filter(p -> p.equals(point1)).collect(Collectors.toList()).get(0);
         assertTrue(ring.containsElement(actualPoint.x));
@@ -206,9 +206,9 @@ abstract class GeneralECTest {
 
     @Test
     void testInfinityElement() {
-        GeneralECPoint infinity = generalEC.getMultiplicativeIdentity();
-        assertEquals(generalEC.getRing().ZERO(), infinity.x);
-        assertEquals(generalEC.getRing().ONE(), infinity.y);
+        GeneralECPoint infinity = ellipticCurve.getMultiplicativeIdentity();
+        assertEquals(ellipticCurve.getRing().ZERO(), infinity.x);
+        assertEquals(ellipticCurve.getRing().ONE(), infinity.y);
         assertTrue(infinity.isInfinity);
     }
 
