@@ -2,7 +2,6 @@ package cat.udl.cig.utils.discretelogarithm;
 
 import cat.udl.cig.structures.GroupElement;
 
-import javax.swing.text.html.Option;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Optional;
@@ -44,16 +43,24 @@ public class BabyStepGiantStepTerr implements LogarithmAlgorithm {
         GroupElement newB = alpha.multiply(alpha);
         BigInteger t = totalBabySteps.multiply(BigInteger.TWO);
         while (n.equals(BigInteger.ZERO)) {
-            if (R.containsKey(newB) && R.get(newB).equals(i)) {
-                n = t.subtract(i);
-                return Optional.of(n);
-            } else {
-                alpha = gen.multiply(alpha);
-                j = j.add(BigInteger.ONE);
-                R.put(alpha, j.add(totalBabySteps));
-                newB = alpha.multiply(newB);
-                t = t.add(j).add(totalBabySteps);
+            try {
+                if (R.containsKey(newB)) {
+                    if (R.get(newB).equals(i)) {
+                        n = t.subtract(i);
+                        return Optional.of(n);
+                    }
+                } else {
+                    alpha = gen.multiply(alpha);
+                    j = j.add(BigInteger.ONE);
+                    R.put(alpha, j.add(totalBabySteps));
+                    newB = alpha.multiply(newB);
+                    t = t.add(j).add(totalBabySteps);
+                }
+            } catch (NullPointerException ex) {
+                ex.printStackTrace();
+                System.out.println(R.containsKey(newB));
             }
+
         }
         return Optional.empty();
     }

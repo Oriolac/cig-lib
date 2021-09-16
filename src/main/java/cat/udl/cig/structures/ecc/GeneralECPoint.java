@@ -5,13 +5,15 @@ import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.GroupElement;
 import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
-import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
+import cat.udl.cig.utils.discretelogarithm.BSGSTerrOrder;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Models a <i>Point</i> \(P\) belonging to a <i>General Elliptic Curve</i>
@@ -652,8 +654,12 @@ public class GeneralECPoint implements ECPoint {
      */
     @Override
     public BigInteger getOrder() {
+        return this.getOrder(List.of(this.getGroup().getSize(), this.getGroup().getSize().add(BigInteger.TEN)));
+    }
+
+    public BigInteger getOrder(List<BigInteger> numBabySteps) {
         if (order == null)
-            order = new BabyStepGiantStep(this).algorithm(this.curve.getMultiplicativeIdentity()).map(x -> {
+            order = new BSGSTerrOrder(this, new ArrayList<>(numBabySteps)).algorithm(this.curve.getMultiplicativeIdentity()).map(x -> {
                 if (x.equals(BigInteger.ZERO))
                     return this.getGroup().getSize();
                 return x;

@@ -228,7 +228,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
     void testSizePow() {
         GeneralECPoint point1 = returnGeneralECPoint1();
         BigInteger order = point1.getOrder();
-        assertEquals(BigInteger.valueOf(306332), order);
+        assertEquals(new BigInteger("306332"), order);
         GeneralECPoint subPoint = point1.pow(order.subtract(BigInteger.ONE));
         assertEquals(curve.getMultiplicativeIdentity(), subPoint.multiply(point1));
         assertEquals(curve.getMultiplicativeIdentity(), point1.pow(order));

@@ -16,15 +16,5 @@ public class BabyStepGiantStepTest extends LogarithmAlgorithmTest {
         return returnGenerator().stream().map(BabyStepGiantStep::new).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    @Test
-    public void testOrder() {
-        if (generators.get(1) instanceof GeneralECPoint) {
-            GeneralECPoint point = (GeneralECPoint) generators.get(1);
-            GeneralECPoint ZERO = point.getCurve().getMultiplicativeIdentity();
-            BigInteger order = new BabyStepGiantStep(point).algorithm(ZERO).orElseThrow();
-            assertEquals(BigInteger.valueOf(1093), order);
-        }
-    }
-
 
 }
