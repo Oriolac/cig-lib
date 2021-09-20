@@ -237,7 +237,7 @@ public class EllipticCurve implements EC {
             if (!found) {
                 gensOfSubgroups.add(point);
                 BigInteger orderOfSubgroup = point.getOrder();
-                size = accumulateSizeWithSubgroupOrders(size, listOrders, orderOfSubgroup);
+                size = accumulateSizeWithSubgroupOrders(size, orderOfSubgroup);
                 listOrders.add(orderOfSubgroup);
                 createSubgroupOrder(point, orderOfSubgroup);
             }
@@ -247,7 +247,7 @@ public class EllipticCurve implements EC {
         return size;
     }
 
-    private BigInteger accumulateSizeWithSubgroupOrders(BigInteger size, List<BigInteger> listOrders, BigInteger orderOfSubgroup) {
+    private BigInteger accumulateSizeWithSubgroupOrders(BigInteger size, BigInteger orderOfSubgroup) {
         return null;
     }
 
