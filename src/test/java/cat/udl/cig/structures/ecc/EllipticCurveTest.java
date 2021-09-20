@@ -224,4 +224,13 @@ abstract class EllipticCurveTest {
         assertEquals(0, point1.compareTo(point1));
         assertEquals(0, point2.compareTo(point2));
     }
+
+    @Test
+    void testSizeCanBeDividedBySubgroupOrders() {
+        BigInteger size = this.ellipticCurve.getSize();
+        for (ECSubgroup subgroup : this.ellipticCurve.getSubgroups()) {
+            assertEquals(BigInteger.ZERO, size.mod(subgroup.getOrder()));
+        }
+
+    }
 }

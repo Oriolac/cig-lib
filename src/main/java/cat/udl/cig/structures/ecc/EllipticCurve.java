@@ -347,14 +347,9 @@ public class EllipticCurve implements EC {
         return result;
     }
 
-/*    public GeneralECPoint getBigPrimeOrderGenerator() {
-        GeneralECPoint P = getRandomElement();
-        while (!P.pow(cardFactors.get(cardFactors.size() - 1)).isInfinity) {
-            P = getRandomElement();
-        }
-        P.setOrder(cardFactors.get(cardFactors.size() - 1));
-        return P;
-    }*/
+    public Set<ECSubgroup> getSubgroups() {
+        return subgroups;
+    }
 
     @Override
     public GroupElement ZERO() {
