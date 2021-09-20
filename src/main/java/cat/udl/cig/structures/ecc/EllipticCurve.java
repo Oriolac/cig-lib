@@ -5,6 +5,7 @@ import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.*;
 import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
+import cat.udl.cig.utils.bfarithmetic.LeastCommonMultiple;
 import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
 import org.jetbrains.annotations.NotNull;
 
@@ -248,7 +249,8 @@ public class EllipticCurve implements EC {
     }
 
     private BigInteger accumulateSizeWithSubgroupOrders(BigInteger size, BigInteger orderOfSubgroup) {
-        return null;
+
+        return LeastCommonMultiple.lcm(size, orderOfSubgroup);
     }
 
 
