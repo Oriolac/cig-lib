@@ -30,8 +30,16 @@ public class PollardsLambda implements LogarithmAlgorithm {
         group = alpha.getGroup();
         this.b = b;
         N = b.sqrt().add(BigInteger.ONE);
-        this.size = b;
+        this.size = group.getSize();
         this.alpha = alpha;
+    }
+
+    public PollardsLambda(GroupElement alpha, BigInteger b, BigInteger size) {
+        group = alpha.getGroup();
+        this.b = b;
+        N = b.sqrt().add(BigInteger.ONE);
+        this.alpha = alpha;
+        this.size = size;
     }
 
 

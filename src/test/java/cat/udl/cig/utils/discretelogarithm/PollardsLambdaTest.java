@@ -2,13 +2,15 @@ package cat.udl.cig.utils.discretelogarithm;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class PollardsLambdaTest extends LogarithmAlgorithmTest {
 
     @Override
     protected ArrayList<LogarithmAlgorithm> returnAlgorithm() {
-        return returnGenerator().stream().map(g -> new PollardsLambda(g, BigInteger.valueOf(50))).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<LogarithmAlgorithm> logarithms = new ArrayList<>();
+        logarithms.add(new PollardsLambda(returnGenerator().get(0), BigInteger.valueOf(50)));
+        logarithms.add(new PollardsLambda(returnGenerator().get(1), BigInteger.valueOf(70)));
+        return logarithms;
     }
 
     @Override

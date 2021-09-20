@@ -69,8 +69,8 @@ public class EllipticCurve implements EC {
     }
 
 
-    public EllipticCurve(Ring ring, RingElement A, RingElement B, BigInteger order) {
-        this(ring, A, B, order, false);
+    public EllipticCurve(Ring ring, RingElement A, RingElement B, BigInteger size) {
+        this(ring, A, B, size, false);
     }
 
     private EllipticCurve(Ring ring, RingElement A, RingElement B, BigInteger order, boolean onlyOneGroup) {
@@ -175,17 +175,17 @@ public class EllipticCurve implements EC {
         try {
             RingElement y;
             GeneralECPoint P;
-            ArrayList<RingElement> sqRoots;
+            ArrayList<RingElement> ySquareRoots;
             // y^2 = x^3 + ax + b
 
             y = x.pow(BigInteger.valueOf(3));
             y = y.add(getA().multiply(x));
             y = y.add(getB());
-            sqRoots = y.squareRoot();
-            if (sqRoots.isEmpty()) {
+            ySquareRoots = y.squareRoot();
+            if (ySquareRoots.isEmpty()) {
                 return new ArrayList<>();
             }
-            return sqRoots.stream().map(newY -> new GeneralECPoint(this, x, newY)).filter(this::isOnCurve).collect(Collectors.toCollection(ArrayList::new));
+            return ySquareRoots.stream().map(newY -> new GeneralECPoint(this, x, newY)).filter(this::isOnCurve).collect(Collectors.toCollection(ArrayList::new));
         } catch (IncorrectRingElementException ex) {
             return new ArrayList<>();
         }
@@ -220,8 +220,12 @@ public class EllipticCurve implements EC {
         BigInteger size = BigInteger.ONE;
         Set<GeneralECPoint> gensOfSubgroups = new HashSet<>();
         int i = 0;
-        while (i < 4 || !this.validHasseTheorem(size)) {
+        while (i < 4 || !this.validHasseTheorem(size) && gensOfSubgroups.size() > 4) {
             GeneralECPoint point = getRandomElement();
+            while (point.isInfinity()) {
+                point = getRandomElement();
+            }
+            System.out.println(point);
             boolean found = false;
             for (GeneralECPoint gen : gensOfSubgroups) {
                 Optional<BigInteger> discreteLog = new BabyStepGiantStep(gen, gen.getOrder()).algorithm(point);
@@ -232,6 +236,7 @@ public class EllipticCurve implements EC {
             if (!found) {
                 gensOfSubgroups.add(point);
                 BigInteger orderOfSubgroup = point.getOrder();
+
                 size = size.add(orderOfSubgroup.subtract(BigInteger.ONE));
             }
             i++;
@@ -307,16 +312,15 @@ public class EllipticCurve implements EC {
     @Override
     public GeneralECPoint getRandomElement() {
         RingElement x;
-        boolean incorrecte = true;
-        ArrayList<? extends GeneralECPoint> P = new ArrayList<>();
-        while (incorrecte) {
+        ArrayList<? extends GeneralECPoint> P;
+        while (true) {
             x = ring.getRandomElement();
             P = liftX(x);
-            if (!P.isEmpty() && isOnCurve(P.get(0))) {
-                incorrecte = false;
+            if (!P.isEmpty()) {
+                if (isOnCurve(P.get(0)))
+                    return P.get(0);
             }
         }
-        return P.get(0);
     }
 
     @Override

@@ -91,4 +91,8 @@ public class LargePrimeFieldECTest extends EllipticCurveTest {
         return new ArrayList<>(List.of());
     }
 
+
+    @Override
+    void testPoint2OrderAddition() {
+    }
 }

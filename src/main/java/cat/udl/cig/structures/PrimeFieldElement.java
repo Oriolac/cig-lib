@@ -163,6 +163,11 @@ public class PrimeFieldElement implements RingElement {
 
         ArrayList<RingElement> elems = new ArrayList<RingElement>();
 
+        if (this.k.equals(BigInteger.ZERO)) {
+            elems.add(this);
+            return elems;
+        }
+
         try {
             if (jacobiSymbol(k, field.getSize()) == -1) {
                 return elems;

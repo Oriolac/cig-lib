@@ -123,7 +123,9 @@ abstract class LogarithmAlgorithmTest {
         static EllipticCurve curve = new EllipticCurve(
                 primeField,
                 builder.setValue(1).build().orElseThrow(),
-                builder.setValue(49).build().orElseThrow());
+                builder.setValue(49).build().orElseThrow(),
+                BigInteger.valueOf(1093 * 2)
+        );
 
         public GeneralECPoint returnGenerator() {
             return new GeneralECPoint(curve, builder.setValue(1583).build().orElseThrow(), builder.setValue(1734).build().orElseThrow());

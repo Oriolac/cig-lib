@@ -378,12 +378,18 @@ public class GeneralECPoint implements ECPoint {
         binaries = binaries.substring(1);
         GeneralECPoint acc = new GeneralECPoint(this);
         for (char bin : binaries.toCharArray()) {
-            acc = acc.multiply(acc);
+            acc = acc.multiply(acc, acc.ecSubgroup);
             if (bin == '1') {
-                acc = acc.multiply(this);
+                acc = acc.multiply(this, acc.ecSubgroup);
             }
         }
         return acc;
+    }
+
+    private GeneralECPoint multiply(GeneralECPoint acc, ECSubgroup ecSubgroup) {
+        GeneralECPoint result = this.multiply(acc);
+        result.ecSubgroup = ecSubgroup;
+        return result;
     }
 
     @NotNull
@@ -652,7 +658,8 @@ public class GeneralECPoint implements ECPoint {
      */
     @Override
     public BigInteger getOrder() {
-        return this.getOrder(List.of(this.getGroup().getSize(), this.getGroup().getSize().add(BigInteger.TEN)));
+        BigInteger sizeMaxBound = this.order == null ? this.x.getGroup().getSize() : this.order;
+        return this.getOrder(List.of(sizeMaxBound, sizeMaxBound.add(BigInteger.TEN)));
     }
 
     public BigInteger getOrder(List<BigInteger> numBabySteps) {
