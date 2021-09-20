@@ -42,6 +42,7 @@ public class EllipticCurve implements EC {
 
     private final RingElement A;
     private final RingElement B;
+    private RingElement C;
 
     // protected ECPoint generator;
 
@@ -67,6 +68,25 @@ public class EllipticCurve implements EC {
         infintiyPoint = new GeneralECPoint(this);
         this.onlyOneGroup = false;
         subgroups = new HashSet<>();
+    }
+
+    public EllipticCurve(Ring ring, RingElement A, RingElement B, RingElement C) {
+        if (ring.getSize().equals(BigInteger.TWO) || ring.getSize().equals(BigInteger.valueOf(3))) {
+            throw new ConstructionException("The ring must not be 2 or 3");
+        }
+        if (!ring.containsElement(A) || !ring.containsElement(B) || !ring.containsElement(C)) {
+            throw new ConstructionException("The coefficients does not belong to the same group.");
+        }
+        if (!isSuperSingular(ring)) {
+            throw new
+        }
+        this.ring = ring;
+        this.A = A;
+        this.B = B;
+        this.C = C;
+        this.infintiyPoint = new GeneralECPoint(this);
+        this.onlyOneGroup = false;
+        this.subgroups = new HashSet<>();
     }
 
 
@@ -129,6 +149,11 @@ public class EllipticCurve implements EC {
     @Override
     public GeneralECPoint getMultiplicativeIdentity() {
         return infintiyPoint;
+    }
+
+    @Override
+    public boolean isSuperSingular(Ring ring) {
+
     }
 
 
