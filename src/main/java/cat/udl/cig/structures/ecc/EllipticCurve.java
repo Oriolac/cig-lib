@@ -220,7 +220,7 @@ public class EllipticCurve implements EC {
         BigInteger size = BigInteger.ONE;
         Set<GeneralECPoint> gensOfSubgroups = new HashSet<>();
         int i = 0;
-        while (i < 4 || !this.validHasseTheorem(size) && gensOfSubgroups.size() > 4) {
+        while (i < 6 || !this.validHasseTheorem(size) && gensOfSubgroups.size() > 4) {
             GeneralECPoint point = getRandomElement();
             while (point.isInfinity()) {
                 point = getRandomElement();
@@ -236,7 +236,6 @@ public class EllipticCurve implements EC {
             if (!found) {
                 gensOfSubgroups.add(point);
                 BigInteger orderOfSubgroup = point.getOrder();
-
                 size = size.add(orderOfSubgroup.subtract(BigInteger.ONE));
             }
             i++;
