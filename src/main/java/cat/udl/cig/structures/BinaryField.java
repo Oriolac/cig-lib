@@ -153,22 +153,22 @@ public class BinaryField implements Ring {
         if (reducingPolynomial.length() == 0) {
             return "0";
         }
-        String output = "";
+        StringBuilder output = new StringBuilder();
         for (int i = reducingPolynomial.length() - 1; i >= 0; i--) {
 
             if (reducingPolynomial.get(i)) {
                 if (i < reducingPolynomial.length() - 1) {
-                    output += "+";
+                    output.append("+");
                 }
                 if (i > 0) {
-                    output += "x^" + i;
+                    output.append("x^").append(i);
                 } else {
-                    output += "1";
+                    output.append("1");
                 }
             }
         }
 
-        return output;
+        return output.toString();
     }
 
     /**
@@ -189,6 +189,11 @@ public class BinaryField implements Ring {
     public BinaryFieldElement pow(final GroupElement x,
                                   final BigInteger pow) {
         return (BinaryFieldElement) x.pow(pow);
+    }
+
+    @Override
+    public BigInteger getCharacteristic() {
+        return BigInteger.TWO;
     }
 
     @Override

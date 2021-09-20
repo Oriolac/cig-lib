@@ -66,8 +66,7 @@ public class BinaryEC extends EllipticCurve {
         if (!IsACorrectCurve(K, coefficients)) {
             throw new ConstructionException("Is not a correct curve.");
         }
-        BinaryFieldElement elem = coefficients[0];
-        BigInteger aux = elem.getGroup().getSize();
+        BigInteger aux = K.getSize();
         aux = aux.add(BigInteger.ONE);
         BigInteger t = aux.subtract(getSize());
         isSuperSingular = t.mod(TWO).equals(BigInteger.ZERO);

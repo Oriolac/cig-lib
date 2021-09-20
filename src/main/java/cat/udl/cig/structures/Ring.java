@@ -75,6 +75,8 @@ public interface Ring extends Group {
     @Override
     public RingElement pow(GroupElement x, BigInteger pow);
 
+    public BigInteger getCharacteristic();
+
     Optional<? extends RingElement> fromBytes(byte[] bytes);
 
     @Override

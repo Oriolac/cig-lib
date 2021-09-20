@@ -250,6 +250,11 @@ public class ExtensionField implements Ring {
     }
 
     @Override
+    public BigInteger getCharacteristic() {
+        return this.p;
+    }
+
+    @Override
     public boolean containsElement(GroupElement groupElement) {
         return groupElement.getGroup().equals(this);
     }
