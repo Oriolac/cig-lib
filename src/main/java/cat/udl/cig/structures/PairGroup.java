@@ -1,5 +1,6 @@
 package cat.udl.cig.structures;
 
+import cat.udl.cig.exceptions.NotImplementedException;
 import cat.udl.cig.structures.builder.PairGroupElementBuilder;
 import cat.udl.cig.structures.builder.RingElementBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -56,6 +57,11 @@ public class PairGroup implements Ring {
     @Override
     public PairGroupElement pow(GroupElement x, BigInteger pow) {
         return (PairGroupElement) x.pow(pow);
+    }
+
+    @Override
+    public BigInteger getCharacteristic() {
+        throw new NotImplementedException("Characteristic nof implemented of such class.");
     }
 
     @Override
