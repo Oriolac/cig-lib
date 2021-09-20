@@ -93,14 +93,14 @@ public class EllipticCurve implements EC {
         subgroups = new HashSet<>();
     }
 
-    static public Pair<EllipticCurve, GeneralECPoint> EllipticCurveGeneratorGroup(Ring ring, RingElement A, RingElement B, BigInteger order, RingElement x, RingElement y) {
+    static public Pair<EllipticCurve, GeneralECPoint> EllipticCurveGeneratorOnlyOneSubgroup(Ring ring, RingElement A, RingElement B, BigInteger order, RingElement x, RingElement y) {
         EllipticCurve curve = new EllipticCurve(ring, A, B, order, true);
         GeneralECPoint point = new GeneralECPoint(curve, x, y, order);
         curve.createSubgroupOrder(point, order);
         return new Pair<>(curve, point);
     }
 
-    // Check of existing subgroup uncontrolled.
+    // Check if existing subgroup uncontrolled.
     protected void createSubgroupOrder(GeneralECPoint point, BigInteger order) {
         if (this.onlyOneGroup && this.subgroups.size() > 0)
             throw new ConstructionException("Cannot create another subgroup order. OnlyeOneGroup flag is activated.");
@@ -217,6 +217,7 @@ public class EllipticCurve implements EC {
     public BigInteger getSize() {
         if (this.size != null)
             return this.size;
+        List<BigInteger> listOrders = new ArrayList<>();
         BigInteger size = BigInteger.ONE;
         Set<GeneralECPoint> gensOfSubgroups = new HashSet<>();
         int i = 0;
@@ -236,13 +237,20 @@ public class EllipticCurve implements EC {
             if (!found) {
                 gensOfSubgroups.add(point);
                 BigInteger orderOfSubgroup = point.getOrder();
-                size = size.add(orderOfSubgroup.subtract(BigInteger.ONE));
+                size = accumulateSizeWithSubgroupOrders(size, listOrders, orderOfSubgroup);
+                listOrders.add(orderOfSubgroup);
+                createSubgroupOrder(point, orderOfSubgroup);
             }
             i++;
         }
         this.size = size;
         return size;
     }
+
+    private BigInteger accumulateSizeWithSubgroupOrders(BigInteger size, List<BigInteger> listOrders, BigInteger orderOfSubgroup) {
+        return null;
+    }
+
 
     @Override
     public ECPointBuilder buildElement() {

@@ -38,7 +38,7 @@ public class LargePrimeFieldECTest extends EllipticCurveTest {
         RingElement A = new PrimeFieldElement(primeField, BigInteger.valueOf(-3));
         RingElement B = new PrimeFieldElement(primeField, b);
         Pair<EllipticCurve, GeneralECPoint> pair = EllipticCurve
-                .EllipticCurveGeneratorGroup(primeField, A, B, order, new PrimeFieldElement(primeField, gx), new PrimeFieldElement(primeField, gy));
+                .EllipticCurveGeneratorOnlyOneSubgroup(primeField, A, B, order, new PrimeFieldElement(primeField, gx), new PrimeFieldElement(primeField, gy));
         gen = pair.getValue();
         return pair.getKey();
     }
