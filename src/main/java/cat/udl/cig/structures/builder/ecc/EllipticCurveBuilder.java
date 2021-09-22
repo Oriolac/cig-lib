@@ -14,12 +14,16 @@ public class EllipticCurveBuilder {
     private RingElement a1;
     private RingElement a2;
     private RingElement a6;
+    private BigInteger size;
+    private boolean onlyOneGroup;
 
     public EllipticCurveBuilder() {
         ring = null;
         a1 = null;
         a2 = null;
         a6 = null;
+        size = null;
+        onlyOneGroup = false;
     }
 
 
@@ -27,6 +31,8 @@ public class EllipticCurveBuilder {
         this.ring = builder.ring;
         this.a1 = builder.a1;
         this.a6 = builder.a6;
+        this.size = builder.size;
+        this.onlyOneGroup = builder.onlyOneGroup;
     }
 
     public EllipticCurveBuilder setRing(Ring ring) {
@@ -67,6 +73,29 @@ public class EllipticCurveBuilder {
             return res;
         }
         if (this.a6.equals(a6))
+            return this;
+        throw new IllegalStateException("RingElement a1 already set in that builder");
+    }
+
+    public EllipticCurveBuilder setOrderOnlySubgroup(BigInteger order) {
+        if (this.size == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.size = order;
+            res.onlyOneGroup = true;
+            return res;
+        }
+        if (this.size.equals(order))
+            return this;
+        throw new IllegalStateException("RingElement a1 already set in that builder");
+    }
+
+    public EllipticCurveBuilder setSize(BigInteger size) {
+        if (this.size == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.size = size;
+            return res;
+        }
+        if (this.size.equals(size))
             return this;
         throw new IllegalStateException("RingElement a1 already set in that builder");
     }
