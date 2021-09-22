@@ -12,7 +12,6 @@ import org.jetbrains.annotations.NotNull;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 /**
@@ -22,9 +21,9 @@ import java.util.stream.Collectors;
  * @author M.Àngels Cerveró
  * @author Ricard Garra
  * @author Víctor Mateu
- * @see EC
+ * @see EllipticCurveInt
  */
-public class EllipticCurve implements EC {
+public class EllipticCurve implements EllipticCurveInt {
 
     /**
      * The <i>Ring</i> or <i>Field</i> over which the <i>Elliptic Curve</i>
@@ -43,9 +42,7 @@ public class EllipticCurve implements EC {
 
     private final RingElement A;
     private final RingElement B;
-    private RingElement C;
-
-    // protected ECPoint generator;
+    private final RingElement C;
 
     /**
      * The Infinity point, also used as the neuter element of th group
@@ -54,21 +51,10 @@ public class EllipticCurve implements EC {
     private final boolean onlyOneGroup;
     private final Set<ECSubgroup> subgroups;
     private BigInteger size;
+    private final boolean isSupersingular;
 
     public EllipticCurve(@NotNull final Ring ring, @NotNull final RingElement A, @NotNull final RingElement B) {
-        if (ring.getSize().equals(BigInteger.valueOf(2)) ||
-                ring.getSize().equals(BigInteger.valueOf(3))) {
-            throw new ConstructionException("The ring must not be 2 or 3");
-        }
-        if (!ring.containsElement(A) || !ring.containsElement(B)) {
-            throw new ConstructionException("The coefficients does not belong to the same group.");
-        }
-        this.ring = ring;
-        this.A = A;
-        this.B = B;
-        infintiyPoint = new GeneralECPoint(this);
-        this.onlyOneGroup = false;
-        subgroups = new HashSet<>();
+        this(ring, A, B, null, false);
     }
 
     public EllipticCurve(@NotNull Ring ring, @NotNull RingElement A, @NotNull RingElement B, @NotNull RingElement C) {
@@ -85,13 +71,15 @@ public class EllipticCurve implements EC {
         this.infintiyPoint = new GeneralECPoint(this);
         this.onlyOneGroup = false;
         this.subgroups = new HashSet<>();
-        if (ring.getCharacteristic().equals(BigInteger.TWO)) {
-            if (!checkIsSupersingular())
-                throw new ConstructionException("This curve is not suppersingular");
+        BigInteger characteristic = ring.getCharacteristic();
+        if (BigInteger.TWO.equals(characteristic)) {
+            isSupersingular = checkChar2IsSupersingular();
+        } else {
+            isSupersingular = false; //TODO
         }
     }
 
-    private boolean checkIsSupersingular() {
+    private boolean checkChar2IsSupersingular() {
         BigInteger res = ring.getSize().add(BigInteger.ONE).subtract(this.getSize());
         return res.mod(BigInteger.TWO).equals(BigInteger.ZERO);
     }
@@ -112,13 +100,20 @@ public class EllipticCurve implements EC {
         this.ring = ring;
         this.A = A;
         this.B = B;
+        this.C = null;
         infintiyPoint = new GeneralECPoint(this);
-        if (!validHasseTheorem(order)) {
-            throw new ConstructionException("Not valid size for Hasse Theorem.");
-        }
-        this.size = order;
         this.onlyOneGroup = onlyOneGroup;
+        if (order != null) {
+            if (!validHasseTheorem(order))
+                throw new ConstructionException("Not valid size for Hasse Theorem.");
+            this.size = order;
+        }
         subgroups = new HashSet<>();
+        if (ring.getCharacteristic().equals(BigInteger.valueOf(3L))) {
+            isSupersingular = !A.equals(ring.getAdditiveIdentity());
+        } else {
+            isSupersingular = false;
+        }
     }
 
     static public Pair<EllipticCurve, GeneralECPoint> EllipticCurveGeneratorOnlyOneSubgroup(Ring ring, RingElement A, RingElement B, BigInteger order, RingElement x, RingElement y) {
@@ -146,10 +141,12 @@ public class EllipticCurve implements EC {
         ring = E.ring;
         this.A = E.A;
         this.B = E.B;
+        this.C = E.C;
         this.size = E.size;
         this.onlyOneGroup = E.onlyOneGroup;
         this.subgroups = E.subgroups;
         infintiyPoint = new GeneralECPoint(this);
+        this.isSupersingular = E.isSupersingular;
     }
 
 
@@ -319,7 +316,7 @@ public class EllipticCurve implements EC {
     }
 
     /**
-     * @see EC#getRing()
+     * @see EllipticCurveInt#getRing()
      */
     @Override
     public Ring getRing() {
@@ -327,7 +324,7 @@ public class EllipticCurve implements EC {
     }
 
     /**
-     * @see EC#getA()
+     * @see EllipticCurveInt#getA()
      */
     @Override
     public RingElement getA() {
@@ -335,7 +332,7 @@ public class EllipticCurve implements EC {
     }
 
     /**
-     * @see EC#getB()
+     * @see EllipticCurveInt#getB()
      */
     @Override
     public RingElement getB() {
@@ -343,7 +340,7 @@ public class EllipticCurve implements EC {
     }
 
     /**
-     * @see EC#getRandomElement()
+     * @see EllipticCurveInt#getRandomElement()
      */
     @Override
     public GeneralECPoint getRandomElement() {

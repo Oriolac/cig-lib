@@ -156,7 +156,7 @@ public class BinaryEC extends EllipticCurve {
         return new BinaryECPoint(this);
     }
 
-    public EC getIsogenous(final int l) {
+    public EllipticCurveInt getIsogenous(final int l) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -321,7 +321,7 @@ public class BinaryEC extends EllipticCurve {
     }
 
     /**
-     * @see EC#getRandomElement()
+     * @see EllipticCurveInt#getRandomElement()
      */
     @Override
     public BinaryECPoint getRandomElement() {

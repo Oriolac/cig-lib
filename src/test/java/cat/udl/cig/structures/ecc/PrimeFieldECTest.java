@@ -26,8 +26,7 @@ public class PrimeFieldECTest extends EllipticCurveTest {
         curve = new EllipticCurve(
                 primeField,
                 builder.setValue(1).build().orElseThrow(),
-                builder.setValue(49).build().orElseThrow(),
-                BigInteger.valueOf(1093).multiply(BigInteger.TWO));
+                builder.setValue(49).build().orElseThrow());
         return curve;
     }
 

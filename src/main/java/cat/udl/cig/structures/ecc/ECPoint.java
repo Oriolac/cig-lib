@@ -48,7 +48,7 @@ public interface ECPoint extends GroupElement {
      * @return an EC, the <i>EllipticCurve</i> to which {@code this}
      *         <i>ECPoint</i> \(P\) belongs. That is, \(P \in E(K)\).
      */
-    public EC getCurve();
+    public EllipticCurveInt getCurve();
 
     /**
      * Returns the result of \(2 \cdot P\), where \(P\) is {@code this}

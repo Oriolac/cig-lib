@@ -24,7 +24,7 @@ public class BinaryECPoint extends GeneralECPoint {
     /**
      * The <i>Elliptic Curve</i> \(E\) to which the point \(P\) belongs.
      *
-     * @see EC
+     * @see EllipticCurveInt
      */
     // protected final BinaryEC E;
 
