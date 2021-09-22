@@ -11,13 +11,21 @@ import java.math.BigInteger;
 public class EllipticCurveBuilder {
 
     private final Ring ring;
+    private final RingElement a1;
 
     public EllipticCurveBuilder() {
         ring = null;
+        a1 = null;
     }
 
     public EllipticCurveBuilder(EllipticCurveBuilder builder, Ring ring) {
         this.ring = ring;
+        this.a1 = builder.a1;
+    }
+
+    public EllipticCurveBuilder(EllipticCurveBuilder builder, RingElement a1) {
+        this.ring = builder.ring;
+        this.a1 = a1;
     }
 
     public EllipticCurveBuilder setRing(Ring ring) {
@@ -27,6 +35,14 @@ public class EllipticCurveBuilder {
             return this;
         }
         throw new IllegalStateException("Ring already set in that builder");
+    }
+
+    public EllipticCurveBuilder setA1(RingElement a1) {
+        if (this.a1 == null)
+            return new EllipticCurveBuilder(this, a1);
+        if (this.a1.equals(a1))
+            return this;
+        throw new IllegalStateException("RingElement a1 already set in that builder");
     }
 
 
