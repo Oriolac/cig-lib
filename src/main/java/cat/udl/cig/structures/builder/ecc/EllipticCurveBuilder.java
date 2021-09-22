@@ -5,6 +5,7 @@ import cat.udl.cig.structures.Ring;
 import cat.udl.cig.structures.RingElement;
 import cat.udl.cig.structures.ecc.EllipticCurve;
 import cat.udl.cig.structures.ecc.GeneralECPoint;
+import cat.udl.cig.structures.ecc.WeierstrassFormPart;
 
 import java.math.BigInteger;
 
@@ -132,7 +133,43 @@ public class EllipticCurveBuilder {
         throw new IllegalStateException("RingElement a1 already set in that builder");
     }
 
+    public EllipticCurve build() {
+        if (ring == null)
+            throw new IllegalStateException("Ring must be set");
+        if (a1 == null) {
+            a1 = ring.getAdditiveIdentity();
+        }
+        if (a2 == null) {
+            a2 = ring.getAdditiveIdentity();
+        }
+        if (a3 == null) {
+            a3 = ring.getAdditiveIdentity();
+        }
+        if (a4 == null) {
+            throw new IllegalStateException("At least reduced form");
+        }
+        if (a6 == null) {
+            throw new IllegalStateException("At least reduced form");
+        }
+        WeierstrassFormPart rightPart = (x, y) -> {
+            RingElement right = x.multiply(x).multiply(x);
+            right = right.add(a2.multiply(x).multiply(x));
+            right = right.add(a4.multiply(x));
+            right = right.add(a6);
+            return right;
+        };
+        WeierstrassFormPart leftPart = (x, y) -> {
+            RingElement left = y.multiply(y);
+            left = left.add(a1.multiply(x).multiply(y));
+            left = left.add(a3.multiply(y));
+            return left;
+        };
+        return new EllipticCurve(ring, a4, a6);
+        //return new EllipticCurve(rightPart, leftPart);
+    }
+
     static public EllipticCurve reducedForm(Ring ring, RingElement A, RingElement B) {
+
         return new EllipticCurve(ring, A, B);
     }
 

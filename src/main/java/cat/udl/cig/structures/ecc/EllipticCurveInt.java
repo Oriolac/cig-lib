@@ -116,4 +116,5 @@ public interface EllipticCurveInt extends Group {
         BigInteger rightSide = BigInteger.TWO.multiply(fieldSize.sqrt());
         return leftSide.compareTo(rightSide) <= 0;
     }
+
 }

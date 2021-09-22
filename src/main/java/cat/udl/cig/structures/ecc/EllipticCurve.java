@@ -79,6 +79,13 @@ public class EllipticCurve implements EllipticCurveInt {
         }
     }
 
+    /*
+    public EllipticCurve(WeierstrassFormPart rightPart, WeierstrassFormPart leftPart) {
+        rightPart = rightPart;
+        leftPart = leftPart;
+    }
+     */
+
     private boolean checkChar2IsSupersingular() {
         BigInteger res = ring.getSize().add(BigInteger.ONE).subtract(this.getSize());
         return res.mod(BigInteger.TWO).equals(BigInteger.ZERO);
