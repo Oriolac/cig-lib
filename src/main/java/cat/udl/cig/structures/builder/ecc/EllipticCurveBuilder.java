@@ -10,11 +10,12 @@ import java.math.BigInteger;
 
 public class EllipticCurveBuilder {
 
-    private final Ring ring;
+    private Ring ring;
     private RingElement a1;
     private RingElement a2;
     private RingElement a3;
     private RingElement a4;
+    private RingElement a6;
 
     public EllipticCurveBuilder() {
         ring = null;
@@ -22,23 +23,25 @@ public class EllipticCurveBuilder {
         a2 = null;
         a3 = null;
         a4 = null;
+        a6 = null;
     }
 
 
     public EllipticCurveBuilder(EllipticCurveBuilder builder) {
         this.ring = builder.ring;
         this.a1 = builder.a1;
+        this.a2 = builder.a2;
+        this.a3 = builder.a3;
+        this.a4 = builder.a4;
+        this.a6 = builder.a6;
     }
-
-    public EllipticCurveBuilder(EllipticCurveBuilder builder, Ring ring) {
-        this.ring = ring;
-        this.a1 = builder.a1;
-    }
-
 
     public EllipticCurveBuilder setRing(Ring ring) {
-        if (this.ring == null)
-            return new EllipticCurveBuilder(this, ring);
+        if (this.ring == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.ring = ring;
+            return res;
+        }
         if (this.ring.equals(ring)) {
             return this;
         }
@@ -67,6 +70,38 @@ public class EllipticCurveBuilder {
         throw new IllegalStateException("RingElement a2 already set in that builder");
     }
 
+    public EllipticCurveBuilder setA3(RingElement a3) {
+        if (this.a3 == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.a3 = a3;
+            return res;
+        }
+        if (this.a3.equals(a3))
+            return this;
+        throw new IllegalStateException("RingElement a3 already set in that builder");
+    }
+
+    public EllipticCurveBuilder setA4(RingElement a4) {
+        if (this.a4 == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.a4 = a4;
+            return res;
+        }
+        if (this.a4.equals(a4))
+            return this;
+        throw new IllegalStateException("RingElement a4 already set in that builder");
+    }
+
+    public EllipticCurveBuilder setA6(RingElement a6) {
+        if (this.a6 == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.a6 = a6;
+            return res;
+        }
+        if (this.a6.equals(a6))
+            return this;
+        throw new IllegalStateException("RingElement a1 already set in that builder");
+    }
 
     static public EllipticCurve reducedForm(Ring ring, RingElement A, RingElement B) {
         return new EllipticCurve(ring, A, B);
