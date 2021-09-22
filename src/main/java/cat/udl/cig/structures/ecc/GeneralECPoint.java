@@ -27,7 +27,7 @@ public class GeneralECPoint implements ECPoint {
     /**
      * The <i>Elliptic Curve</i> \(E\) to which the point \(P\) belongs.
      *
-     * @see EC
+     * @see EllipticCurveInt
      */
     final protected EllipticCurve curve;
 
@@ -416,7 +416,7 @@ public class GeneralECPoint implements ECPoint {
                 Q = projectiveAdd(Q, minusP);
             }
         }
-        return toECPoint(Q).orElse(null);
+        return Objects.requireNonNull(toECPoint(Q).orElse(null));
     }
 
     private RingElement[] toProjective(final GeneralECPoint P) {

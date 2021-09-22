@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * @see Group
  */
 
-public interface EC extends Group {
+public interface EllipticCurveInt extends Group {
 
     /**
      * Returns the ring \(k\) for the <i>Elliptic Curve</i> \(E\).
