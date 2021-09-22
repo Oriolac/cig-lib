@@ -10,33 +10,31 @@ import java.math.BigInteger;
 
 public class EllipticCurveBuilder {
 
-    private final Ring ring;
+    private Ring ring;
     private RingElement a1;
     private RingElement a2;
-
-    private final String A1 = "A1";
+    private RingElement a6;
 
     public EllipticCurveBuilder() {
         ring = null;
         a1 = null;
         a2 = null;
+        a6 = null;
     }
 
 
     public EllipticCurveBuilder(EllipticCurveBuilder builder) {
         this.ring = builder.ring;
         this.a1 = builder.a1;
+        this.a6 = builder.a6;
     }
-
-    public EllipticCurveBuilder(EllipticCurveBuilder builder, Ring ring) {
-        this.ring = ring;
-        this.a1 = builder.a1;
-    }
-
 
     public EllipticCurveBuilder setRing(Ring ring) {
-        if (this.ring == null)
-            return new EllipticCurveBuilder(this, ring);
+        if (this.ring == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.ring = ring;
+            return res;
+        }
         if (this.ring.equals(ring)) {
             return this;
         }
@@ -62,6 +60,16 @@ public class EllipticCurveBuilder {
         throw new IllegalStateException("RingElement a2 already set in that builder");
     }
 
+    public EllipticCurveBuilder setA6(RingElement a6) {
+        if (this.a6 == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.a6 = a6;
+            return res;
+        }
+        if (this.a6.equals(a6))
+            return this;
+        throw new IllegalStateException("RingElement a1 already set in that builder");
+    }
 
     static public EllipticCurve reducedForm(Ring ring, RingElement A, RingElement B) {
         return new EllipticCurve(ring, A, B);
