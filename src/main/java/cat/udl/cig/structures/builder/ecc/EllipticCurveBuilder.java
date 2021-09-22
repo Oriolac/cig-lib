@@ -13,13 +13,15 @@ public class EllipticCurveBuilder {
     private final Ring ring;
     private RingElement a1;
     private RingElement a2;
-
-    private final String A1 = "A1";
+    private RingElement a3;
+    private RingElement a4;
 
     public EllipticCurveBuilder() {
         ring = null;
         a1 = null;
         a2 = null;
+        a3 = null;
+        a4 = null;
     }
 
 
@@ -55,8 +57,11 @@ public class EllipticCurveBuilder {
     }
 
     public EllipticCurveBuilder setA2(RingElement a2) {
-        if (this.a2 == null)
-            return new EllipticCurveBuilder(this, a2);
+        if (this.a2 == null) {
+            EllipticCurveBuilder res = new EllipticCurveBuilder(this);
+            res.a2 = a2;
+            return res;
+        }
         if (this.a2.equals(a2))
             return this;
         throw new IllegalStateException("RingElement a2 already set in that builder");
