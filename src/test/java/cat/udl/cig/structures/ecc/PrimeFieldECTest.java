@@ -41,33 +41,33 @@ public class PrimeFieldECTest extends EllipticCurveTest {
     }
 
     @Override
-    protected GeneralECPoint returnGeneralECPoint1() {
-        return new GeneralECPoint(curve, builder.setValue(1583).build().orElseThrow(), builder.setValue(1734).build().orElseThrow());
+    protected EllipticCurvePoint returnGeneralECPoint1() {
+        return new EllipticCurvePoint(curve, builder.setValue(1583).build().orElseThrow(), builder.setValue(1734).build().orElseThrow());
     }
 
     @Override
-    protected GeneralECPoint returnGeneralECPoint2() {
-        GeneralECPoint point2 = returnGeneralECPoint1().pow(BigInteger.TWO);
-        assertEquals(new GeneralECPoint(curve, builder.setValue(821).build().orElseThrow(), builder.setValue(1341).build().orElseThrow()), point2);
+    protected EllipticCurvePoint returnGeneralECPoint2() {
+        EllipticCurvePoint point2 = returnGeneralECPoint1().pow(BigInteger.TWO);
+        assertEquals(new EllipticCurvePoint(curve, builder.setValue(821).build().orElseThrow(), builder.setValue(1341).build().orElseThrow()), point2);
         return point2;
     }
 
     @Override
-    protected GeneralECPoint returnExpectedResultPlusOperation() {
+    protected EllipticCurvePoint returnExpectedResultPlusOperation() {
         String xStr = "297";
         BigInteger x = new BigInteger(xStr);
         String yStr = "968";
         BigInteger y = new BigInteger(yStr);
-        return new GeneralECPoint(curve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
+        return new EllipticCurvePoint(curve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
 
     @Override
-    protected GeneralECPoint returnsExpectedElementMultByTHREE() {
+    protected EllipticCurvePoint returnsExpectedElementMultByTHREE() {
         String point1Str = "297";
         BigInteger x = new BigInteger(point1Str);
         String point2Str = "968";
         BigInteger y = new BigInteger(point2Str);
-        return new GeneralECPoint(curve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
+        return new EllipticCurvePoint(curve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
 
     @Override
@@ -76,7 +76,7 @@ public class PrimeFieldECTest extends EllipticCurveTest {
     }
 
     @Override
-    protected ArrayList<GeneralECPoint> returnLessPointsOfPoint1() {
+    protected ArrayList<EllipticCurvePoint> returnLessPointsOfPoint1() {
         return new ArrayList<>(List.of(returnsExpectedElementMultByTHREE(), returnExpectedResultPlusOperation(), returnGeneralECPoint2()));
     }
 
@@ -99,26 +99,26 @@ public class PrimeFieldECTest extends EllipticCurveTest {
 
     @Test
     void testP1MultNIsInfinity() {
-        GeneralECPoint result = returnGeneralECPoint1().pow(BigInteger.valueOf(1093));
+        EllipticCurvePoint result = returnGeneralECPoint1().pow(BigInteger.valueOf(1093));
         assertTrue(result.isInfinity());
     }
 
     @Test
     void testP2MultNIsInfinity() {
-        GeneralECPoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093));
+        EllipticCurvePoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093));
         assertTrue(result.isInfinity());
     }
 
     @Test
     void testP2MultNMinus2IsNotIfinity() {
-        GeneralECPoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093-2));
+        EllipticCurvePoint result = returnGeneralECPoint2().pow(BigInteger.valueOf(1093-2));
         assertFalse(result.isInfinity());
     }
 
     @Test
     void testSeveralPow() {
-        HashMap<BigInteger, GeneralECPoint> powers = PowersOfPrimeFieldAF.getPowers(curve, builder);
-        for (Map.Entry<BigInteger, GeneralECPoint> entry : powers.entrySet()) {
+        HashMap<BigInteger, EllipticCurvePoint> powers = PowersOfPrimeFieldAF.getPowers(curve, builder);
+        for (Map.Entry<BigInteger, EllipticCurvePoint> entry : powers.entrySet()) {
             assertEquals(entry.getValue(), returnGeneralECPoint1().pow(entry.getKey()), "P1 * " + entry.getKey() + " != " + entry.getValue());
         }
     }
@@ -131,9 +131,9 @@ public class PrimeFieldECTest extends EllipticCurveTest {
 
     @Test
     void testOrderOfAPoint() {
-        GeneralECPoint point = returnGeneralECPoint1();
+        EllipticCurvePoint point = returnGeneralECPoint1();
         BigInteger order = point.getOrder();
-        GeneralECPoint result = point.pow(order);
+        EllipticCurvePoint result = point.pow(order);
         System.out.println("Point = " + point);
         System.out.println("Order of the point = " + order);
         System.out.println("Power = " + result);

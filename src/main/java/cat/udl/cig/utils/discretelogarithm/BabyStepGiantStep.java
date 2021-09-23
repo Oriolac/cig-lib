@@ -2,7 +2,7 @@ package cat.udl.cig.utils.discretelogarithm;
 
 import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.GroupElement;
-import cat.udl.cig.structures.ecc.GeneralECPoint;
+import cat.udl.cig.structures.ecc.EllipticCurvePoint;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
         this.alpha = alpha;
     }
 
-    public BabyStepGiantStep(GeneralECPoint gen, BigInteger order) {
+    public BabyStepGiantStep(EllipticCurvePoint gen, BigInteger order) {
         this.size = order;
         this.m = order.sqrt();
         this.alpha = gen;

@@ -12,7 +12,6 @@ import cat.udl.cig.structures.MultiplicativeSubgroup;
 import cat.udl.cig.structures.Group;
 import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
 import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
-import cat.udl.cig.utils.discretelogarithm.BruteForce;
 import org.jetbrains.annotations.NotNull;
 
 
@@ -28,9 +27,9 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
 
     private final BigInteger orderOfSubgroup;
 
-    private final GeneralECPoint generator;
+    private final EllipticCurvePoint generator;
 
-    public ECPrimeOrderSubgroup(@NotNull final EllipticCurve curve, @NotNull final BigInteger orderOfSubgroup, @NotNull final GeneralECPoint generatorPoint) {
+    public ECPrimeOrderSubgroup(@NotNull final EllipticCurve curve, @NotNull final BigInteger orderOfSubgroup, @NotNull final EllipticCurvePoint generatorPoint) {
         if (generatorPoint.pow(orderOfSubgroup).isInfinity()) {
             EC = curve;
             this.orderOfSubgroup = orderOfSubgroup;
@@ -58,7 +57,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
      * @see Group#getRandomElement()
      */
     @Override
-    public GeneralECPoint getRandomElement() {
+    public EllipticCurvePoint getRandomElement() {
         return generator.pow(getRandomExponent());
     }
 
@@ -79,7 +78,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
      * @see Group#getMultiplicativeIdentity()
      */
     @Override
-    public GeneralECPoint getMultiplicativeIdentity() {
+    public EllipticCurvePoint getMultiplicativeIdentity() {
         return EC.getMultiplicativeIdentity();
     }
 
@@ -88,9 +87,9 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
      *      GroupElement)
      */
     @Override
-    public GeneralECPoint multiply(final GroupElement x,
-                                   final GroupElement y) {
-        return (GeneralECPoint) x.multiply(y);
+    public EllipticCurvePoint multiply(final GroupElement x,
+                                       final GroupElement y) {
+        return (EllipticCurvePoint) x.multiply(y);
     }
 
     /**
@@ -98,8 +97,8 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
      *      BigInteger)
      */
     @Override
-    public GeneralECPoint pow(final GroupElement x, final BigInteger pow) {
-        return (GeneralECPoint) x.pow(pow);
+    public EllipticCurvePoint pow(final GroupElement x, final BigInteger pow) {
+        return (EllipticCurvePoint) x.pow(pow);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
      * @see MultiplicativeSubgroup#getGenerator()
      */
     @Override
-    public GeneralECPoint getGenerator() {
+    public EllipticCurvePoint getGenerator() {
         return generator;
     }
 

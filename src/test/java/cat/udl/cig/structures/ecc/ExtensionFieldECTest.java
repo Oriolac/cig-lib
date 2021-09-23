@@ -13,7 +13,6 @@ import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +58,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
     }
 
     @Override
-    protected GeneralECPoint returnGeneralECPoint1() {
+    protected EllipticCurvePoint returnGeneralECPoint1() {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(1, primeField.getMultiplicativeIdentity())
@@ -70,12 +69,12 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                         .addTerm(0, primeField.buildElement().setValue(451).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
-        return new GeneralECPoint(curve, x, y);
+        return new EllipticCurvePoint(curve, x, y);
     }
 
     @Override
-    protected GeneralECPoint returnGeneralECPoint2() {
-        GeneralECPoint point2 = returnGeneralECPoint1().pow(BigInteger.TWO);
+    protected EllipticCurvePoint returnGeneralECPoint2() {
+        EllipticCurvePoint point2 = returnGeneralECPoint1().pow(BigInteger.TWO);
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(1, primeField.buildElement().setValue(1550).build().orElseThrow())
@@ -87,13 +86,13 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                         .addTerm(0, primeField.buildElement().setValue(2210).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
-        GeneralECPoint expected = new GeneralECPoint(curve, x, y);
+        EllipticCurvePoint expected = new EllipticCurvePoint(curve, x, y);
         assertEquals(expected, point2);
         return point2;
     }
 
     @Override
-    protected GeneralECPoint returnExpectedResultPlusOperation() {
+    protected EllipticCurvePoint returnExpectedResultPlusOperation() {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(1, primeField.buildElement().setValue(1667).build().orElseThrow())
@@ -105,11 +104,11 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                         .addTerm(0, primeField.buildElement().setValue(1166).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
-        return new GeneralECPoint(curve, x, y);
+        return new EllipticCurvePoint(curve, x, y);
     }
 
     @Override
-    protected GeneralECPoint returnsExpectedElementMultByTHREE() {
+    protected EllipticCurvePoint returnsExpectedElementMultByTHREE() {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(1, primeField.buildElement().setValue(1667).build().orElseThrow())
@@ -121,7 +120,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                         .addTerm(0, primeField.buildElement().setValue(1166).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
-        return new GeneralECPoint(curve, x, y);
+        return new EllipticCurvePoint(curve, x, y);
     }
 
     @Override
@@ -130,15 +129,15 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
     }
 
     @Override
-    protected ArrayList<GeneralECPoint> returnLessPointsOfPoint1() {
-        ArrayList<GeneralECPoint> res = new ArrayList<>();
+    protected ArrayList<EllipticCurvePoint> returnLessPointsOfPoint1() {
+        ArrayList<EllipticCurvePoint> res = new ArrayList<>();
         res.add(returnGeneralPoint(0, 1, 0, 617));
         res.add(returnGeneralPoint(0, 1432, 1573, 0));
         res.add(returnGeneralPoint(0, 1432, 1573, 0));
         return res;
     }
 
-    public GeneralECPoint returnGeneralPoint(int x1, int x0, int y1, int y0) {
+    public EllipticCurvePoint returnGeneralPoint(int x1, int x0, int y1, int y0) {
         Polynomial.PolynomialBuilder pBuilder = new Polynomial.PolynomialBuilder();
         ExtensionFieldElement x = extensionField.buildElement().setPolynomial(
                 pBuilder.addTerm(1, primeField.buildElement().setValue(x1).build().orElseThrow())
@@ -150,7 +149,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                         .addTerm(0, primeField.buildElement().setValue(y0).build().orElseThrow())
                         .build())
                 .build().orElseThrow();
-        return new GeneralECPoint(curve, x, y);
+        return new EllipticCurvePoint(curve, x, y);
     }
 
 
@@ -166,7 +165,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
     @Test
     void testMultiplication() {
         if (!TEST_MULT_RUN_FLAG) return;
-        GeneralECPoint point1 = returnGeneralECPoint1();
+        EllipticCurvePoint point1 = returnGeneralECPoint1();
         try (Reader reader = Files.newBufferedReader(Paths.get("filetest/orderp1ext.csv"));
              CSVReader csvReader = new CSVReader(reader)) {
             int i = 0;
@@ -177,7 +176,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                 String x = pointStr[0].replaceAll("\\u0020", "");
                 String y = pointStr[1].replaceAll("\\u0020", "");
                 BigInteger z = new BigInteger(pointStr[2].replaceAll("\\u0020", ""));
-                GeneralECPoint point = null;
+                EllipticCurvePoint point = null;
                 if (z.equals(BigInteger.ZERO)) {
                     point = curve.getMultiplicativeIdentity();
                 } else {
@@ -225,17 +224,17 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
 
     @Test
     void testSizePow() {
-        GeneralECPoint point1 = returnGeneralECPoint1();
+        EllipticCurvePoint point1 = returnGeneralECPoint1();
         BigInteger order = point1.getOrder();
         assertEquals(new BigInteger("306332"), order);
-        GeneralECPoint subPoint = point1.pow(order.subtract(BigInteger.ONE));
+        EllipticCurvePoint subPoint = point1.pow(order.subtract(BigInteger.ONE));
         assertEquals(curve.getMultiplicativeIdentity(), subPoint.multiply(point1));
         assertEquals(curve.getMultiplicativeIdentity(), point1.pow(order));
     }
 
     @Test
     void testSizePowInternal() {
-        GeneralECPoint point1 = returnGeneralECPoint1();
+        EllipticCurvePoint point1 = returnGeneralECPoint1();
         ExtensionFieldElement x = extensionField.buildElement()
                 .setPolynomial(new Polynomial.PolynomialBuilder()
                         .addTerm(1, primeField.getAdditiveIdentity())
@@ -247,7 +246,7 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
                         .addTerm(0, primeField.getAdditiveIdentity())
                         .build())
                 .build().orElseThrow();
-        GeneralECPoint rootInf = new GeneralECPoint(curve, x, y);
+        EllipticCurvePoint rootInf = new EllipticCurvePoint(curve, x, y);
         rootInf.multiply(rootInf);
     }
 }

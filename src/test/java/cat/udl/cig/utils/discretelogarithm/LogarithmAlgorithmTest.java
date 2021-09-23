@@ -5,7 +5,7 @@ import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
 import cat.udl.cig.structures.builder.PrimeFieldElementBuilder;
 import cat.udl.cig.structures.ecc.EllipticCurve;
-import cat.udl.cig.structures.ecc.GeneralECPoint;
+import cat.udl.cig.structures.ecc.EllipticCurvePoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -127,12 +127,12 @@ abstract class LogarithmAlgorithmTest {
                 BigInteger.valueOf(1093 * 2)
         );
 
-        public GeneralECPoint returnGenerator() {
-            return new GeneralECPoint(curve, builder.setValue(1583).build().orElseThrow(), builder.setValue(1734).build().orElseThrow());
+        public EllipticCurvePoint returnGenerator() {
+            return new EllipticCurvePoint(curve, builder.setValue(1583).build().orElseThrow(), builder.setValue(1734).build().orElseThrow());
         }
 
-        public GeneralECPoint returnBeta() {
-            return new GeneralECPoint(curve, builder.setValue(165).build().orElseThrow(), builder.setValue(917).build().orElseThrow());
+        public EllipticCurvePoint returnBeta() {
+            return new EllipticCurvePoint(curve, builder.setValue(165).build().orElseThrow(), builder.setValue(917).build().orElseThrow());
         }
 
         public BigInteger returnExpectedPower() {

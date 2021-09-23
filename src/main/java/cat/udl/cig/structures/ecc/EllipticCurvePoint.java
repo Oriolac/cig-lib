@@ -22,7 +22,7 @@ import java.util.Optional;
  * @see ECPoint
  * @see EllipticCurve
  */
-public class GeneralECPoint implements ECPoint {
+public class EllipticCurvePoint implements ECPoint {
 
     /**
      * The <i>Elliptic Curve</i> \(E\) to which the point \(P\) belongs.
@@ -62,7 +62,7 @@ public class GeneralECPoint implements ECPoint {
      *
      * @param E1 the <i>GeneralEC</i> to which \(P\) belongs.
      */
-    public GeneralECPoint(final EllipticCurve E1) {
+    public EllipticCurvePoint(final EllipticCurve E1) {
         curve = E1;
         // Infinity point (0:1:0)
         x = curve.getRing().getAdditiveIdentity();
@@ -71,8 +71,8 @@ public class GeneralECPoint implements ECPoint {
         order = BigInteger.ONE;
     }
 
-    static public GeneralECPoint infinityPoint(@NotNull final EllipticCurve E1) {
-        return new GeneralECPoint(E1);
+    static public EllipticCurvePoint infinityPoint(@NotNull final EllipticCurve E1) {
+        return new EllipticCurvePoint(E1);
     }
 
     /**
@@ -81,7 +81,7 @@ public class GeneralECPoint implements ECPoint {
      *
      * @param P the <i>GeneralECPoint</i> to be copied.
      */
-    public GeneralECPoint(@NotNull final GeneralECPoint P) {
+    public EllipticCurvePoint(@NotNull final EllipticCurvePoint P) {
         curve = P.curve;
         x = P.x;
         y = P.y;
@@ -106,8 +106,8 @@ public class GeneralECPoint implements ECPoint {
      *               constructor checks if the order is correct. If not, it is
      *               initialized to ONE.
      */
-    protected GeneralECPoint(@NotNull final EllipticCurve curve, @NotNull final RingElement ix,
-                             @NotNull final RingElement iy, @NotNull final BigInteger iOrder) {
+    protected EllipticCurvePoint(@NotNull final EllipticCurve curve, @NotNull final RingElement ix,
+                                 @NotNull final RingElement iy, @NotNull final BigInteger iOrder) {
         this.curve = curve;
         if (!curve.getRing().containsElement(ix) || !curve.getRing().containsElement(iy)) {
             throw new ConstructionException("The point is not constructed on the correct ring ecc.");
@@ -121,9 +121,9 @@ public class GeneralECPoint implements ECPoint {
         }
     }
 
-    private GeneralECPoint(@NotNull final EllipticCurve iE, @NotNull final RingElement ix,
-                           @NotNull final RingElement iy, @NotNull final BigInteger iOrder,
-                           final boolean iIsInfinity) {
+    private EllipticCurvePoint(@NotNull final EllipticCurve iE, @NotNull final RingElement ix,
+                               @NotNull final RingElement iy, @NotNull final BigInteger iOrder,
+                               final boolean iIsInfinity) {
         curve = iE;
         if (!iIsInfinity) {
             x = ix;
@@ -157,8 +157,8 @@ public class GeneralECPoint implements ECPoint {
      * @param iy the \(y\) coordinate for \(P\). It must belong to
      *           {@code this.E.getRing()}.
      */
-    public GeneralECPoint(final EllipticCurve iE, final RingElement ix,
-                          final RingElement iy) {
+    public EllipticCurvePoint(final EllipticCurve iE, final RingElement ix,
+                              final RingElement iy) {
         curve = iE;
         if (!(curve.getRing().containsElement(ix) && curve.getRing().containsElement(iy) && curve.isOnCurve(ix, iy))) {
             throw new ConstructionException("The point does not belong to the curve.");
@@ -207,9 +207,9 @@ public class GeneralECPoint implements ECPoint {
      * @see GroupElement#divide(GroupElement)
      */
     @Override
-    public GeneralECPoint divide(final GroupElement iQ)
+    public EllipticCurvePoint divide(final GroupElement iQ)
             throws ArithmeticException {
-        GeneralECPoint Q = (GeneralECPoint) iQ;
+        EllipticCurvePoint Q = (EllipticCurvePoint) iQ;
         if (isInfinity) {
             return Q.inverse();
         }
@@ -220,20 +220,20 @@ public class GeneralECPoint implements ECPoint {
     }
 
     @Override
-    public GeneralECPoint square() {
+    public EllipticCurvePoint square() {
         if (isInfinity) {
             return curve.getMultiplicativeIdentity();
         }
         RingElement[] point = computeDoublePoint();
-        Optional<? extends GeneralECPoint> generalECPoint = this.curve.buildElement().setXYCoordinates(point[0], point[1]).build();
+        Optional<? extends EllipticCurvePoint> generalECPoint = this.curve.buildElement().setXYCoordinates(point[0], point[1]).build();
         if (generalECPoint.isEmpty()) {
-            return new GeneralECPoint(this.curve);
+            return new EllipticCurvePoint(this.curve);
         }
         return generalECPoint.get();
     }
 
-    private Optional<GeneralECPoint> fromCoordinates(RingElement xCoord, RingElement yCoord) {
-        GeneralECPoint point = new GeneralECPoint(curve, xCoord, yCoord);
+    private Optional<EllipticCurvePoint> fromCoordinates(RingElement xCoord, RingElement yCoord) {
+        EllipticCurvePoint point = new EllipticCurvePoint(curve, xCoord, yCoord);
         if (this.curve.isOnCurve(point))
             return Optional.of(point);
         return Optional.empty();
@@ -258,11 +258,11 @@ public class GeneralECPoint implements ECPoint {
     }
 
     @Override
-    public GeneralECPoint multiply(final GroupElement iQ)
+    public EllipticCurvePoint multiply(final GroupElement iQ)
             throws ArithmeticException {
-        if (!(iQ instanceof GeneralECPoint))
+        if (!(iQ instanceof EllipticCurvePoint))
             throw new IllegalArgumentException("The point is not a GeneralECPoint.");
-        GeneralECPoint Q = (GeneralECPoint) iQ;
+        EllipticCurvePoint Q = (EllipticCurvePoint) iQ;
         if (!curve.equals(Q.curve))
             throw new ArithmeticException(
                     "Trying to add points from different Elliptic Curves");
@@ -281,12 +281,12 @@ public class GeneralECPoint implements ECPoint {
         }
     }
 
-    private GeneralECPoint computeDifferentPointAddition(GeneralECPoint q) {
+    private EllipticCurvePoint computeDifferentPointAddition(EllipticCurvePoint q) {
         return computeDifferentPointAddition(q.x, q.y);
     }
 
-    private GeneralECPoint computeDifferentPointAddition(final RingElement Bx,
-                                                         final RingElement By) {
+    private EllipticCurvePoint computeDifferentPointAddition(final RingElement Bx,
+                                                             final RingElement By) {
         RingElement[] result = new RingElement[2];
         final RingElement lambda;
         lambda = computeLambdaAdditionDifferentPoint(Bx, By);
@@ -325,7 +325,7 @@ public class GeneralECPoint implements ECPoint {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        GeneralECPoint that = (GeneralECPoint) o;
+        EllipticCurvePoint that = (EllipticCurvePoint) o;
         return isInfinity == that.isInfinity &&
                 Objects.equals(curve, that.curve) &&
                 Objects.equals(x, that.x) &&
@@ -343,11 +343,11 @@ public class GeneralECPoint implements ECPoint {
     }
 
     @Override
-    public GeneralECPoint inverse() {
+    public EllipticCurvePoint inverse() {
         if (isInfinity) {
             return this;
         }
-        return new GeneralECPoint(getCurve(), getX(), getY().opposite());
+        return new EllipticCurvePoint(getCurve(), getX(), getY().opposite());
     }
 
     /**
@@ -359,11 +359,11 @@ public class GeneralECPoint implements ECPoint {
      * {@code this} is not initialized.
      */
     @Override
-    public GeneralECPoint pow(BigInteger k) {
+    public EllipticCurvePoint pow(BigInteger k) {
         return peasantRussianPow(k);
     }
 
-    public GeneralECPoint peasantRussianPow(BigInteger k) {
+    public EllipticCurvePoint peasantRussianPow(BigInteger k) {
         if (isInfinity()) {
             return this;
         }
@@ -371,12 +371,12 @@ public class GeneralECPoint implements ECPoint {
             k = k.mod(order);
         }
         if (k.equals(BigInteger.ZERO)) {
-            return new GeneralECPoint(this.curve);
+            return new EllipticCurvePoint(this.curve);
         }
         final BigInteger power = k;
         String binaries = power.toString(2);
         binaries = binaries.substring(1);
-        GeneralECPoint acc = new GeneralECPoint(this);
+        EllipticCurvePoint acc = new EllipticCurvePoint(this);
         for (char bin : binaries.toCharArray()) {
             acc = acc.multiply(acc, acc.ecSubgroup);
             if (bin == '1') {
@@ -386,14 +386,14 @@ public class GeneralECPoint implements ECPoint {
         return acc;
     }
 
-    private GeneralECPoint multiply(GeneralECPoint acc, ECSubgroup ecSubgroup) {
-        GeneralECPoint result = this.multiply(acc);
+    private EllipticCurvePoint multiply(EllipticCurvePoint acc, ECSubgroup ecSubgroup) {
+        EllipticCurvePoint result = this.multiply(acc);
         result.ecSubgroup = ecSubgroup;
         return result;
     }
 
     @NotNull
-    private GeneralECPoint powNAFMethod(BigInteger k) {
+    private EllipticCurvePoint powNAFMethod(BigInteger k) {
         if (isInfinity()) {
             return this;
         }
@@ -419,7 +419,7 @@ public class GeneralECPoint implements ECPoint {
         return Objects.requireNonNull(toECPoint(Q).orElse(null));
     }
 
-    private RingElement[] toProjective(final GeneralECPoint P) {
+    private RingElement[] toProjective(final EllipticCurvePoint P) {
         RingElement[] result = new RingElement[3];
         result[0] = P.getX();
         result[1] = P.getY();
@@ -427,7 +427,7 @@ public class GeneralECPoint implements ECPoint {
         return result;
     }
 
-    private Optional<GeneralECPoint> toECPoint(final RingElement[] point) {
+    private Optional<EllipticCurvePoint> toECPoint(final RingElement[] point) {
         if (point[2].equals(point[2].getGroup().ZERO())) {
             return Optional.of(curve.getMultiplicativeIdentity());
         }
@@ -712,10 +712,10 @@ public class GeneralECPoint implements ECPoint {
 
     @Override
     public int compareTo(@NotNull GroupElement o) {
-        if (!(o instanceof GeneralECPoint)) {
+        if (!(o instanceof EllipticCurvePoint)) {
             throw new ArithmeticException("Must be from same class");
         }
-        GeneralECPoint that = (GeneralECPoint) o;
+        EllipticCurvePoint that = (EllipticCurvePoint) o;
         int xComparison = this.x.compareTo(that.x);
         if (xComparison == 0) {
             return this.y.compareTo(that.y);

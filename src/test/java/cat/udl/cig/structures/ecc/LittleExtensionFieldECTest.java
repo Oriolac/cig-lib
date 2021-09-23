@@ -96,8 +96,8 @@ public class LittleExtensionFieldECTest {
 
         points.forEach((a, b) -> {
             System.out.println(a);
-            ArrayList<? extends GeneralECPoint> actualPoints = ec.liftX(a);
-            for (GeneralECPoint actualPoint : actualPoints) {
+            ArrayList<? extends EllipticCurvePoint> actualPoints = ec.liftX(a);
+            for (EllipticCurvePoint actualPoint : actualPoints) {
                 RingElement y = actualPoint.getY();
                 assertTrue(y instanceof ExtensionFieldElement);
                 assertTrue(b.contains((ExtensionFieldElement) actualPoint.getY()));

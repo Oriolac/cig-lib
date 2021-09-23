@@ -20,7 +20,7 @@ import cat.udl.cig.structures.GroupElement;
  * @see BinaryEC
  * @author Ricard Garra
  */
-public class BinaryECPoint extends GeneralECPoint {
+public class BinaryECPoint extends EllipticCurvePoint {
     /**
      * The <i>Elliptic Curve</i> \(E\) to which the point \(P\) belongs.
      *

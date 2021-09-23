@@ -107,7 +107,7 @@ public interface EllipticCurveInt extends Group {
      * \(x\).
      * @see ECPoint
      */
-    ArrayList<? extends GeneralECPoint> liftX(RingElement x);
+    ArrayList<? extends EllipticCurvePoint> liftX(RingElement x);
 
 
     default boolean validHasseTheorem(BigInteger probableCardinality) {

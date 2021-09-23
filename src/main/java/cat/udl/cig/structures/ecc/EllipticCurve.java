@@ -47,7 +47,7 @@ public class EllipticCurve implements EllipticCurveInt {
     /**
      * The Infinity point, also used as the neuter element of th group
      */
-    private final GeneralECPoint infintiyPoint;
+    private final EllipticCurvePoint infintiyPoint;
     private final boolean onlyOneGroup;
     private final Set<ECSubgroup> subgroups;
     private BigInteger size;
@@ -68,7 +68,7 @@ public class EllipticCurve implements EllipticCurveInt {
         this.A = A;
         this.B = B;
         this.C = C;
-        this.infintiyPoint = new GeneralECPoint(this);
+        this.infintiyPoint = new EllipticCurvePoint(this);
         this.onlyOneGroup = false;
         this.subgroups = new HashSet<>();
         BigInteger characteristic = ring.getCharacteristic();
@@ -108,7 +108,7 @@ public class EllipticCurve implements EllipticCurveInt {
         this.A = A;
         this.B = B;
         this.C = null;
-        infintiyPoint = new GeneralECPoint(this);
+        infintiyPoint = new EllipticCurvePoint(this);
         this.onlyOneGroup = onlyOneGroup;
         if (order != null) {
             if (!validHasseTheorem(order))
@@ -123,15 +123,15 @@ public class EllipticCurve implements EllipticCurveInt {
         }
     }
 
-    static public Pair<EllipticCurve, GeneralECPoint> EllipticCurveGeneratorOnlyOneSubgroup(Ring ring, RingElement A, RingElement B, BigInteger order, RingElement x, RingElement y) {
+    static public Pair<EllipticCurve, EllipticCurvePoint> EllipticCurveGeneratorOnlyOneSubgroup(Ring ring, RingElement A, RingElement B, BigInteger order, RingElement x, RingElement y) {
         EllipticCurve curve = new EllipticCurve(ring, A, B, order, true);
-        GeneralECPoint point = new GeneralECPoint(curve, x, y, order);
+        EllipticCurvePoint point = new EllipticCurvePoint(curve, x, y, order);
         curve.createSubgroupOrder(point, order);
         return new Pair<>(curve, point);
     }
 
     // Check if existing subgroup uncontrolled.
-    protected void createSubgroupOrder(GeneralECPoint point, BigInteger order) {
+    protected void createSubgroupOrder(EllipticCurvePoint point, BigInteger order) {
         if (this.onlyOneGroup && this.subgroups.size() > 0)
             throw new ConstructionException("Cannot create another subgroup order. OnlyeOneGroup flag is activated.");
         ECSubgroup subgroup = new ECPrimeOrderSubgroup(this, order, point);
@@ -152,13 +152,13 @@ public class EllipticCurve implements EllipticCurveInt {
         this.size = E.size;
         this.onlyOneGroup = E.onlyOneGroup;
         this.subgroups = E.subgroups;
-        infintiyPoint = new GeneralECPoint(this);
+        infintiyPoint = new EllipticCurvePoint(this);
         this.isSupersingular = E.isSupersingular;
     }
 
 
     @Override
-    public GeneralECPoint getMultiplicativeIdentity() {
+    public EllipticCurvePoint getMultiplicativeIdentity() {
         return infintiyPoint;
     }
 
@@ -202,11 +202,11 @@ public class EllipticCurve implements EllipticCurveInt {
 
 
     @Override
-    public ArrayList<? extends GeneralECPoint> liftX(final RingElement x) {
+    public ArrayList<? extends EllipticCurvePoint> liftX(final RingElement x) {
 
         try {
             RingElement y;
-            GeneralECPoint P;
+            EllipticCurvePoint P;
             ArrayList<? extends RingElement> ySquareRoots;
             // y^2 = x^3 + ax + b
 
@@ -217,7 +217,7 @@ public class EllipticCurve implements EllipticCurveInt {
             if (ySquareRoots.isEmpty()) {
                 return new ArrayList<>();
             }
-            return ySquareRoots.stream().map(newY -> new GeneralECPoint(this, x, newY)).filter(this::isOnCurve).collect(Collectors.toCollection(ArrayList::new));
+            return ySquareRoots.stream().map(newY -> new EllipticCurvePoint(this, x, newY)).filter(this::isOnCurve).collect(Collectors.toCollection(ArrayList::new));
         } catch (IncorrectRingElementException ex) {
             return new ArrayList<>();
         }
@@ -251,15 +251,15 @@ public class EllipticCurve implements EllipticCurveInt {
             return this.size;
         List<BigInteger> listOrders = new ArrayList<>();
         BigInteger size = BigInteger.ONE;
-        Set<GeneralECPoint> gensOfSubgroups = new HashSet<>();
+        Set<EllipticCurvePoint> gensOfSubgroups = new HashSet<>();
         int i = 0;
         while (i < 6 || !this.validHasseTheorem(size)) {
-            GeneralECPoint point = getRandomElement();
+            EllipticCurvePoint point = getRandomElement();
             while (point.isInfinity()) {
                 point = getRandomElement();
             }
             boolean found = false;
-            for (GeneralECPoint gen : gensOfSubgroups) {
+            for (EllipticCurvePoint gen : gensOfSubgroups) {
                 Optional<BigInteger> discreteLog = new BabyStepGiantStep(gen, gen.getOrder()).algorithm(point);
                 if (discreteLog.isPresent()) {
                     found = true;
@@ -303,9 +303,9 @@ public class EllipticCurve implements EllipticCurveInt {
      * GroupElement)
      */
     @Override
-    public GeneralECPoint multiply(final GroupElement x,
-                                   final GroupElement y) {
-        return (GeneralECPoint) x.multiply(y);
+    public EllipticCurvePoint multiply(final GroupElement x,
+                                       final GroupElement y) {
+        return (EllipticCurvePoint) x.multiply(y);
     }
 
     /**
@@ -313,8 +313,8 @@ public class EllipticCurve implements EllipticCurveInt {
      * BigInteger)
      */
     @Override
-    public GeneralECPoint pow(final GroupElement x, final BigInteger pow) {
-        return (GeneralECPoint) x.pow(pow);
+    public EllipticCurvePoint pow(final GroupElement x, final BigInteger pow) {
+        return (EllipticCurvePoint) x.pow(pow);
     }
 
     @Override
@@ -350,9 +350,9 @@ public class EllipticCurve implements EllipticCurveInt {
      * @see EllipticCurveInt#getRandomElement()
      */
     @Override
-    public GeneralECPoint getRandomElement() {
+    public EllipticCurvePoint getRandomElement() {
         RingElement x;
-        ArrayList<? extends GeneralECPoint> P;
+        ArrayList<? extends EllipticCurvePoint> P;
         while (true) {
             x = ring.getRandomElement();
             P = liftX(x);
@@ -407,9 +407,9 @@ public class EllipticCurve implements EllipticCurveInt {
         return Optional.empty();
     }
 
-    public Optional<ECSubgroup> identifySubgroup(GeneralECPoint generalECPoint) {
+    public Optional<ECSubgroup> identifySubgroup(EllipticCurvePoint ellipticCurvePoint) {
         for (ECSubgroup subgroup : this.subgroups) {
-            if (subgroup.containsElement(generalECPoint)) {
+            if (subgroup.containsElement(ellipticCurvePoint)) {
                 return Optional.of(subgroup);
             }
         }

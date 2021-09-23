@@ -15,7 +15,7 @@ public class LargePrimeFieldECTest extends EllipticCurveTest {
     EllipticCurve ellipticCurve;
     private PrimeField primeField;
     private BigInteger n;
-    private GeneralECPoint gen;
+    private EllipticCurvePoint gen;
 
     @Override
     protected EllipticCurve returnGeneralEC() {
@@ -37,7 +37,7 @@ public class LargePrimeFieldECTest extends EllipticCurveTest {
         this.primeField = new PrimeField(module);
         RingElement A = new PrimeFieldElement(primeField, BigInteger.valueOf(-3));
         RingElement B = new PrimeFieldElement(primeField, b);
-        Pair<EllipticCurve, GeneralECPoint> pair = EllipticCurve
+        Pair<EllipticCurve, EllipticCurvePoint> pair = EllipticCurve
                 .EllipticCurveGeneratorOnlyOneSubgroup(primeField, A, B, order, new PrimeFieldElement(primeField, gx), new PrimeFieldElement(primeField, gy));
         gen = pair.getValue();
         return pair.getKey();
@@ -54,31 +54,31 @@ public class LargePrimeFieldECTest extends EllipticCurveTest {
     }
 
     @Override
-    protected GeneralECPoint returnGeneralECPoint1() {
+    protected EllipticCurvePoint returnGeneralECPoint1() {
         return gen;
     }
 
     @Override
-    protected GeneralECPoint returnGeneralECPoint2() {
+    protected EllipticCurvePoint returnGeneralECPoint2() {
         return gen.pow(BigInteger.TWO);
     }
 
     @Override
-    protected GeneralECPoint returnExpectedResultPlusOperation() {
+    protected EllipticCurvePoint returnExpectedResultPlusOperation() {
         String point1Str = "2915109630280678890720206779706963455590627465886103135194";
         BigInteger x = new BigInteger(point1Str);
         String point2Str = "2946626711558792003980654088990112021985937607003425539581";
         BigInteger y = new BigInteger(point2Str);
-        return new GeneralECPoint(ellipticCurve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
+        return new EllipticCurvePoint(ellipticCurve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
 
     @Override
-    protected GeneralECPoint returnsExpectedElementMultByTHREE() {
+    protected EllipticCurvePoint returnsExpectedElementMultByTHREE() {
         String point1Str = "2915109630280678890720206779706963455590627465886103135194";
         BigInteger x = new BigInteger(point1Str);
         String point2Str = "2946626711558792003980654088990112021985937607003425539581";
         BigInteger y = new BigInteger(point2Str);
-        return new GeneralECPoint(ellipticCurve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
+        return new EllipticCurvePoint(ellipticCurve, new PrimeFieldElement(primeField, x), new PrimeFieldElement(primeField, y));
     }
 
     @Override
@@ -87,7 +87,7 @@ public class LargePrimeFieldECTest extends EllipticCurveTest {
     }
 
     @Override
-    protected ArrayList<GeneralECPoint> returnLessPointsOfPoint1() {
+    protected ArrayList<EllipticCurvePoint> returnLessPointsOfPoint1() {
         return new ArrayList<>(List.of());
     }
 
