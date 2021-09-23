@@ -318,10 +318,25 @@ public class Polynomial {
 
     private Polynomial squareRootGora(Polynomial modulus) {
         if (coefficients.size() < 2 || this.coefficients.get(1).equals(field.getAdditiveIdentity())){
+            PrimeFieldElement a0 = this.coefficients.get(0);
+            if (a0.equals(field.getAdditiveIdentity()))
+                return new Polynomial.PolynomialBuilder().addTerm(0, field.getAdditiveIdentity()).build();
+            if (a0.isQuadraticNonResidue()) {
+                PrimeFieldElement beta = modulus.getCoefficient(0).opposite();
+                PrimeFieldElement b2 = a0.multiply(beta);
+                assert b2.isQuadraticResidue();
+                ArrayList<PrimeFieldElement> b2squareRoots = b2.squareRoot();
+                if (b2squareRoots.isEmpty())
+                    throw new ArithmeticException("a0*B Must have square roots");
+                PrimeFieldElement b = b2squareRoots.get(0);
+                Polynomial betaInverse = new Polynomial.PolynomialBuilder().addTerm(1, beta.inverse()).build();
+                Polynomial firstPart = new Polynomial.PolynomialBuilder().addTerm(0, b.multiply(beta.inverse())).build();
+                return betaInverse.multiply(firstPart, modulus);
+            }
             PrimeFieldElement el = this.coefficients.get(0).squareRoot().get(0);
             return new PolynomialBuilder().addTerm(0, el).build();
         }
-        PrimeFieldElement beta = coefficients.get(0);
+        PrimeFieldElement beta = modulus.getCoefficient(0);
         PrimeFieldElement alpha = coefficients.get(0).pow(BigInteger.TWO).add(beta.multiply(coefficients.get(1).pow(BigInteger.TWO)));
         if (alpha.isQuadraticNonResidue())
             throw new ArithmeticException("Is quadratic non-residue or it is -1");

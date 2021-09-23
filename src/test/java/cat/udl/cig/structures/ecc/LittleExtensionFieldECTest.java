@@ -95,6 +95,7 @@ public class LittleExtensionFieldECTest {
                 )));
 
         points.forEach((a, b) -> {
+            System.out.println(a);
             ArrayList<? extends GeneralECPoint> actualPoints = ec.liftX(a);
             for (GeneralECPoint actualPoint : actualPoints) {
                 RingElement y = actualPoint.getY();
