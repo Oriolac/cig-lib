@@ -42,19 +42,27 @@ public class LittleExtensionFieldECTest {
     @Test
     void testAllLiftX() {
         HashMap<ExtensionFieldElement, Set<ExtensionFieldElement>> points = new HashMap<>();
-        points.put(field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder().addTerm(0, primeField.getMultiplicativeIdentity()).build()).build().orElseThrow(),
-                new HashSet<>(List.of(field.buildElement()
-                        .setPolynomial(new Polynomial.PolynomialBuilder()
+        points.put(field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder().addTerm(0, primeField.buildElement().setValue(2).build().orElseThrow()).build()).build().orElseThrow(),
+                new HashSet<>(List.of(
+                        field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder().addTerm(0, primeField.buildElement().setValue(0).build().orElseThrow()).build()).build().orElseThrow()
+                )));
+        points.put(field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder().addTerm(1, primeField.getMultiplicativeIdentity()).build()).build().orElseThrow(),
+                new HashSet<>(List.of(
+                        field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder()
                                 .addTerm(1, primeField.getMultiplicativeIdentity())
                                 .addTerm(0, primeField.getMultiplicativeIdentity())
                                 .build())
-                        .build().orElseThrow())));
-        points.put(field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder().addTerm(0, primeField.buildElement().setValue(2).build().orElseThrow()).build()).build().orElseThrow(),
-                new HashSet<>(List.of(
-                        field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder().addTerm(0, primeField.buildElement().setValue(0).build().orElseThrow()).build()).build().orElseThrow(),
+                                .build().orElseThrow(),
                         field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder()
                                 .addTerm(1, primeField.buildElement().setValue(2).build().orElseThrow())
-                                .addTerm(0, primeField.buildElement().setValue(2).build().orElseThrow()).build()).build().orElseThrow())
-                ));
+                                .addTerm(0, primeField.buildElement().setValue(2).build().orElseThrow()).build()).build().orElseThrow()
+                )));
+
+
+
+
+
+
+
     }
 }
