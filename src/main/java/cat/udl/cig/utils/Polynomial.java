@@ -11,6 +11,8 @@ import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.ExtensionField;
 import cat.udl.cig.structures.PrimeField;
 import cat.udl.cig.structures.PrimeFieldElement;
+import cat.udl.cig.structures.RingElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.*;
@@ -309,6 +311,36 @@ public class Polynomial {
      * <i>Polynomial</i> if {@code this} is not a quadratic residue.
      */
     public Polynomial squareRoot(final Polynomial modulus) {
+        if (modulus.degree == 2)
+            return squareRootGora(modulus);
+        return squareRootPrimal(modulus);
+    }
+
+    private Polynomial squareRootGora(Polynomial modulus) {
+        if (coefficients.size() < 2 || this.coefficients.get(1).equals(field.getAdditiveIdentity())){
+            PrimeFieldElement el = this.coefficients.get(0).squareRoot().get(0);
+            return new PolynomialBuilder().addTerm(0, el).build();
+        }
+        PrimeFieldElement beta = coefficients.get(0);
+        PrimeFieldElement alpha = coefficients.get(0).pow(BigInteger.TWO).add(beta.multiply(coefficients.get(1).pow(BigInteger.TWO)));
+        if (alpha.isQuadraticNonResidue())
+            throw new ArithmeticException("Is quadratic non-residue or it is -1");
+        alpha = alpha.squareRoot().get(0);
+        PrimeFieldElement delta = coefficients.get(0).add(alpha)
+                .divide(field.buildElement().setValue(2).build().orElseThrow());
+        if (delta.isQuadraticNonResidue())
+            delta = coefficients.get(0).subtract(alpha)
+                    .divide(field.buildElement().setValue(2).build().orElseThrow());
+        ArrayList<PrimeFieldElement> deltaSquares = delta.squareRoot();
+        if (deltaSquares.isEmpty())
+            throw new ArithmeticException("No able to compute delta squareRoot");
+        PrimeFieldElement x0 = deltaSquares.get(0);
+        PrimeFieldElement x1 = coefficients.get(1).divide(field.buildElement().setValue(2).build().orElseThrow().multiply(x0));
+        return new PolynomialBuilder().addTerm(0, x0).addTerm(1, x1).build();
+    }
+
+    @NotNull
+    private Polynomial squareRootPrimal(Polynomial modulus) {
         // TODO: in need to be checkd. The computations are too slow!
         final BigInteger TWO = BigInteger.valueOf(2);
         if (isSquare(modulus)) {

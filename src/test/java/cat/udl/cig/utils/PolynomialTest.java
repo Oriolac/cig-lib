@@ -137,5 +137,10 @@ class PolynomialTest {
         assertEquals(expected, opA.euclideanMultiplication(opB));
     }
 
+    @Test
+    void testSquaresRoots() {
+        field = new PrimeField(BigInteger.valueOf(3));
+
+    }
 
 }

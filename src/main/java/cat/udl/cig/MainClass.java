@@ -24,6 +24,7 @@ public class MainClass {
                 .addTerm(0, primeField.buildElement().setValue(2).build().orElseThrow())
                 .build()).build().orElseThrow();
         EllipticCurve ec = new EllipticCurve(field, A, B);
+        System.out.println(ec);
         ec.getSize();
         searchEllipticCurve(List.of(3, 5, 7, 11, 13, 17, 19));
     }

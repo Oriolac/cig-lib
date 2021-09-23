@@ -103,7 +103,7 @@ public interface RingElement extends GroupElement {
      * @throws IncorrectRingElementException
      *             if {@code this} is not initialized.
      */
-    public ArrayList<RingElement> squareRoot()
+    public ArrayList<? extends RingElement> squareRoot()
             throws IncorrectRingElementException;
 
     /**

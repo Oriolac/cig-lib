@@ -250,5 +250,4 @@ public class ExtensionFieldECTest extends EllipticCurveTest {
         GeneralECPoint rootInf = new GeneralECPoint(curve, x, y);
         rootInf.multiply(rootInf);
     }
-
 }

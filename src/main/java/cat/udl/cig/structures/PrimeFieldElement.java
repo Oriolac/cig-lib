@@ -3,6 +3,7 @@ package cat.udl.cig.structures;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 
 import cat.udl.cig.exceptions.IncorrectModuleException;
@@ -159,9 +160,9 @@ public class PrimeFieldElement implements RingElement {
     }
 
     @Override
-    public ArrayList<RingElement> squareRoot() {
+    public ArrayList<PrimeFieldElement> squareRoot() {
 
-        ArrayList<RingElement> elems = new ArrayList<RingElement>();
+        ArrayList<PrimeFieldElement> elems = new ArrayList<>();
 
         if (this.k.equals(BigInteger.ZERO)) {
             elems.add(this);
@@ -344,13 +345,21 @@ public class PrimeFieldElement implements RingElement {
     }
 
     public boolean isQuadraticNonResidue() {
+        return squareOfQuadraticResidue().isEmpty();
+    }
+
+    public boolean isQuadraticResidue() {
+        return squareOfQuadraticResidue().isPresent();
+    }
+
+    public Optional<PrimeFieldElement> squareOfQuadraticResidue() {
         PrimeFieldElement i = field.getAdditiveIdentity();
         for (i = i.add(field.getMultiplicativeIdentity()); !i.equals(field.getAdditiveIdentity()); i = i.add(field.getMultiplicativeIdentity())) {
             if (i.multiply(i).equals(this)) {
-                return false;
+                return Optional.of(i);
             }
         }
-        return true;
+        return Optional.empty();
     }
 
     @Override

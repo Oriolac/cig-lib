@@ -207,7 +207,7 @@ public class EllipticCurve implements EllipticCurveInt {
         try {
             RingElement y;
             GeneralECPoint P;
-            ArrayList<RingElement> ySquareRoots;
+            ArrayList<? extends RingElement> ySquareRoots;
             // y^2 = x^3 + ax + b
 
             y = x.pow(BigInteger.valueOf(3));
@@ -261,9 +261,10 @@ public class EllipticCurve implements EllipticCurveInt {
             boolean found = false;
             for (GeneralECPoint gen : gensOfSubgroups) {
                 Optional<BigInteger> discreteLog = new BabyStepGiantStep(gen, gen.getOrder()).algorithm(point);
-                if (discreteLog.isPresent())
+                if (discreteLog.isPresent()) {
                     found = true;
-                break;
+                    break;
+                }
             }
             if (!found) {
                 gensOfSubgroups.add(point);

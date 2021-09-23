@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -111,5 +112,27 @@ class ExtensionFieldTest extends RingTemplateTest {
         assertTrue(optElement.isPresent());
         assertEquals(optElement.get(), field.getReducingPolynomial().getCoefficient(2));
         System.out.println("Polynomial: " + field.getReducingPolynomial());
+    }
+
+    @Test
+    public void squareRoots() {
+        BigInteger p = BigInteger.valueOf(3);
+        PrimeField primeField = new PrimeField(p);
+        ExtensionField field = ExtensionField.ExtensionFieldP2(p);
+        ExtensionFieldElement x = field.buildElement()
+                .setPolynomial(new Polynomial.PolynomialBuilder()
+                        .addTerm(0, primeField.getMultiplicativeIdentity())
+                        .build())
+                .build()
+                .orElseThrow();
+        ExtensionFieldElement y = field.buildElement()
+                .setPolynomial(new Polynomial.PolynomialBuilder()
+                        .addTerm(0, primeField.getMultiplicativeIdentity())
+                        .addTerm(1, primeField.getMultiplicativeIdentity())
+                        .build())
+                .build()
+                .orElseThrow();
+        ArrayList<RingElement> roots = y.squareRoot();
+        assertTrue(roots.size() > 0);
     }
 }

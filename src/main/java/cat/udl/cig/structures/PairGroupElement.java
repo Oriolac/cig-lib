@@ -84,8 +84,8 @@ public class PairGroupElement implements RingElement {
 
     @Override
     public ArrayList<RingElement> squareRoot() throws IncorrectRingElementException {
-        ArrayList<RingElement> listA = groupElementA.squareRoot();
-        ArrayList<RingElement> listB = groupElementB.squareRoot();
+        ArrayList<? extends RingElement> listA = groupElementA.squareRoot();
+        ArrayList<? extends RingElement> listB = groupElementB.squareRoot();
         ArrayList<RingElement> result = new ArrayList<>();
 
         if (listA.size() != listB.size()) return null;

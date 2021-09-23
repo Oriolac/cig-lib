@@ -2,13 +2,12 @@ package cat.udl.cig.structures;
 
 import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.utils.Polynomial;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Models an <i>Extension Field Element</i>. This <i>Extension Field Element</i>
@@ -218,14 +217,15 @@ public class ExtensionFieldElement implements RingElement {
          * "initialized"); }
          */
         HashSet<RingElement> root = new HashSet<>();
-        try {
-            for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
+            try {
                 Polynomial p = polynomial.squareRoot(Fpn.getReducingPolynomial());
                 if (p.getDegree() != -1) {
                     root.add(new ExtensionFieldElement(Fpn, p));
                 }
+            } catch (ArithmeticException ignored) {
             }
-        } catch (ArithmeticException ignored) {
+
         }
 
         return new ArrayList<>(root);
