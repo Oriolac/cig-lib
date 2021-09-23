@@ -29,7 +29,7 @@ public class BabyStepGiantStepTerr implements LogarithmAlgorithm {
         R.put(inf, BigInteger.ZERO);
         R.put(gen, BigInteger.ONE);
         GroupElement alpha = this.gen;
-        while (n.equals(BigInteger.ZERO) && i.compareTo(totalBabySteps) < 0) {
+        while (i.compareTo(totalBabySteps) < 0) {
             alpha = gen.multiply(alpha);
             i = i.add(BigInteger.ONE);
             if (alpha.equals(inf)) {
@@ -42,7 +42,7 @@ public class BabyStepGiantStepTerr implements LogarithmAlgorithm {
         BigInteger j = BigInteger.ZERO;
         GroupElement newB = alpha.multiply(alpha);
         BigInteger t = totalBabySteps.multiply(BigInteger.TWO);
-        while (n.equals(BigInteger.ZERO)) {
+        while (true) {
             try {
                 if (R.containsKey(newB)) {
                     if (R.get(newB).equals(i)) {
@@ -62,7 +62,6 @@ public class BabyStepGiantStepTerr implements LogarithmAlgorithm {
             }
 
         }
-        return Optional.empty();
     }
 
     @Override

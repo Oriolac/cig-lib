@@ -253,12 +253,11 @@ public class EllipticCurve implements EllipticCurveInt {
         BigInteger size = BigInteger.ONE;
         Set<GeneralECPoint> gensOfSubgroups = new HashSet<>();
         int i = 0;
-        while (i < 6 || !this.validHasseTheorem(size) && gensOfSubgroups.size() > 4) {
+        while (i < 6 || !this.validHasseTheorem(size)) {
             GeneralECPoint point = getRandomElement();
             while (point.isInfinity()) {
                 point = getRandomElement();
             }
-            System.out.println(point);
             boolean found = false;
             for (GeneralECPoint gen : gensOfSubgroups) {
                 Optional<BigInteger> discreteLog = new BabyStepGiantStep(gen, gen.getOrder()).algorithm(point);
