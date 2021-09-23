@@ -82,6 +82,17 @@ public class LittleExtensionFieldECTest {
                                 .build()).build().orElseThrow()
                 )));
 
+        points.put(field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder().addTerm(1, primeField.buildElement().setValue(2).build().orElseThrow()).build()).build().orElseThrow(),
+                new HashSet<>(List.of(
+                        field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder()
+                                .addTerm(1, primeField.getMultiplicativeIdentity())
+                                .addTerm(0, primeField.buildElement().setValue(2).build().orElseThrow())
+                                .build()).build().orElseThrow(),
+                        field.buildElement().setPolynomial(new Polynomial.PolynomialBuilder()
+                                .addTerm(1, primeField.buildElement().setValue(2).build().orElseThrow())
+                                .addTerm(0, primeField.getMultiplicativeIdentity())
+                                .build()).build().orElseThrow()
+                )));
 
         points.forEach((a, b) -> {
             ArrayList<? extends GeneralECPoint> actualPoints = ec.liftX(a);
@@ -90,7 +101,7 @@ public class LittleExtensionFieldECTest {
                 assertTrue(y instanceof ExtensionFieldElement);
                 assertTrue(b.contains((ExtensionFieldElement) actualPoint.getY()));
             }
-
         });
     }
 }
+
