@@ -45,10 +45,16 @@ public class BabyStepGiantStepTerr implements LogarithmAlgorithm {
         while (true) {
             try {
                 if (R.containsKey(newB)) {
-                    if (R.get(newB).equals(i)) {
+                    BigInteger newBValue = R.get(newB);
+                    if (newBValue != null && newBValue.equals(i)) {
                         n = t.subtract(i);
                         return Optional.of(n);
                     }
+                    alpha = gen.multiply(alpha);
+                    j = j.add(BigInteger.ONE);
+                    R.put(alpha, j.add(totalBabySteps));
+                    newB = alpha.multiply(newB);
+                    t = t.add(j).add(totalBabySteps);
                 } else {
                     alpha = gen.multiply(alpha);
                     j = j.add(BigInteger.ONE);
