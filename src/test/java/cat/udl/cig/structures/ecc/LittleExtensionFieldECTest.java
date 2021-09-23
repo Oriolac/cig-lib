@@ -101,8 +101,13 @@ public class LittleExtensionFieldECTest {
                 assertTrue(y instanceof ExtensionFieldElement);
                 assertTrue(b.contains((ExtensionFieldElement) actualPoint.getY()));
             }
+<<<<<<< HEAD
         });
 
+=======
+
+        });
+>>>>>>> failure
     }
 }
 
