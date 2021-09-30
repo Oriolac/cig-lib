@@ -32,6 +32,8 @@ public class BabyStepGiantStep implements LogarithmAlgorithm {
         ArrayList<Pair<BigInteger, GroupElement>> babies = new ArrayList<>();
         ArrayList<Pair<BigInteger, GroupElement>> giants = new ArrayList<>();
         BigInteger iterator = BigInteger.ONE;
+        if (alpha.equals(beta))
+            return Optional.of(iterator);
         for (; !iterator.equals(m.add(BigInteger.ONE)); iterator = iterator.add(BigInteger.ONE)) {
             babies.add(new Pair<>(iterator, beta.multiply(alpha.pow(iterator))));
             giants.add(new Pair<>(iterator, alpha.pow(m.multiply(iterator))));

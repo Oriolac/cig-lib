@@ -142,4 +142,10 @@ public class PrimeFieldECTest extends EllipticCurveTest {
         assertTrue(result.isInfinity());
     }
 
+    @Test
+    void testGetDiscriminant() {
+        RingElement discriminant = this.curve.getDiscriminant();
+        assertEquals(builder.setValue(601).build().orElseThrow(), discriminant);
+    }
+
 }

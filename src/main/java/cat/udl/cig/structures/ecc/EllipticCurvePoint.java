@@ -338,7 +338,6 @@ public class EllipticCurvePoint implements ECPoint {
         result = 31 * result + (x != null ? x.hashCode() : 0);
         result = 31 * result + (y != null ? y.hashCode() : 0);
         result = 31 * result + (isInfinity ? 1 : 0);
-        result = 31 * result + (order != null ? order.hashCode() : 0);
         return result;
     }
 
@@ -659,7 +658,7 @@ public class EllipticCurvePoint implements ECPoint {
     @Override
     public BigInteger getOrder() {
         BigInteger sizeMaxBound = this.order == null ? this.x.getGroup().getSize() : this.order;
-        return this.getOrder(List.of(sizeMaxBound, sizeMaxBound.add(BigInteger.TEN)));
+        return this.getOrder(List.of(sizeMaxBound.add(BigInteger.TEN)));
     }
 
     public BigInteger getOrder(List<BigInteger> numBabySteps) {

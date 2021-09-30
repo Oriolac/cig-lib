@@ -5,7 +5,7 @@ import cat.udl.cig.exceptions.IncorrectRingElementException;
 import cat.udl.cig.operations.wrapper.data.Pair;
 import cat.udl.cig.structures.*;
 import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
-import cat.udl.cig.utils.bfarithmetic.LeastCommonMultiple;
+import cat.udl.cig.utils.Polynomial;
 import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,6 +77,7 @@ public class EllipticCurve implements EllipticCurveInt {
         } else {
             isSupersingular = false; //TODO
         }
+        checkInvariant();
     }
 
     /*
@@ -121,6 +122,7 @@ public class EllipticCurve implements EllipticCurveInt {
         } else {
             isSupersingular = false;
         }
+        checkInvariant();
     }
 
     static public Pair<EllipticCurve, EllipticCurvePoint> EllipticCurveGeneratorOnlyOneSubgroup(Ring ring, RingElement A, RingElement B, BigInteger order, RingElement x, RingElement y) {
@@ -133,9 +135,15 @@ public class EllipticCurve implements EllipticCurveInt {
     // Check if existing subgroup uncontrolled.
     protected void createSubgroupOrder(EllipticCurvePoint point, BigInteger order) {
         if (this.onlyOneGroup && this.subgroups.size() > 0)
-            throw new ConstructionException("Cannot create another subgroup order. OnlyeOneGroup flag is activated.");
+            throw new ConstructionException("Cannot create another subgroup order. OnlyOneGroup flag is activated.");
         ECSubgroup subgroup = new ECPrimeOrderSubgroup(this, order, point);
         this.subgroups.add(subgroup);
+    }
+
+    private void checkInvariant() {
+        RingElement invariant = getDiscriminant();
+        if (ring.getAdditiveIdentity().equals(invariant))
+            throw new ConstructionException("Invariant cannot be additive identity.");
     }
 
     /**
@@ -223,6 +231,32 @@ public class EllipticCurve implements EllipticCurveInt {
         }
     }
 
+    public RingElement getDiscriminant() {
+        RingElement invariant = ring.getAdditiveIdentity();
+        if (ring instanceof ExtensionField) {
+            PrimeField field = ((ExtensionField) ring).getField();
+            ExtensionFieldElement el4 = new ExtensionFieldElement(((ExtensionField) ring),
+                    new Polynomial.PolynomialBuilder().addTerm(0, field.buildElement().setValue(4).build().orElseThrow()).build());
+            ExtensionFieldElement el27 = new ExtensionFieldElement(((ExtensionField) ring),
+                    new Polynomial.PolynomialBuilder().addTerm(0, field.buildElement().setValue(27).build().orElseThrow()).build());
+            ExtensionFieldElement elA = (ExtensionFieldElement) getA().pow(BigInteger.valueOf(3));
+            ExtensionFieldElement elB = (ExtensionFieldElement) getB().pow(BigInteger.TWO);
+            ExtensionFieldElement el_16 = new ExtensionFieldElement(((ExtensionField) ring),
+                    new Polynomial.PolynomialBuilder().addTerm(0, field.buildElement().setValue(16).build().orElseThrow().opposite()).build());
+            invariant = elA.multiply(el4).add(elB.multiply(el27)).multiply(el_16);
+        }
+        if (ring instanceof PrimeField) {
+            PrimeField field = ((PrimeField) ring);
+            PrimeFieldElement elA = (PrimeFieldElement) getA().pow(BigInteger.valueOf(3));
+            PrimeFieldElement elB = (PrimeFieldElement) getB().pow(BigInteger.TWO);
+            PrimeFieldElement el4 = field.buildElement().setValue(4).build().orElseThrow();
+            PrimeFieldElement el27 = field.buildElement().setValue(27).build().orElseThrow();
+            PrimeFieldElement el_16 = field.buildElement().setValue(16).build().orElseThrow().opposite();
+            invariant = elA.multiply(el4).add(elB.multiply(el27)).multiply(el_16);
+        }
+        return invariant;
+    }
+
     @Override
     public String toString() {
         String content;
@@ -230,7 +264,7 @@ public class EllipticCurve implements EllipticCurveInt {
             content =
                     "Elliptic Curve: y\u00B2 = x\u00B3 + ("
                             + getA().toString() + ")x + (" + getB().toString()
-                            + ")";
+                            + ")" + " with modulus polynomial " + ((ExtensionField) this.ring).getReducingPolynomial();
         } else {
             content =
                     "Elliptic Curve: y\u00B2 = x\u00B3 + " + getA().toString()
@@ -249,9 +283,8 @@ public class EllipticCurve implements EllipticCurveInt {
     public BigInteger getSize() {
         if (this.size != null)
             return this.size;
-        List<BigInteger> listOrders = new ArrayList<>();
         BigInteger size = BigInteger.ONE;
-        Set<EllipticCurvePoint> gensOfSubgroups = new HashSet<>();
+        List<EllipticCurvePoint> gensOfSubgroups = new ArrayList<>();
         int i = 0;
         while (i < 6 || !this.validHasseTheorem(size)) {
             EllipticCurvePoint point = getRandomElement();
@@ -259,21 +292,52 @@ public class EllipticCurve implements EllipticCurveInt {
                 point = getRandomElement();
             }
             boolean found = false;
+            boolean foundGreater = false;
             for (EllipticCurvePoint gen : gensOfSubgroups) {
                 Optional<BigInteger> discreteLog = new BabyStepGiantStep(gen, gen.getOrder()).algorithm(point);
                 if (discreteLog.isPresent()) {
                     found = true;
                     break;
                 }
+                Optional<BigInteger> discreteLog2 = new BabyStepGiantStep(point, point.getOrder()).algorithm(gen);
+                if (discreteLog2.isPresent() && point.getOrder().compareTo(gen.getOrder()) >= 0) {
+                    foundGreater = true;
+                    break;
+                }
             }
-            if (!found) {
+            if (foundGreater) {
+                EllipticCurvePoint finalPoint = point;
+                BigInteger sumOrders = BigInteger.ZERO;
+                List<EllipticCurvePoint> points = gensOfSubgroups.stream().filter(gen -> new BabyStepGiantStep(finalPoint, finalPoint.getOrder()).algorithm(gen).isPresent()).collect(Collectors.toList());
+                System.out.println("old set: "+ gensOfSubgroups);
+                System.out.println("Excluded points: " + points);
+                if (!points.isEmpty())
+                    sumOrders = BigInteger.ONE;
+                for (EllipticCurvePoint gen : points) {
+                    sumOrders = sumOrders.add(gen.getOrder().subtract(BigInteger.ONE));
+                    while (!gensOfSubgroups.remove(gen)) {
+                        System.out.println("ERROR: " + gen);
+                        System.out.println(gen.hashCode() + " !== " + points.stream().map(EllipticCurvePoint::hashCode).collect(Collectors.toList()));
+                        System.out.println(gen.hashCode() + " is the same as the other? " + points.stream().map(c -> c.equals(gen)).collect(Collectors.toList()));
+                        System.out.println(gen + " in " + gensOfSubgroups + "? " + gensOfSubgroups.contains(gen));
+                    }
+                }
                 gensOfSubgroups.add(point);
-                BigInteger orderOfSubgroup = point.getOrder();
+                System.out.print(size + " - " + sumOrders + " + " + point.getOrder() + " = ");
+                size = size.subtract(sumOrders).add(point.getOrder());
+                System.out.println(size);
+                System.out.println("new set: "+gensOfSubgroups);
+            } else if (!found) {
+                gensOfSubgroups.add(point);
+                System.out.println(gensOfSubgroups);
+                BigInteger orderOfSubgroup = point.getOrder().subtract(BigInteger.ONE);
                 size = accumulateSizeWithSubgroupOrders(size, orderOfSubgroup);
-                listOrders.add(orderOfSubgroup);
-                createSubgroupOrder(point, orderOfSubgroup);
+                System.out.println("SIZE: " + size);
             }
             i++;
+        }
+        for (EllipticCurvePoint gen : gensOfSubgroups) {
+            createSubgroupOrder(gen, gen.getOrder());
         }
         this.size = size;
         return size;
@@ -281,7 +345,7 @@ public class EllipticCurve implements EllipticCurveInt {
 
     private BigInteger accumulateSizeWithSubgroupOrders(BigInteger size, BigInteger orderOfSubgroup) {
 
-        return LeastCommonMultiple.lcm(size, orderOfSubgroup);
+        return size.add(orderOfSubgroup);
     }
 
 
@@ -357,8 +421,10 @@ public class EllipticCurve implements EllipticCurveInt {
             x = ring.getRandomElement();
             P = liftX(x);
             if (!P.isEmpty()) {
-                if (isOnCurve(P.get(0)))
-                    return P.get(0);
+                Random r = new Random();
+                int iRandom = r.nextInt(P.size());
+                if (isOnCurve(P.get(iRandom)))
+                    return P.get(iRandom);
             }
         }
     }

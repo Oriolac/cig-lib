@@ -290,4 +290,8 @@ public class ExtensionField implements Ring {
         // TODO Auto-generated method stub
         return null;
     }
+
+    public PrimeField getField() {
+        return field;
+    }
 }

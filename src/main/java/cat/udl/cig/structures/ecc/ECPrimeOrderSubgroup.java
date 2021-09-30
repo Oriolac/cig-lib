@@ -1,25 +1,25 @@
 
 package cat.udl.cig.structures.ecc;
 
+import cat.udl.cig.exceptions.ConstructionException;
+import cat.udl.cig.structures.Group;
+import cat.udl.cig.structures.GroupElement;
+import cat.udl.cig.structures.MultiplicativeSubgroup;
+import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
+import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Objects;
 import java.util.Optional;
 
-import cat.udl.cig.exceptions.ConstructionException;
-import cat.udl.cig.structures.GroupElement;
-import cat.udl.cig.structures.MultiplicativeSubgroup;
-import cat.udl.cig.structures.Group;
-import cat.udl.cig.structures.builder.ecc.ECPointBuilder;
-import cat.udl.cig.utils.discretelogarithm.BabyStepGiantStep;
-import org.jetbrains.annotations.NotNull;
-
 
 /**
  * $Id$
- * @author vmateu
- * @date   Sep 29, 2015 12:43:52 PM
  *
+ * @author vmateu
+ * @date Sep 29, 2015 12:43:52 PM
  */
 public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup {
 
@@ -84,7 +84,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
 
     /**
      * @see Group#multiply(GroupElement,
-     *      GroupElement)
+     * GroupElement)
      */
     @Override
     public EllipticCurvePoint multiply(final GroupElement x,
@@ -94,7 +94,7 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
 
     /**
      * @see Group#pow(GroupElement,
-     *      BigInteger)
+     * BigInteger)
      */
     @Override
     public EllipticCurvePoint pow(final GroupElement x, final BigInteger pow) {
@@ -151,5 +151,13 @@ public class ECPrimeOrderSubgroup implements MultiplicativeSubgroup, ECSubgroup 
     @Override
     public BigInteger getOrder() {
         return this.orderOfSubgroup;
+    }
+
+    @Override
+    public String toString() {
+        return "ECPrimeOrderSubgroup of " + EC + " with order "
+                + orderOfSubgroup +
+                " and point=" + generator +
+                '.';
     }
 }

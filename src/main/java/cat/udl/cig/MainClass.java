@@ -1,5 +1,6 @@
 package cat.udl.cig;
 
+import cat.udl.cig.exceptions.ConstructionException;
 import cat.udl.cig.structures.ExtensionField;
 import cat.udl.cig.structures.ExtensionFieldElement;
 import cat.udl.cig.structures.PrimeField;
@@ -25,7 +26,9 @@ public class MainClass {
                 .build()).build().orElseThrow();
         EllipticCurve ec = new EllipticCurve(field, A, B);
         System.out.println(ec);
-        ec.getSize();
+        BigInteger size = ec.getSize();
+        System.out.println("Size: " + size);
+        System.out.println(ec.getSubgroups());
         searchEllipticCurve(List.of(3, 5, 7, 11, 13, 17, 19));
     }
 
@@ -37,14 +40,17 @@ public class MainClass {
                 ExtensionFieldElement elA = field.getRandomElement();
                 for (int j = 0; j < field.getSize().intValue(); j++) {
                     ExtensionFieldElement elB = field.getRandomElement();
-                    System.out.println(elA);
-                    System.out.println(elB);
-                    EllipticCurve ec = new EllipticCurve(field, elA, elB);
-                    if (ec.getSize().equals(field.getCharacteristic().add(BigInteger.ONE).pow(2))) {
-                        System.out.println("EC: " + ec);
+                    try {
+                        EllipticCurve ec = new EllipticCurve(field, elA, elB);
+                        System.out.println(ec);
+                        System.out.println("W: " + ec.getDiscriminant());
+                        System.out.println("Size: " + ec.getSize());
+                        if (ec.getSize().equals(field.getCharacteristic().add(BigInteger.ONE).pow(2))) {
+                            System.out.println("SIZE == (p+1)^2");
+                        }
+                        System.out.println("Finish");
+                    } catch (ConstructionException ignored) {
                     }
-                    System.out.println("Finish");
-
                 }
             }
         }
